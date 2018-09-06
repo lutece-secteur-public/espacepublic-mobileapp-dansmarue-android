@@ -1,0 +1,199 @@
+<resources>
+    <string name="slide1_title">BIENVENUE !</string>
+    <string name="slide1_subtitle">DansMaRue vous permet de participer à l\'amélioration de votre cadre de vie en échangeant des informations avec les services de la Ville de Paris.</string>
+
+    <string name="slide2_title">ENVOYEZ VOS INFORMATIONS</string>
+    <string name="slide2_subtitle">	Un graffiti, un objet encombrant sur le trottoir, un défaut d\'éclairage… Partagez vos informations en y associant une photo explicite.</string>
+
+    <string name="slide3_title">RESTEZ EN CONTACT</string>
+    <string name="slide3_subtitle">	Connectez-vous avec MON COMPTE pour suivre la prise en charge de votre contribution et accéder aux fonctionnalités complémentaires.</string>
+
+    <string name="slider_button_txt">Commencer</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+
+    <!-- TODO: Remove or change this placeholder text -->
+
+    <!-- Bottom Bar Wordin -->
+    <string name="bottom_map_txt">Carte</string>
+    <string name="bottom_profile_txt">Mon espace</string>
+
+    <!-- Wording Google Search Bar -->
+    <string name="google_searchbar_wording">Où est située l\'anomalie ?</string>
+
+    <!-- Add an anomaly -->
+    <string name="anomaly_screen_title">Ajouter une anomalie</string>
+    <string name="description">Description</string>
+    <string name="description_subtitle">Saisir plus de détails</string>
+    <string name="priority">Priorité</string>
+    <string name="valeur_defaut">(valeur par défaut)</string>
+    <string name="btn_publier">Publier</string>
+    <string name="desc_add_incident">Ajouter un incident</string>
+    <string name="text_type">Type</string>
+    <string name="subtitle_type">Sélectionner</string>
+    <string name="text_photo">Photo (obligatoire)</string>
+    <string name="desc_image1">Première image</string>
+    <string name="desc_image2">Seconde image</string>
+    <string name="text_optionnels">Précisions facultatives</string>
+    <string name="text_mandatory">Informations obligatoires</string>
+    <string name="desc_add_picture">Ajouter une photo</string>
+    <string name="anomaly_position_be_more_specific">Préciser la position de l\'anomalie</string>
+    <string name="anomaly_add_one">Ajouter une autre anomalie</string>
+    <string name="text_around_incident">Autres anomalies autour de moi</string>
+    <string name="text_around_equipement">Autres anomalies dans l\'équipement</string>
+    <string name="text_my_position">Ma position</string>
+    <string name="text_add">Ajouter</string>
+    <string name="text_priority_low">Gênant</string>
+    <string name="text_priority_medium">Très Gênant</string>
+    <string name="text_priority_high">Dangereux</string>
+    <string name="valeur_defaut_detail">(par défaut)</string>
+    <string name="how_to_black_pin">Faites glisser la carte pour placer un repère.</string>
+    <string name="save_anomaly_failure">Nous rencontrons des difficultés\nà enregistrer cette anomalie.\n\nMerci d\'essayer ultérieurement.\n \nUn brouillon a été sauvegardé dans votre espace.</string>
+
+    <!--Greetings -->
+    <string name="greetings_thanks">Merci !</string>
+    <string name="greetings_thanks_line_above">Les services de la Ville de Paris\nvous remercient pour\nvotre contribution.</string>
+    <string name="greetings_keepintouch">RESTEZ EN CONTACT</string>
+    <string name="greetings_connect_part1">Connectez-vous à</string>
+    <string name="greetings_connect_part2">MON COMPTE</string>
+    <string name="greetings_connect_line_above">ou renseignez uniquement</string>
+    <string name="greetings_email">votre adresse mail</string>
+    <string name="greetings_email_line_above">pour suivre la prise en charge de votre\ncontribution.</string>
+    <string name="greetings_patienter">Merci de patienter pendant la transmission des informations.</string>
+    <string name="greetings_failure">Nous rencontrons des difficultés\nà enregistrer cette anomalie.\n\nMerci d\'essayer ultérieurement.</string>
+
+
+    <!--Save Mail-->
+    <string name="save_mail_popup_title">Restez informé.e</string>
+    <string name="save_mail_popul_title_mail_field">Email</string>
+    <string name="save_mail_popup_confirm">VALIDER</string>
+    <string name="save_mail_popup_cancel">ANNULER</string>
+
+    <!-- Strings related to login -->
+    <string name="login_screen_title">Mon compte</string>
+
+    <string name="login_screen_email">Email</string>
+    <string name="login_screen_password">Mot de passe</string>
+
+    <string name="login_screen_forgot_password">Mot de passe oublié ?</string>
+    <string name="login_screen_signup">S\'inscrire</string>
+
+    <string name="login_screen_button">Connexion</string>
+
+    <string name="url_signup_paris">https://moncompte.paris.fr/moncompte/jsp/site/Portal.jsp?page=myluteceusergu&amp;view=createAccount#auth</string>
+    <string name="url_forgot_pwd">https://moncompte.paris.fr/moncompte/jsp/site/Portal.jsp?page=myluteceusergu&amp;view=lostPasswordModal&amp;back_url=https%3A%2F%2Fmoncompte.paris.fr%2Fmoncompte%2Fjsp%2Fsite%2FPortal.jsp%3Fpage%3Dmydashboard%26panel%3Daccueil</string>
+
+    <string name="invalid_email">Veuillez saisir un mail valide</string>
+    <string name="required_email">Veuillez saisir votre mail</string>
+    <string name="required_pwd">Veuillez saisir votre mot de passe</string>
+
+    <!--Anomaly Details-->
+    <string name="anomaly_followers">intéressée(s)</string>
+    <string name="anomaly_greetings">félicitation(s)</string>
+    <string name="anomaly_resolved_toast">Cette anomalie a été résolue.</string>
+    <string name="anomaly_in_progress">Cette anomalie est en cours de résolution.</string>
+    <string name="text_photo_service_fait">Photo service fait (facultatif)</string>
+
+    <!--Anomalys menu-->
+    <string name="anomaly_all">Tous</string>
+    <string name="anomaly_draft">Brouillons</string>
+    <string name="anomaly_wip">En cours</string>
+    <string name="anomaly_ok">Clôturées</string>
+
+    <!--Menu preferences-->
+    <string name="pref_activity_title">Paramètres</string>
+    <string-array name="pref_items_menu">
+        <item>Profil</item>
+        <item>Préférences</item>
+        <item>Conditions générales d\'utilisation</item>
+        <item>A propos</item>
+    </string-array>
+    <string name="button_deco">SE DECONNECTER</string>
+
+    <!--Menu preferences > profil-->
+
+    <string name="pref_profil_activity_title">Profil</string>
+    <string name="pref_profil_lastname">Nom</string>
+    <string name="pref_profil_firstname">Prénom</string>
+    <string name="pref_profil_email">Mail de contact</string>
+    <string name="pref_profil_btn_access_full_profile">Voir mon profil complet</string>
+    <string name="url_full_profile">https://moncompte.paris.fr/moncompte/jsp/site/Portal.jsp?page=mydashboardIdentity&amp;view=viewIdentity</string>
+
+    <!--Menu preferences preferences-->
+    <string name="pref_pref_activity_title">Préférences</string>
+
+    <!--Menu pref / CGU-->
+    <string name="pref_cgu_activity_title">Conditions générales d\'utilisation</string>
+
+    <string name="cgu_part_one">L\'application DansMaRue Paris fonctionne uniquement à Paris. Elle utilise certaines fonctionnalités de votre smartphone  (GPS et connexion 3G/4G) qui nécessitent une bonne connexion. Si vous rencontrez des difficultés techniques liées à l\'usage de l’application, n\'hésitez pas à nous en informer via l\'adresse mail DansMaRue_App@paris.fr</string>
+    <string name="cgu_part_two">Le dispositif DansMaRue  (application mobile et formulaire web) a pour objectif de faciliter la communication entre les Parisien-nes, la Ville Paris et ses partenaires et prestataires.</string>
+    <string name="cgu_part_three">Les informations transmises par les utilisateurs via le dispositif doivent être considérées comme des documents de travail qui aideront la Ville de Paris et ses partenaires et prestataires à organiser leur activité. Ils déterminent au cas par cas les actions à mettre en place.</string>
+    <string name="cgu_part_four">La Ville de Paris et ses partenaires et prestataires s\'engagent, dans un délai d’un mois, à prendre les mesures appropriées et à informer tout contributeur qui aura laissé ses coordonnées.</string>
+    <string name="cgu_part_five">Les informations ne sont pas traitées de manière instantanée. Les situations présentant un caractère dangereux et nécessitant la mise en œuvre de mesures de protection rapides doivent continuer à faire l\'objet d’une déclaration auprès des services d’urgence.</string>
+
+
+    <!--Menu pref / About-->
+    <string name="pref_about_activity_title">A propos</string>
+    <string name="about_part_one">L\'application DansMaRue PARIS est un service de la Ville de Paris qui fonctionne uniquement à Paris. Elle utilise certaines fonctionnalités de votre smartphone  (GPS et connexion 3G/4G) qui nécessitent une bonne connexion. Si vous rencontrez des difficultés techniques liées à l’usage de l’application, n\'hésitez pas à nous en informer via l\'adresse mail DansMaRue_App@paris.fr</string>
+    <string name="about_part_two">Les informations ne sont pas traitées de manière instantanée. Les situations présentant un caractère dangereux et nécessitant la mise en œuvre de mesures de protection rapides doivent continuer à faire l\'objet d’une déclaration auprès des services d\'urgence.</string>
+
+    <!--Menu pref / autorisations-->
+    <string name="authorisation_mail">Recevoir les notifications par mail</string>
+    <string name="authorisation_geoloc">Autoriser la géolocalisation</string>
+    <string name="authorisation_camera">Autoriser DansMaRue à accéder à ma caméra</string>
+    <string name="authorisation_gallery">Autoriser DansMaRue à accéder à ma bibliothèque</string>
+    <string name="section_resolved">Clôturées</string>
+    <string name="failed_load">Erreur lors du chargement. Appuyer pour réessayer</string>
+    <string name="section_drafts">Brouillons</string>
+    <string name="section_unresolved">En cours</string>
+
+    <!--Anomalies-->
+    <string name="follow_anomaly">Vous suivez maintenant cette anomalie.</string>
+    <string name="unfollow_anomaly">Vous ne suivez plus cette anomalie.</string>
+    <string name="follow_anomaly_failure">Vous ne pouvez pas suivre cette anomalie.</string>
+    <string name="unfollow_anomaly_failure">Vous suivez toujours cette anomalie.</string>
+
+    <!--Greetings-->
+    <string name="greetings_ok">Merci d\'avoir transmis vos félicitations aux agents !</string>
+    <string name="greetings_undo">ANNULER</string>
+
+    <!--Resolve-->
+    <string name="resolve_ok">Vous signalez cette \n anomalie comme résolue.</string>
+    <string name="resolve_undo">ANNULER</string>
+
+    <!-- GPS -->
+    <string name="dmr_error">Nous avons rencontré un problème.</string>
+    <string name="but_resoudre">Déclarer comme résolue</string>
+    <string name="info_no_network">Vous n\'avez aucune connexion</string>
+    <string name="not_in_paris">Adresse invalide\n\nVous êtes actuellement géolocalisé en dehors de Paris. L\’application DansMaRue permet de signaler des anomalies uniquement dans Paris.</string>
+    <string name="desc_ramen">Demande de retrait des objets encombrants</string>
+    <string name="type">Type</string>
+    <string name="greater_than"><![CDATA[>]]></string>
+    <string name="lower_than"><![CDATA[<]]></string>
+    <string name="supprimer_image">supprimer image</string>
+    <string name="photo_signalement">photo du signalement</string>
+    <string name="retour_arriere">retour arrière</string>
+    <string name="about_version_title">Version : </string>
+
+    <!-- Equipements -->
+    <string name="nbAnomaliesEquipement">anomalie(s) signalée(s)</string>
+    <string name="popup_error_title">Attention</string>
+
+    <string name="anomalie_espace_public_libelle">Anomalie sur l\'espace public</string>
+    <string name="chooser_equipement_type_libelle">Contribuer pour ...</string>
+    <string name="change_equipement_libelle">Rechercher</string>
+
+    <!--Popup Check Version-->
+    <string name="popup_msg">Une nouvelle version de l\'application est disponible sur le PlayStore.\n\nSouhaitez - vous l\'installer ?</string>
+
+    <!--Popup pas de récupération des catégories-->
+    <string name="popup_no_categories">Suite à un problème réseau, les données nécessaires à la création d\'une demande n\'ont pas pu être récupérées.\n\nMerci de recommencer ultérieurement.</string>
+
+    <!-- Armen Connecthings -->
+    <string name="login_armen">your login armen</string>
+    <string name="password_armen">your password armen</string>
+    <string name="company_key_armen">your company key</string>
+    <string name="ask_optins_permission_message">Autorisez vous l\'application à transmettre vos données de localisation et votre identifiant de téléphone ?</string>
+
+
+</resources>

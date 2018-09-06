@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:layout_gravity="center"
+    android:background="@color/grey_background"
+    android:paddingBottom="5dp"
+    android:paddingTop="5dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:orientation="horizontal">
+
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/icon"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_gravity="center_vertical"
+                android:scaleType="fitXY" />
+
+            <ImageView
+                android:id="@+id/icon_type_ano"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignBottom="@+id/icon"
+                android:layout_alignRight="@+id/icon"
+                android:contentDescription="@string/supprimer_image"
+                android:paddingBottom="2dp"
+                android:paddingRight="2dp"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_fake_crossblack_white" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:id="@+id/title_categorie_ano"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="1dp" />
+
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="1dp"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/subtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/title"
+                android:textColor="@color/grey_tranparent"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/subtitle"
+                android:textColor="@color/grey_tranparent"
+                android:textSize="12sp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>
+

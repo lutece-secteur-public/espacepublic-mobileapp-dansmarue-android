@@ -1,0 +1,49 @@
+{"status": 0,
+  "version": 2.8899982,
+  "categories": {
+    "0": {
+      "children_id": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    "1": {
+      "parent_id": 0,
+      "name": "two children",
+      "children_id": [
+        11,
+        12
+      ]
+    },
+    "2": {
+      "parent_id": 0,
+      "name": "one child",
+      "children_id": [
+        21
+      ]
+    },
+    "3": {
+      "parent_id": 0,
+      "name": "no children"
+    },
+    "4": {
+      "parent_id": 0,
+      "name": "no children"
+    },
+    "11": {
+      "parent_id": 1,
+      "name": "no children"
+    },
+    "12": {
+      "parent_id": 1,
+      "name": "no children"
+    },
+    "21": {
+      "parent_id": 2,
+      "name": "no children"
+    }
+  }
+}
+

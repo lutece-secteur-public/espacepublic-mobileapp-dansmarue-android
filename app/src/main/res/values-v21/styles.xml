@@ -1,0 +1,17 @@
+<resources>
+
+    <style name="ThemeForToolBar" parent="AppTheme">
+        <item name="colorPrimary">@color/pink</item>
+        <item name="colorPrimaryDark">@color/bordeaux</item>
+        <item name="android:navigationBarColor">@color/pink</item>
+    </style>
+
+    <style name="LoginTheme" parent="TransparentStatus">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textColorHint">@color/white</item>
+        <item name="colorControlNormal">@color/white</item>
+        <item name="colorControlActivated">@color/white</item>
+        <item name="colorControlHighlight">@color/white</item>
+        <item name="android:statusBarColor">@color/blue_slider</item>
+    </style>
+</resources>

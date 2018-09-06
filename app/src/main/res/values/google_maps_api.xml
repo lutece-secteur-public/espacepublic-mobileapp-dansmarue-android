@@ -1,0 +1,6 @@
+<resources>
+
+    <!--Compte VDP-->
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">your_google_map_key</string>
+
+</resources>
