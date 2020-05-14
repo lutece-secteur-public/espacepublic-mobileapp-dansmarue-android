@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_add_ano_details"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bordeaux"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:context="com.accenture.dansmarue.ui.activities.AnomalyDetailsActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/pink"
+        android:minHeight="?attr/actionBarSize"
+        app:titleTextColor="@color/white" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
+        android:background="@color/grey_background">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white">
+
+
+            <ImageView
+                android:id="@+id/anomaly_details_picture"
+                android:layout_width="match_parent"
+                android:layout_height="380dp"
+                android:contentDescription="@string/photo_signalement"
+                android:scaleType="centerCrop" />
+
+            <TextView
+                android:id="@+id/txt_over_picture"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/anomaly_details_picture"
+                android:layout_alignRight="@+id/anomaly_details_picture"
+                android:layout_alignTop="@+id/anomaly_details_picture"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/round_corner_green"
+                android:gravity="center"
+                android:textColor="#FFFFFF"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/navLeft"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="20dp"
+                android:paddingTop="160dp"
+                android:text="@string/lower_than"
+                android:textColor="@color/grey_icon"
+                android:textSize="50dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/navRight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="20dp"
+                android:paddingTop="160dp"
+                android:text="@string/greater_than"
+                android:textColor="@color/grey_icon"
+                android:textSize="50dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/anomaly_address"
+                android:layout_width="280dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/anomaly_details_picture"
+                android:layout_marginBottom="16dp"
+                android:layout_marginStart="10dp"
+                android:textColor="@color/white" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab_details_ano"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/anomaly_details_picture"
+                android:layout_alignParentEnd="true"
+                android:layout_marginBottom="-32dp"
+                android:layout_marginEnd="11dp"
+                android:clickable="true"
+                app:fabSize="normal"
+                app:srcCompat="@drawable/ic_follow" />
+
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/anomaly_address"
+                android:layout_below="@+id/fab_details_ano"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/anomaly_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:textColor="@color/grey_icon" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/anomaly_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/fab_details_ano"
+                android:layout_alignStart="@+id/linearLayout"
+                android:layout_below="@+id/linearLayout"
+                android:layout_marginTop="20dp"
+                android:textSize="28sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/anomaly_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/anomaly_category"
+                android:layout_alignStart="@+id/anomaly_category"
+                android:layout_below="@+id/anomaly_category"
+                android:layout_marginTop="15dp"
+                android:textSize="16sp" />
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/anomaly_details"
+                android:layout_marginTop="15dp"
+                android:background="@color/grey_background" />
+
+            <LinearLayout
+                android:id="@+id/anomaly_layout_followers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/fab_details_ano"
+                android:layout_alignStart="@+id/linearLayout"
+                android:layout_below="@+id/view"
+                android:layout_marginTop="15dp"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/anomaly_nb_followers"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/anomaly_followers" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:gravity="right"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/anomaly_nb_greetings"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/anomaly_greetings" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/anomaly_line2"
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/anomaly_layout_followers"
+                android:layout_marginTop="15dp"
+                android:background="@color/grey_background" />
+
+
+            <!-- Photo -->
+            <LinearLayout
+                android:id="@+id/photo_service_fait_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/anomaly_line2"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="2dp"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:padding="@dimen/activity_horizontal_margin"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/image_choose_picture"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginBottom="28dp"
+                        android:background="@color/white"
+                        android:contentDescription="@string/text_photo"
+                        app:srcCompat="@drawable/ic_check_circle_grey_24px" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/activity_horizontal_margin"
+                            android:text="@string/text_photo_service_fait"
+                            android:textColor="@android:color/primary_text_light" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/activity_horizontal_margin"
+                            android:layout_marginTop="3dp"
+                            android:text="@string/text_add"
+                            android:textColor="@color/grey_tranparent"
+                            android:textSize="12sp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        >
+
+                        <RelativeLayout
+                            android:id="@+id/myImageChoiceLayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="5dp"
+                            android:background="@color/grey_background"
+                            android:padding="4dp"
+                            android:visibility="gone">
+
+                            <ImageView
+                                android:id="@+id/myImageChoice"
+                                android:layout_width="96dp"
+                                android:layout_height="96dp"
+                                android:layout_weight="0.10"
+                                android:contentDescription="@string/desc_image1"
+                                android:scaleType="centerCrop"
+                                android:visibility="gone"
+                                app:srcCompat="@android:drawable/ic_menu_gallery" />
+                        </RelativeLayout>
+
+                        <ImageView
+                            android:id="@+id/myImageChoiceClose"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:contentDescription="@string/supprimer_image"
+                            android:visibility="gone"
+                            app:srcCompat="@drawable/ic_fake_crossblack_white" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/add_anomaly_photo_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/grey_background"
+                        android:padding="4dp">
+
+                        <ImageButton
+                            android:id="@+id/add_anomaly_photo"
+                            android:layout_width="96dp"
+                            android:layout_height="96dp"
+                            android:layout_weight="0.10"
+                            android:background="@color/grey_background"
+                            android:contentDescription="@string/desc_add_picture"
+                            app:srcCompat="@drawable/ic_camera" />
+
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/resolve"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/photo_service_fait_layout"
+                android:layout_margin="5dp"
+                android:background="@color/pink"
+                android:text="@string/but_resoudre"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:visibility="gone" />
+
+
+
+        </RelativeLayout>
+
+
+    </ScrollView>
+
+
+</RelativeLayout>

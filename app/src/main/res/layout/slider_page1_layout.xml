@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/slider_background"
+        tools:ignore="UselessParent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/bg_screen_color">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                tools:ignore="UselessParent">
+
+                <com.mikhaellopez.circularimageview.CircularImageView
+                    android:layout_width="@dimen/slider_img_width_height"
+                    android:layout_height="@dimen/slider_img_width_height"
+                    android:layout_marginTop="40dp"
+                    android:src="@drawable/slider_illustration_1"
+                    app:civ_border_color="@color/white"
+                    app:civ_border_width="0dp"
+                    app:civ_shadow="false"
+                    app:civ_shadow_color="@color/white"
+                    app:civ_shadow_radius="10" />
+
+                <TextView
+                    fontPath="fonts/Montserrat-Light.otf"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="40dp"
+                    android:text="@string/slide1_title"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/slider_title_size"
+                    tools:ignore="MissingPrefix" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:lineSpacingMultiplier="1.3"
+                    android:paddingLeft="@dimen/slider_padding_txt"
+                    android:paddingRight="@dimen/slider_padding_txt"
+                    android:text="@string/slide1_subtitle"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/slider_subtitle_size"
+                    tools:ignore="MissingPrefix" />
+
+            </LinearLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+</RelativeLayout>

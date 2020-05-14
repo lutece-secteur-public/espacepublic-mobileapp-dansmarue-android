@@ -1,0 +1,336 @@
+buildscript {
+    repositories {
+        google()
+        jcenter()
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.31.2'
+        classpath 'org.greenrobot:greendao-gradle-plugin:3.2.1'
+        classpath 'com.facebook.testing.screenshot:plugin:0.10.0'
+        classpath 'com.android.tools.build:gradle:3.6.3'
+    }
+}
+apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'io.fabric'
+apply plugin: 'com.facebook.testing.screenshot'
+apply plugin: 'jacoco'
+//apply plugin: 'com.jakewharton.butterknife'
+
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
+
+
+ext.versionMajor = 2
+ext.versionMinor = 5
+ext.versionPatch = 1
+ext.versionCode = 32
+ext.minimumSdkVersion = 19
+
+android {
+    // Android 8.1
+    compileSdkVersion 28
+    // Build Tools, Revision 27.0.3 (December 2017)
+    buildToolsVersion '28.0.3'
+
+    flavorDimensions "versionCode"
+
+    def releaseNotes = 'git log --pretty=format:"%s" --since "yesterday"'.execute([], project.rootDir).text.trim()
+
+    defaultConfig {
+        applicationId "fr.paris.android.signalement"
+        minSdkVersion 19
+        // DMR testée en 9.0 max
+        targetSdkVersion 28
+        versionCode generateVersionCode()
+        versionName generateVersionName()
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+        vectorDrawables.useSupportLibrary = true
+        resValue "string", "PATH_PICTURES", 'Android/data/' + applicationId + '/files/Pictures';
+    }
+
+    // Keep the following configuration in order to target Java 8.
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    dexOptions {
+        javaMaxHeapSize "3g"
+    }
+
+    productFlavors {
+
+        dev {
+            buildConfigField "String", "SIRA_API_URL", '"http://api-back-office/rest/"'
+            buildConfigField "String", "SIRA_API_URL_MOCK", '"http://api-back-office-mock/rest/"'
+            buildConfigField "String", "API_URL_EQUIPEMENT", '"http://api-back-office/rest/"'
+            buildConfigField "String", "AUTHENT_API_URL", '"https://authen-api/json"'
+            buildConfigField "String", "AUTHENT_HEADER", '"mcpAuth"'
+            applicationId "fr.paris.android.signalement.debug"
+            resValue "string", "app_name", "Dans Ma Rue (Dev)"
+            manifestPlaceholders = [
+                    appIcon : "@mipmap/ic_launcher",
+                    appLabel: "Dans Ma Rue (Dev)"
+            ]
+        }
+
+        prec {
+             buildConfigField "String", "SIRA_API_URL", '"http://api-back-office/rest/"'
+            buildConfigField "String", "SIRA_API_URL_MOCK", '"http://api-back-office-mock/rest/"'
+            buildConfigField "String", "API_URL_EQUIPEMENT", '"http://api-back-office/rest/"'
+            buildConfigField "String", "AUTHENT_API_URL", '"https://authen-api/json"'
+            buildConfigField "String", "AUTHENT_HEADER", '"mcpAuth"'
+            applicationId "fr.paris.android.signalement.debug"
+            resValue "string", "app_name", "Dans Ma Rue (Prec)"
+            manifestPlaceholders = [
+                    appIcon : "@mipmap/ic_launcher",
+                    appLabel: "Dans Ma Rue (Prec)"
+            ]
+        }
+
+        rec {
+
+//            o	R57 : https://teleservices.rec.apps.paris.fr/ramen/rest/
+//            o	R59 : https://teleservices.rec.apps.paris.fr/signalement/rest/
+//            o	R60 : https://teleservices.rec.apps.paris.fr/equipement/rest/
+
+            buildConfigField "String", "SIRA_API_URL", '"http://api-back-office/rest/"'
+            buildConfigField "String", "SIRA_API_URL_MOCK", '"http://api-back-office-mock/rest/"'
+            buildConfigField "String", "API_URL_EQUIPEMENT", '"http://api-back-office/rest/"'
+            buildConfigField "String", "AUTHENT_API_URL", '"https://authen-api/json"'
+            buildConfigField "String", "AUTHENT_HEADER", '"mcpAuth"'
+            applicationId "fr.paris.android.signalement.debug"
+            resValue "string", "app_name", "Dans Ma Rue (Rec)"
+            manifestPlaceholders = [
+                    appIcon : "@mipmap/ic_launcher",
+                    appLabel: "Dans Ma Rue (Rec)"
+            ]
+        }
+
+        prod {
+            buildConfigField "String", "SIRA_API_URL", '"http://api-back-office/rest/"'
+            buildConfigField "String", "SIRA_API_URL_MOCK", '"http://api-back-office-mock/rest/"'
+            buildConfigField "String", "API_URL_EQUIPEMENT", '"http://api-back-office/rest/"'
+            buildConfigField "String", "AUTHENT_API_URL", '"https://authen-api/json"'
+            buildConfigField "String", "AUTHENT_HEADER", '"mcpAuth"'
+            applicationId "fr.paris.android.signalement"
+            resValue "string", "app_name", "Dans Ma Rue"
+            manifestPlaceholders = [
+                    appIcon : "@mipmap/ic_launcher",
+                    appLabel: "Dans Ma Rue"
+            ]
+
+        }
+    }
+
+    signingConfigs {
+        release
+    }
+
+    buildTypes {
+
+        debug {
+            ext.betaDistributionGroupAliases = "dansmarue-android-acn"
+            ext.betaDistributionReleaseNotes = releaseNotes
+            testCoverageEnabled = true
+        }
+        release {
+            ext.betaDistributionGroupAliases = "dansmarue-android-acn"
+            ext.betaDistributionReleaseNotes = releaseNotes
+
+            minifyEnabled false
+            testCoverageEnabled = false
+
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    def propFilePath = null;
+    if (project.hasProperty("AndroidProject.signing")
+            && new File(project.property("AndroidProject.signing").toString()).exists()) {
+        propFilePath = project.property("AndroidProject.signing");
+    } else if (System.getenv("SIGN_CONFIG") != null) {
+        propFilePath = System.getenv("SIGN_CONFIG") as String
+    }
+
+    if (propFilePath != null) {
+        def Properties props = new Properties()
+        def propFile = new File(propFilePath)
+        if (propFile.canRead()) {
+            props.load(new FileInputStream(propFile))
+            if (props != null && props.containsKey('STORE_PASSWORD') &&
+                    props.containsKey('KEY_ALIAS') && props.containsKey('KEY_PASSWORD')) {
+                android.signingConfigs.release.storeFile = file("dmr.keystore")
+                android.signingConfigs.release.storePassword = props['STORE_PASSWORD']
+                android.signingConfigs.release.keyAlias = props['KEY_ALIAS']
+                android.signingConfigs.release.keyPassword = props['KEY_PASSWORD']
+            } else {
+                println 'androidproject.properties found but some entries are missing'
+                android.buildTypes.release.signingConfig = null
+            }
+        } else {
+            println 'androidproject.properties file not found'
+            android.buildTypes.release.signingConfig = null
+        }
+    } else {
+        println 'AndroidProject.signing property not found. modify your local gradle.properties file as follow -> AndroidProject.signing=C:\\\\dev\\\\VDP\\\\DansMaRue\\\\androidproject.properties'
+        println 'androidproject.properties contains the STORE_PASSWORD, KEY_ALIAS and KEY_PASSWORD properties'
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    testOptions {
+        unitTests.all {
+            jacoco {
+                includeNoLocationClasses = true
+            }
+        }
+    }
+
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile fileTree(include: ['*.jar', '*.json'], dir: 'libs')
+    androidTestCompile('androidx.test.espresso:espresso-core:3.1.0', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile('com.crashlytics.sdk.android:crashlytics:2.10.1@aar') {
+        transitive = true;
+    }
+
+    compile 'com.jakewharton:butterknife:10.2.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
+
+    compile 'com.google.dagger:dagger:2.26'
+    annotationProcessor "com.google.dagger:dagger-compiler:2.23.2"
+
+    compile 'com.github.bumptech.glide:glide:3.8.0'
+
+    //noinspection AndroidLintGradleCompatible
+    compile 'androidx.multidex:multidex:2.0.1'
+    compile 'androidx.constraintlayout:constraintlayout:1.1.3'
+    //noinspection GradleCompatible
+    compile 'androidx.cardview:cardview:1.0.0'
+    compile 'com.google.android.material:material:1.1.0'
+
+    compile 'uk.co.chrisjenx:calligraphy:2.2.0'
+    compile 'com.mikhaellopez:circularimageview:3.0.2'
+    compile 'com.squareup.retrofit2:retrofit:2.3.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+    compile 'com.squareup.retrofit2:adapter-rxjava2:2.2.0'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.8.0'
+    compile 'org.apache.commons:commons-collections4:4.0'
+    compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    compile 'io.reactivex.rxjava2:rxjava:2.0.3'
+    compile 'com.jakewharton:butterknife:10.2.1'
+    compile 'androidx.mediarouter:mediarouter:1.1.0'
+    compile 'androidx.appcompat:appcompat:1.1.0'
+
+    implementation ('com.google.android.libraries.places:places:2.2.0'){
+        exclude module: "glide"
+    }
+
+    implementation 'com.google.firebase:firebase-analytics:17.4.1'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
+
+    //implementation ('com.google.android.libraries.places:places-compat:1.1.0') {
+    //    exclude module: "glide"
+    //}
+
+    compile 'com.google.firebase:firebase-messaging:20.1.7'
+    compile("com.firebase:firebase-jobdispatcher-with-gcm-dep:0.6.0") {
+        exclude module: "play-services-gcm"
+    }
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-core:1.10.19'
+    testCompile 'org.powermock:powermock-api-mockito:1.6.1'
+    testCompile 'org.powermock:powermock-module-junit4-rule-agent:1.6.1'
+    testCompile 'org.powermock:powermock-module-junit4-rule:1.6.1'
+    testCompile 'org.powermock:powermock-module-junit4:1.6.1'
+    androidTestCompile 'org.mockito:mockito-core:1.10.19'
+    provided 'javax.annotation:jsr250-api:1.0'
+    compile 'io.github.luizgrp.sectionedrecyclerviewadapter:sectionedrecyclerviewadapter:1.1.3'
+
+
+    // connecthings beacon notification
+    //compile "com.connecthings.adtag:android-adtag-detection:3.1.10"
+    //compile 'com.connecthings.adtag:android-adtag-beacon:3.0.3'
+
+}
+
+private Integer generateVersionCode() {
+    return ext.versionCode;
+}
+
+public String generateVersionName() {
+    return "${ext.versionMajor}.${ext.versionMinor}.${ext.versionPatch}";
+}
+
+// Define coverage source.
+// If you have rs/aidl etc... add them here.
+def coverageSourceDirs = [
+        'src/main/java',
+]
+
+task jacocoTestReport(type: JacocoReport, dependsOn: "test") {
+    group = "Reporting"
+    description = "Generate Jacoco coverage reports after running tests."
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+    classDirectories = fileTree(
+            dir: './build/intermediates/classes/debug',
+            excludes: ['**/R*.class',
+                       '**/*$InjectAdapter.class',
+                       '**/*$ModuleAdapter.class',
+                       '**/*$ViewInjector*.class'
+            ])
+    sourceDirectories = files(coverageSourceDirs)
+    executionData = fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
+    // Bit hacky but fixes https://code.google.com/p/android/issues/detail?id=69174.
+    // We iterate through the compiled .class tree and rename $$ to $.
+    doFirst {
+        new File("$buildDir/intermediates/classes/").eachFileRecurse { file ->
+            if (file.name.contains('$$')) {
+                file.renameTo(file.path.replace('$$', '$'))
+            }
+        }
+    }
+}
+
+task jacocoUnitTestReport(type: JacocoReport, dependsOn: "test") {
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+
+    def fileFilter = ['/di/**', '**/*_*', '**/*$*', '/ui/activities/**', '**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*', 'android/**/*.*']
+    def debugTree = fileTree(dir: "${buildDir}/intermediates/classes/dev/debug/com/accenture/dansmarue").exclude(fileFilter)
+    def mainSrc = "${project.projectDir}/src/main/java"
+
+    sourceDirectories = files([mainSrc])
+    classDirectories = files([debugTree])
+    executionData = fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
+}
+
+task printVersion() {
+    def file = new File("version.txt")
+    file.createNewFile()
+    file.text = generateVersionName()
+}
+
+apply plugin: 'com.google.gms.google-services'

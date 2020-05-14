@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:context="com.accenture.dansmarue.ui.activities.PrefActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/pink"
+        android:minHeight="?attr/actionBarSize"
+        app:titleTextColor="@color/white" />
+
+
+    <ListView
+        android:id="@+id/listPrefs"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:layout_below="@+id/toolbar" />
+
+    <Button
+        android:id="@+id/btn_deco"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:background="@color/pink"
+        android:text="@string/button_deco"
+        android:textAllCaps="false"
+        android:textColor="@color/white" />
+
+
+</RelativeLayout>

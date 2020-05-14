@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+    android:layout_marginTop="2dp"
+    android:layout_marginRight="@dimen/activity_horizontal_margin"
+    android:background="@color/white"
+    android:orientation="vertical"
+
+    android:padding="@dimen/activity_horizontal_margin">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/requalification_choose_picture"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="28dp"
+            android:background="@color/white"
+            android:contentDescription="@string/text_photo_requalification"
+            app:srcCompat="@drawable/ic_check_circle_grey_24px" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:text="@string/text_photo_requalification"
+                android:textColor="@android:color/primary_text_light" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="3dp"
+                android:text="@string/text_add"
+                android:textColor="@color/grey_tranparent"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:id="@+id/requalificationImageChoiceLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:background="@color/grey_background"
+                android:padding="4dp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/requalificationImageChoice"
+                    android:layout_width="96dp"
+                    android:layout_height="96dp"
+                    android:layout_weight="0.10"
+                    android:contentDescription="@string/desc_image1"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone"
+                    app:srcCompat="@android:drawable/ic_menu_gallery" />
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/requalificationImageChoiceClose"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:contentDescription="@string/supprimer_image"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_fake_crossblack_white" />
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:id="@+id/requalificationImageChoice2Layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:background="@color/grey_background"
+                android:padding="4dp"
+                android:visibility="gone">
+
+
+                <ImageView
+                    android:id="@+id/requalificationImageChoice2"
+                    android:layout_width="96dp"
+                    android:layout_height="96dp"
+                    android:layout_weight="0.10"
+                    android:contentDescription="@string/desc_image2"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone"
+                    app:srcCompat="@android:drawable/ic_menu_gallery" />
+
+
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/requalificationImageChoice2Close"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:contentDescription="@string/supprimer_image"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_fake_crossblack_white" />
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/requalification_photo_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/grey_background"
+            android:padding="4dp">
+
+            <ImageButton
+                android:id="@+id/requalification_photo"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:layout_weight="0.10"
+                android:background="@color/grey_background"
+                android:contentDescription="@string/desc_add_picture"
+                app:srcCompat="@drawable/ic_camera" />
+
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

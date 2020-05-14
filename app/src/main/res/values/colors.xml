@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorAccent">#FF4081</color>
+
+
+    <!-- SplashScreen color-->
+
+    <!-- Slider Screens background color-->
+    <color name="bg_screen_color">#c30c518a</color>
+
+    <!-- Slider Dots color-->
+    <color name="white">#ffffff</color>
+
+    <!-- Slider button color-->
+    <!-- Bottom Bar : Icon and Text Color with Status Checked True-->
+    <color name="pink">#df225a</color>
+
+    <!--Slider Status Bar-->
+    <color name="blue_slider">#FF303F9F</color>
+
+    <!-- Welcome Top Bar color / Be more specific -->
+    <color name="grey_tranparent">#c3919395</color>
+
+    <!-- Bottom Bar : Icon and Text Color with Status Checked False-->
+    <color name='grey_icon'>#999898</color>
+
+    <!-- Bottom sheet : color perso - 2 REMOVE -->
+
+    <!-- Add Anomaly : Color Top Bar - 2 REMOVE -->
+    <color name="bordeaux">#8f0931</color>
+
+    <color name="grey_background">#F2F2F2</color>
+    <color name="black">#000000</color>
+
+    <color name="light_grey">#F5BDCE</color>
+
+    <!--Greetings FAB Colors-->
+    <color name="greetings_grey">#E0E0E0</color>
+    <color name="greetings_green">#49B57F</color>
+
+
+    <color name="colorWhite">#ffffff</color>
+    <color name="colorBlack">#000000</color>
+    <color name="colorBlueGrey200">#b0bec5</color>
+
+    <color name="colorOrange">#E58366</color>
+
+
+</resources>
