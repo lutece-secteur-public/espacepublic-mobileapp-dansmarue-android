@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "100280589585",
+    "firebase_url": "https://dansmarue-android-debug.firebaseio.com",
+    "project_id": "dansmarue-android-debug",
+    "storage_bucket": "dansmarue-android-debug.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:100280589585:android:5097e934166fe01a",
+        "android_client_info": {
+          "package_name": "fr.paris.android.signalement.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "100280589585-kfuijhfr5t1orn3c5af4hk7s02kc16qp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIdN-lFD-CNU2j3QztaX1EmAvQPS37P68"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "100280589585-kfuijhfr5t1orn3c5af4hk7s02kc16qp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

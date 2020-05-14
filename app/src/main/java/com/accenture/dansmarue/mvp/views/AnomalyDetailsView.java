@@ -1,6 +1,9 @@
 package com.accenture.dansmarue.mvp.views;
 
 import com.accenture.dansmarue.mvp.models.Incident;
+import com.accenture.dansmarue.mvp.models.MessageServiceFait;
+
+import java.util.List;
 
 /**
  * Created by d4v1d on 11/05/2017.
@@ -18,6 +21,10 @@ public interface AnomalyDetailsView extends BaseView {
 
     void populateFields(final Incident incident);
 
+    void populateMessageServiceFaitGeneric(List<MessageServiceFait> messages);
+
+    void populateMessageServiceFaitType(List<MessageServiceFait> messages);
+
     void displayGreetingsOk();
 
     void displayGreetingsKo();
@@ -30,6 +37,15 @@ public interface AnomalyDetailsView extends BaseView {
 
     void closeActvity();
 
-
     void showPicture(String absolutePath);
+
+    void showPictureRequalification(String absolutePath);
+
+    void requalificationSuccess();
+
+    void requalificationFaillure();
+
+    void callResolveIncident();
+
+    void uploadRequalificationDone();
 }

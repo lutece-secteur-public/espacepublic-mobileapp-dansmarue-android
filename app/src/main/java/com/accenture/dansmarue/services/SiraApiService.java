@@ -1,7 +1,12 @@
 package com.accenture.dansmarue.services;
 
+import com.accenture.dansmarue.mvp.models.Position;
 import com.accenture.dansmarue.services.models.CategoryRequest;
 import com.accenture.dansmarue.services.models.CategoryResponse;
+import com.accenture.dansmarue.services.models.ChangeStatusRequest;
+import com.accenture.dansmarue.services.models.ChangeStatusResponse;
+import com.accenture.dansmarue.services.models.CheckVersionRequest;
+import com.accenture.dansmarue.services.models.CheckVersionResponse;
 import com.accenture.dansmarue.services.models.CongratulateAnomalieRequest;
 import com.accenture.dansmarue.services.models.FollowRequest;
 import com.accenture.dansmarue.services.models.GetIncidentByIdRequest;
@@ -27,8 +32,10 @@ import okhttp3.ResponseBody;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.HeaderMap;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 /**
  * Created by PK on 27/03/2017.
@@ -45,6 +52,16 @@ public interface SiraApiService {
     @FormUrlEncoded
     @POST("signalement/api/")
     Single<CategoryResponse> getCategories(@Field("jsonStream") CategoryRequest request);
+
+    /**
+     * Retrieve application version on play store
+     *
+     * @param request request
+     * @return version info
+     */
+    @FormUrlEncoded
+    @POST("signalement/api/")
+    Single<CheckVersionResponse> checkVersion(@Field("jsonStream") CheckVersionRequest request);
 
     /**
      * Create a incident
@@ -65,6 +82,10 @@ public interface SiraApiService {
     @FormUrlEncoded
     @POST("signalement/api")
     Single<GetIncidentsByPositionResponse> getIncidentsByPosition(@Field("jsonStream") GetIncidentsByPositionRequest request);
+
+    @POST
+    ("signalement/getDossiersCourrantsByGeomWithLimit")
+    Single<ResponseBody> getDossiersRamenByPosition(@Body Position position);
 
 //    @POST("sira/signalement/api")
 
@@ -156,14 +177,35 @@ public interface SiraApiService {
     Single<SiraSimpleResponse> incidentResolved(@Field("jsonStream") IncidentResolvedRequest request);
 
     /**
+     * Resolve an incident
+     *
+     * @param request request containig the incident id to resolve
+     * @return Response containing the status code
+     */
+    @FormUrlEncoded
+    @POST("signalement/api/")
+    Single<ChangeStatusResponse> changeStatus(@Field("jsonStream") ChangeStatusRequest request);
+
+    /**
      * Retrieve user informations base on his guid (id compte parisien)
      *
      * @param request request containing a valid user guid
      * @return response containing firstname lastname and user email
      */
     @FormUrlEncoded
-    @POST("sira/identitystore")
+    @POST("signalement/identitystore")
     Single<IdentityResponse> getUserInformations(@Field("jsonStream") IdentityRequest request);
 
+    @GET("signalement/isDmrOnline")
+    Single<SiraSimpleResponse> isDmrOnline();
+
+    /**
+     * Find incident by number.
+     * @param incidentNumber
+     *     number to serach
+     * @return response containing incidnet find
+     */
+    @GET("signalement/getAnomalieByNumber/{number}")
+    Single<GetIncidentsByPositionResponse> getAnomalieByNumber(@Path("number") String incidentNumber);
 
 }

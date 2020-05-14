@@ -89,6 +89,9 @@ public class WelcomeMapEquipementPresenter extends BasePresenter<WelcomeMapEquip
     }
 
     public String getTypeEquipementNoSelection() {
+        if (prefManager.getEquipementTypeByDefault() == null) {
+            return "unexpected case";
+        }
         return prefManager.getEquipementTypeByDefault().getMsg_alert_no_equipement();
     }
 

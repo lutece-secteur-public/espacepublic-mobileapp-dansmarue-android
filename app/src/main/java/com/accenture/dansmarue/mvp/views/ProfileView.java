@@ -34,4 +34,6 @@ public interface ProfileView extends BaseView {
 
     void showMenuResolved();
 
+    void loadIncidents(final String filterState);
+
 }

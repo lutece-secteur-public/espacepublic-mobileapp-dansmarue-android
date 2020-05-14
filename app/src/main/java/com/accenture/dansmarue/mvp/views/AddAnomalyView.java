@@ -7,7 +7,7 @@ public interface AddAnomalyView extends BaseView {
 
     void onIncidentCreated(final Integer incidentId);
 
-    void onIncidentNotCreated(final String errorMessage);
+    void onIncidentNotCreated(String errorMessage);
 
     void showGreetingsDialog(final boolean askEmail);
 
@@ -20,4 +20,8 @@ public interface AddAnomalyView extends BaseView {
     void navigateBack();
 
     void showPicture(final String fileName);
+
+    void showHideAgentCommentaryField(final boolean agentConnected);
+
+    void displayDialogDmrOffline();
 }

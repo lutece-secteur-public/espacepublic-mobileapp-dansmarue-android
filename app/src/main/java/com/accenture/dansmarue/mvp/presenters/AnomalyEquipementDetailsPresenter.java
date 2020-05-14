@@ -3,7 +3,7 @@ package com.accenture.dansmarue.mvp.presenters;
 import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.accenture.dansmarue.mvp.models.Category;

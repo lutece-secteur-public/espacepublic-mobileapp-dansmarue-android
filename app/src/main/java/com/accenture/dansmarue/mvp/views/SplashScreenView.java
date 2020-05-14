@@ -22,4 +22,12 @@ public interface SplashScreenView extends BaseView {
     void dataReady();
 
     void endCauseNoCategories();
+
+    void displayPopupUpdateNotMandory();
+
+    void displayPopupUpdateMandory();
+
+    void displayDialogDmrOffline();
+
+    void displayDialogMessageInformation( String message);
 }

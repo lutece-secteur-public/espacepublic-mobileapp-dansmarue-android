@@ -9,6 +9,7 @@ public class GetIncidentsByUserRequest extends SiraRequest {
     private static final String SERVICE_NAME = "getIncidentsByUser";
 
     private String guid;
+    private String filterIncidentStatus;
 
     public String getGuid() {
         return guid;
@@ -16,6 +17,10 @@ public class GetIncidentsByUserRequest extends SiraRequest {
 
     public void setGuid(String guid) {
         this.guid = guid;
+    }
+
+    public void setFilterIncidentStatus(String filterState) {
+        this.filterIncidentStatus = filterState;
     }
 
     @Override

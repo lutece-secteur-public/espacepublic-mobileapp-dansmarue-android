@@ -42,6 +42,11 @@ public class WelcomeMapPresenter extends BasePresenter<WelcomeMapView> implement
         view.showProfile();
     }
 
+    /**
+     * Call WS to fallow incident.
+     * @param incidentId
+     *         incident id.
+     */
     public void followAnomaly(final String incidentId) {
         if (prefManager.isConnected()) {
             FollowRequest request = new FollowRequest(incidentId);
@@ -59,6 +64,11 @@ public class WelcomeMapPresenter extends BasePresenter<WelcomeMapView> implement
 
     }
 
+    /**
+     * Call WS to unfallow incident.
+     * @param incidentId
+     *         incident id.
+     */
     public void unfollowAnomaly(final String incidentId) {
         UnfollowRequest request = new UnfollowRequest(incidentId);
         request.setGuid(prefManager.getGuid());
@@ -69,11 +79,25 @@ public class WelcomeMapPresenter extends BasePresenter<WelcomeMapView> implement
                 .subscribe(this);
     }
 
+    /**
+     * Show incident on click thumbnail.
+     *
+     * @param summarizedIncident
+     *         incident to show
+     */
     public void onThumbnailClicked(Incident summarizedIncident) {
-        view.showIncidentDetails(summarizedIncident);
+        if ( ! summarizedIncident.isFromRamen()) {
+            view.showIncidentDetails(summarizedIncident);
+        } else {
+            Log.i(TAG, "onThumbnailClicked: is from Ramen do nothing");
+        }
     }
 
-
+    /**
+     * Congrulate for service done.
+     * @param incidentId
+     *         id incident
+     */
     public void congratulateAnomalie(final String incidentId) {
         CongratulateAnomalieRequest request = new CongratulateAnomalieRequest(incidentId);
         service.congratulateAnomalie(request)

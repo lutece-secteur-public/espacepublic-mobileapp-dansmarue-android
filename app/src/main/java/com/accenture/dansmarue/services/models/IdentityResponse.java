@@ -44,6 +44,7 @@ public class IdentityResponse extends SiraResponse {
             private String name;
             private String firstname;
             private String mail;
+            private Boolean isAgent;
 
             public String getName() {
                 return name;
@@ -68,6 +69,8 @@ public class IdentityResponse extends SiraResponse {
             public void setMail(String mail) {
                 this.mail = mail;
             }
+
+            public Boolean isAgent() { return isAgent; }
         }
     }
 }

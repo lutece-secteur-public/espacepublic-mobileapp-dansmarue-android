@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface MapParisView extends BaseView {
 
-    void updateAnomalyList(List<Incident> closestIncidents);
+    void updateAnomalyList(List<Incident> closestIncidents, boolean reset);
 
     void updateAnomalyMarkers(List<MarkerOptions> markers);
 
@@ -24,4 +24,5 @@ public interface MapParisView extends BaseView {
 
     void updatePosMarker();
 
+    void callBackFindByNumber(String errorMessage, boolean dmrOffline, LatLng posIncident);
 }

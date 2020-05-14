@@ -1,7 +1,7 @@
 package com.accenture.dansmarue.app;
 
 
-import android.support.multidex.MultiDexApplication;
+import androidx.multidex.MultiDexApplication;
 
 import com.accenture.dansmarue.R;
 import com.accenture.dansmarue.di.components.ApplicationComponent;
@@ -25,25 +25,11 @@ public class DansMaRueApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
-       // initializeAdTagPlatformSynchronize();
         initializeApplicationComponent();
         initializeCaligraphy();
 
     }
 
-
-    /**private void initializeAdTagPlatformSynchronize() {
-        //Synchronize with  AdTag Platform Connecthings ArMen
-        //Initialize Beacons notification
-        AdtagInitializer adtagInitializer = AdtagInitializer.getInstance()
-                .initContext(this)
-                .initUrlType(Url.UrlType.PROD)
-                .initUser(getString(R.string.login_armen), getString(R.string.password_armen))
-                .initCompany(getString(R.string.company_key_armen));
-        adtagInitializer.synchronize();
-
-        adtagInitializer.addPermissionToAsk(Manifest.permission.ACCESS_COARSE_LOCATION);
-    }**/
 
     private void initializeCaligraphy() {
         // Initialise Calligraphy

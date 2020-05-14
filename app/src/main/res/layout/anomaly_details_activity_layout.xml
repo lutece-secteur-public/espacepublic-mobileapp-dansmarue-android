@@ -10,7 +10,7 @@
     android:orientation="vertical"
     tools:context="com.accenture.dansmarue.ui.activities.AnomalyDetailsActivity">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -85,7 +85,7 @@
                 android:layout_marginStart="10dp"
                 android:textColor="@color/white" />
 
-            <android.support.design.widget.FloatingActionButton
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab_details_ano"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -198,6 +198,7 @@
                 android:layout_below="@+id/anomaly_layout_followers"
                 android:layout_marginTop="15dp"
                 android:background="@color/grey_background" />
+
 
             <!-- Photo -->
             <LinearLayout
@@ -334,6 +335,8 @@
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:visibility="gone" />
+
+
 
         </RelativeLayout>
 

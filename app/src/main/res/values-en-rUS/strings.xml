@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="google_maps_key">your_google_map_key</string>
     <string name="anomaly_screen_title">Add an anomaly</string>
     <string name="google_searchbar_wording">Where ?</string>
     <string name="anomalie_espace_public_libelle">Anomaly on public space</string>
@@ -12,7 +11,7 @@
     <string name="anomaly_in_progress">This anomaly is being resolved.</string>
     <string name="anomaly_ok">Closed</string>
     <string name="anomaly_position_be_more_specific">Precise the anomaly position</string>
-    <string name="anomaly_resolved_toast">This anomaly was resolved.</string>
+    <string name="anomaly_resolved_toast">This anomaly has been closed.</string>
     <string name="anomaly_wip">In progress</string>
     <string name="authorisation_camera">Allow DansMaRue access to the camera</string>
     <string name="authorisation_gallery">Allow DansMaRue access to my library</string>
@@ -101,4 +100,51 @@
     <string name="popup_error_title">Warning</string>
     <string name="popup_msg">A new version of the application is available on the PlayStore. Would you like to install it?</string>
     <string name="popup_no_categories">Due to a network problem, the data needed to create a request could not be retrieved. Thank you to start again later</string>
+    <string name="city_name">Paris</string>
+    <string name="add_anomaly_offline_mode">Network unavailable, please try again later</string>
+    <string name="add_anomaly_no_location">Please specify your position</string>
+    <string name="text_title_requalification">Requalification</string>
+    <string name="commentagent">Agent commentary</string>
+    <string name="btn_requalification">Requalify</string>
+    <string name="text_title_service_fait">Service done</string>
+    <string name="text_choose_message_service_fait">Type of message sent (required)</string>
+    <string name="type_message_sf">Choose a message below</string>
+    <string name="commentagent_agent">Agent commentary (optional)</string>
+    <string name="text_type_agent">Type (required)</string>
+    <string name="popup_msg_mandatory">" A new major version of the application is available on the PlayStore. It is imperative to update it to continue using the application. Thank you for installing it."</string>
+    <string name="dmr_error_requalification">the anomaly state does not allow requalification</string>
+    <string name="dmr_error_service_fait">the anomaly state does not allow service done</string>
+    <string name="types_favoris">Favorite items</string>
+    <string name="text_photo_requalification">Picture (optional)</string>
+    <string name="favorite_address_modifier">Edit</string>
+    <string name="favorite_address_terminer">Finish</string>
+    <string name="favorite_address_title">Favorite Address</string>
+    <string name="favoris">Favorite</string>
+    <string name="favorite_address_delete">Delete all</string>
+    <string name="incomplete_address">Incomplete address\\n\\nPlease re-enter the address by adding a number.</string>
+    <string name="btn_text_understand">Ok</string>
+    <string name="informations">Informations</string>
+    <string name="favorite_address_delete_item">Delete</string>
+    <string name="complement_address">Complement (optional) :</string>
+    <string name="complement_address_spinner">Complement :</string>
+    <string name="information">Information</string>
+    <string name="dmr_offline">The DansMaRue application is currently under maintenance. Please try again later</string>
+    <string name="dmr_offline_publish">The DansMaRue application is currently under maintenance. A draft has been saved in your space. Please try again later.</string>
+    <string name="find_by_number_text">Find incident\\n\\nEnter the incident number.</string>
+    <string name="incorect_number">Incorect number</string>
+    <string name="take_picture">Take a picture</string>
+    <string name="choose_photo_in_gallery">Choose a photo in the gallery</string>
+    <string name="text_cancel">Cancel</string>
+    <string name="select_photo">Select a photo</string>
+    <string name="save_draft">You have not finalized your declaration of anomaly. Would you like to save a draft?</string>
+    <string name="label_no">No</string>
+    <string name="label_yes">Yes</string>
+    <string name="failed_authentication">Failed authentification.</string>
+    <string name="ask_optins_permission_message">Do you allow the application to transmit your location data and your phone identifier ?</string>
+    <string name="desc_ramen">Request for removal of bulky items</string>
+    <string name="greetings_ok">Thank you for sending your congratulations to the agents!</string>
+    <string name="nbAnomaliesEquipement">incident(s) open</string>
+    <string name="not_in_paris">invalid address</string>
+    <string name="pref_cgu_activity_title" translatable="false">Tterms of use</string>
+    <string name="type">Type</string>
 </resources>

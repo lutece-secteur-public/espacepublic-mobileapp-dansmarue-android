@@ -1,7 +1,7 @@
 package com.accenture.dansmarue.ui.adapters;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;

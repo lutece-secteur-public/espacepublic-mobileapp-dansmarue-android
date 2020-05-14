@@ -7,6 +7,7 @@ import com.accenture.dansmarue.mvp.models.Category;
 import com.accenture.dansmarue.mvp.views.CategoryView;
 import com.accenture.dansmarue.utils.CategoryHelper;
 import com.accenture.dansmarue.utils.Constants;
+import com.accenture.dansmarue.utils.PrefManager;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -46,6 +47,8 @@ public class CategoryPresenterTest extends TestCase {
     private Context context;
     @Mock
     private CategoryView view;
+    @Mock
+    private PrefManager prefManager;
 
     private Map<String,Category> allCategories=generateCategories();
 
@@ -58,7 +61,8 @@ public class CategoryPresenterTest extends TestCase {
         MockitoAnnotations.initMocks(this);
         Mockito.when(application.getApplicationContext()).thenReturn(context);
         Mockito.when(context.openFileInput(Constants.FILE_CATEGORIES_JSON)).thenReturn(fis);
-        categoryPresenter = new CategoryPresenter(application, view);
+        Mockito.when(prefManager.getIsAgent()).thenReturn(false);
+        categoryPresenter = new CategoryPresenter(application, view, prefManager);
 
         Whitebox.setInternalState(categoryPresenter, "allCategories",allCategories );
     }
@@ -76,7 +80,7 @@ public class CategoryPresenterTest extends TestCase {
         categoryPresenter.extractChildren(parentId);
 
         //Then
-        Mockito.verify(view).updateListView(children);
+        Mockito.verify(view).updateListView(children,false);
     }
 
     /**

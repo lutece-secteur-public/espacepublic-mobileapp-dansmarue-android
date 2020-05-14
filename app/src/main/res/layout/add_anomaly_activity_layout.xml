@@ -6,7 +6,7 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -14,7 +14,7 @@
         android:minHeight="?attr/actionBarSize"
         app:titleTextColor="@color/white" />
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -82,8 +82,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:background="@color/white"
                 android:clickable="true"
                 android:orientation="horizontal"
@@ -133,8 +133,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="2dp"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:background="@color/white"
                 android:orientation="vertical"
 
@@ -149,8 +149,8 @@
                         android:id="@+id/image_choose_picture"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:layout_alignParentBottom="true"
                         android:layout_alignParentStart="true"
+                        android:layout_alignParentBottom="true"
                         android:layout_marginBottom="28dp"
                         android:background="@color/white"
                         android:contentDescription="@string/text_photo"
@@ -310,8 +310,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:background="@color/white"
                 android:orientation="horizontal"
                 android:padding="@dimen/activity_horizontal_margin">
@@ -352,14 +352,62 @@
 
             </LinearLayout>
 
+            <!-- Commentaire agent -->
+            <LinearLayout
+                android:id="@+id/commentagent_layout_parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="3dp"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:padding="@dimen/activity_horizontal_margin">
+
+                <ImageButton
+                    android:id="@+id/commentagent_choose_type"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:background="@color/white"
+                    android:contentDescription="@string/description"
+                    app:srcCompat="@drawable/ic_check_circle_grey_24px" />
+
+                <LinearLayout
+                    android:id="@+id/layout_commentagent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/activity_horizontal_margin"
+                        android:text="@string/commentagent"
+                        android:textColor="@android:color/primary_text_light" />
+
+                    <TextView
+                        android:id="@+id/text_commentagent_subtitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/activity_horizontal_margin"
+                        android:layout_marginTop="3dp"
+                        android:text="@string/description_subtitle"
+                        android:textColor="@color/grey_tranparent"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
             <!-- Priorité -->
             <LinearLayout
                 android:id="@+id/priority_layout_parent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="3dp"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:background="@color/white"
                 android:orientation="horizontal"
                 android:padding="@dimen/activity_horizontal_margin">
@@ -428,8 +476,14 @@
                 android:textAllCaps="false"
                 android:textColor="@color/white" />
 
+            <ImageButton
+                android:id="@+id/imageButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_group_collapse_06" />
+
 
         </LinearLayout>
 
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 </LinearLayout>

@@ -3,15 +3,18 @@ package com.accenture.dansmarue.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.accenture.dansmarue.mvp.models.Category;
+import com.accenture.dansmarue.mvp.models.FavoriteAddress;
 import com.accenture.dansmarue.mvp.models.equipementsMunicipaux.TypeEquipement;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,8 +42,12 @@ public class PrefManager {
     private static final String GUID = "guid";
     private static final String FIRST_NAME = "firstname";
     private static final String LAST_NAME = "lastname";
+    private static final String IS_AGENT = "isAgent";
 
     private static final String LAST_MENU = "lastmenu";
+
+    private static final String FAVORIS_ITEMS = "favorisitem";
+    private static final String FAVORIS_ADDRESS = "favorisaddress";
 
 
     private static final String CATEGORIES_VERSION = "categoriesVersion";
@@ -190,6 +197,17 @@ public class PrefManager {
         return pref.getString(FIRST_NAME, "");
     }
 
+
+    public void setIsAgent(@NonNull final Boolean isAgent) {
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putBoolean (IS_AGENT, isAgent);
+        editor.apply();
+    }
+
+    public Boolean getIsAgent() {
+        return pref.getBoolean (IS_AGENT, false);
+    }
+
     public void setLastMenu(int idMenu) {
         SharedPreferences.Editor editor = pref.edit();
         editor.putInt(LAST_MENU, idMenu);
@@ -223,6 +241,7 @@ public class PrefManager {
     public void disconnect() {
         SharedPreferences.Editor editor = pref.edit();
         editor.putBoolean(IS_CONNECTED, Boolean.FALSE);
+        editor.putBoolean(IS_AGENT, Boolean.FALSE);
         editor.remove(GUID);
         editor.remove(FIRST_NAME);
         editor.remove(LAST_NAME);
@@ -256,5 +275,95 @@ public class PrefManager {
         return FirebaseInstanceId.getInstance().getToken();
     }
 
+
+    // User favoris items
+    public void setFavorisItem(List<Category> categories) {
+
+        Map<String, Category> mapFavoriteCategory = new LinkedHashMap<>();
+
+        for(Category category : categories ) {
+            mapFavoriteCategory.put(category.getId(), category);
+        }
+
+        SharedPreferences.Editor editor = pref.edit();
+        Gson gson = new Gson();
+        String str = gson.toJson(mapFavoriteCategory);
+        editor.putString(FAVORIS_ITEMS, str);
+        editor.apply();
+    }
+
+    public void setFavorisItem(Category category, boolean remove) {
+        Map<String,Category> mapFavorisItems = getFavorisItems();
+
+        if (remove) {
+            mapFavorisItems.remove(category.getId());
+        } else {
+            mapFavorisItems.put(category.getId(), category);
+        }
+
+        SharedPreferences.Editor editor = pref.edit();
+        Gson gson = new Gson();
+        String str = gson.toJson(mapFavorisItems);
+        editor.putString(FAVORIS_ITEMS, str);
+        editor.apply();
+
+    }
+
+    // get User Favoris Items
+    public Map<String,Category> getFavorisItems() {
+
+        String str = pref.getString(FAVORIS_ITEMS, null);
+        Gson gson = new Gson();
+        Map<String,Category> mapFavorisItems = gson.fromJson(str, new TypeToken<Map<String,Category>>(){}.getType());
+        if(mapFavorisItems == null) {
+            mapFavorisItems = new HashMap<>();
+        }
+        return mapFavorisItems;
+    }
+
+
+    // User favorite address
+    public void setFavorisAddress(List<FavoriteAddress> favAddress) {
+        Map<String, FavoriteAddress> mapFavoriteAddress = new LinkedHashMap<>();
+
+        for(FavoriteAddress address : favAddress ) {
+            mapFavoriteAddress.put(address.getAddress(), address);
+        }
+
+        SharedPreferences.Editor editor = pref.edit();
+        Gson gson = new Gson();
+        String str = gson.toJson(mapFavoriteAddress);
+        editor.putString(FAVORIS_ADDRESS, str);
+        editor.apply();
+    }
+
+    public void setFavorisAddress(FavoriteAddress favAddress, boolean remove) {
+        Map<String, FavoriteAddress> mapFavoriteAddress = getFavoriteAddress();
+
+        if (remove) {
+            mapFavoriteAddress.remove(favAddress.getAddress());
+        } else {
+            mapFavoriteAddress.put(favAddress.getAddress(), favAddress);
+        }
+
+        SharedPreferences.Editor editor = pref.edit();
+        Gson gson = new Gson();
+        String str = gson.toJson(mapFavoriteAddress);
+        editor.putString(FAVORIS_ADDRESS, str);
+        editor.apply();
+
+    }
+
+    // get User FavoriteAddress
+    public Map<String,FavoriteAddress> getFavoriteAddress() {
+
+        String str = pref.getString(FAVORIS_ADDRESS, null);
+        Gson gson = new Gson();
+        Map<String,FavoriteAddress> mapFavoriteAddress = gson.fromJson(str, new TypeToken<Map<String,FavoriteAddress>>(){}.getType());
+        if(mapFavoriteAddress == null) {
+            mapFavoriteAddress = new HashMap<>();
+        }
+        return mapFavoriteAddress;
+    }
 
 }

@@ -138,7 +138,7 @@ public class ApplicationModule {
                 .build();
     }
 
-    //timeout 20
+    //timeout 240
     @Singleton
     @Provides
     @Named("siraOkHttpClientt")
@@ -154,7 +154,7 @@ public class ApplicationModule {
                 .build();
     }
 
-    // timeout 60
+    // timeout 120
     @Singleton
     @Provides
     @Named("authentOkHttpClientt")

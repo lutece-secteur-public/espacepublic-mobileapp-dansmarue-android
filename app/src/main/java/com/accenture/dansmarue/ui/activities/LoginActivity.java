@@ -3,8 +3,8 @@ package com.accenture.dansmarue.ui.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.TextInputEditText;
-import android.support.v7.widget.Toolbar;
+import com.google.android.material.textfield.TextInputEditText;
+import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
@@ -23,6 +23,10 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 
+/**
+ * LoginActivity
+ * Login view.
+ */
 public class LoginActivity extends BaseActivity implements LoginView {
 
 
@@ -129,7 +133,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
 
     @Override
     public void loginFailed() {
-        Toast.makeText(getApplicationContext(), "Erreur d'authentification.", Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), R.string.failed_authentication, Toast.LENGTH_LONG).show();
     }
 
     @Override

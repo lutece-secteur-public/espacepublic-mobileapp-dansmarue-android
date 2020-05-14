@@ -3,9 +3,9 @@ package com.accenture.dansmarue.ui.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,8 +59,6 @@ public class ProfileFragment extends BaseFragment implements ProfileView {
     private ProfileSection resolvedSection;
     private ProfileSection unresolvedSection;
 
-    @BindView(R.id.menu_anos_all)
-    protected TextView menuAll;
     @BindView(R.id.menu_anos_drafts)
     protected TextView menuDraft;
     @BindView(R.id.menu_anos_unresolved)
@@ -139,8 +137,8 @@ public class ProfileFragment extends BaseFragment implements ProfileView {
     public void onStart() {
         super.onStart();
 
-        loadIncidents();
-        showMenuAll();
+        loadDraft();
+        showMenuDrafts();
     }
 
     @OnClick(R.id.menu_setup)
@@ -164,17 +162,21 @@ public class ProfileFragment extends BaseFragment implements ProfileView {
                 new RecyclerItemClickListener(getContext(), new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        ProfileSection section = (ProfileSection) adapter.getSectionForPosition(position);
-                        if (section.getState() == Section.State.FAILED) {
-                            loadIncidents();
-                        } else {
-                            int posInSection = adapter.getPositionInSection(position);
-                            //the item  with pos = -1 is the header component of the section
-                            if (posInSection > -1) {
-                                boolean isDraft;
-                                isDraft = draftSection == section;
-                                presenter.onItemClicked(isDraft, section.getItem(posInSection));
+                        try {
+                            ProfileSection section = (ProfileSection) adapter.getSectionForPosition(position);
+                            if (section.getState() == Section.State.FAILED) {
+                                //loadIncidents();
+                            } else {
+                                int posInSection = adapter.getPositionInSection(position);
+                                //the item  with pos = -1 is the header component of the section
+                                if (posInSection > -1) {
+                                    boolean isDraft;
+                                    isDraft = draftSection == section;
+                                    presenter.onItemClicked(isDraft, section.getItem(posInSection));
+                                }
                             }
+                        }catch(IndexOutOfBoundsException e) {
+                           Log.e(TAG, "initRecyclerActions: " + e.getMessage()+ " position : " + position);
                         }
                     }
                 })
@@ -189,10 +191,15 @@ public class ProfileFragment extends BaseFragment implements ProfileView {
             @Override
             public int getSwipeDirs(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
                 final int position = viewHolder.getAdapterPosition();
-                ProfileSection section = (ProfileSection) adapter.getSectionForPosition(position);
-                Log.d(TAG, "getSwipeDirs: " + adapter.getPositionInSection(position));
-                if (draftSection == section || unresolvedSection == section || resolvedSection == section && adapter.getPositionInSection(position) > -1) {
-                    return super.getSwipeDirs(recyclerView, viewHolder);
+                try {
+                    ProfileSection section = (ProfileSection) adapter.getSectionForPosition(position);
+                    Log.d(TAG, "getSwipeDirs: " + adapter.getPositionInSection(position));
+                    if (draftSection == section || unresolvedSection == section || resolvedSection == section && adapter.getPositionInSection(position) > -1) {
+                        return super.getSwipeDirs(recyclerView, viewHolder);
+                    }
+                } catch (IndexOutOfBoundsException e) {
+                    Log.e(TAG,"getSwipeDirs",e);
+                    return 0;
                 }
                 return 0;
             }
@@ -230,11 +237,12 @@ public class ProfileFragment extends BaseFragment implements ProfileView {
 
     }
 
-    private void loadIncidents() {
+    @Override
+    public void loadIncidents(final String filterState) {
         resolvedSection.setState(Section.State.LOADING);
         unresolvedSection.setState(Section.State.LOADING);
         adapter.notifyDataSetChanged();
-        presenter.loadIncidentsByUser();
+        presenter.loadIncidentsByUser(filterState);
     }
 
     private void loadDraft() {
@@ -288,8 +296,7 @@ public class ProfileFragment extends BaseFragment implements ProfileView {
 
         adapter.notifyDataSetChanged();
 
-        menuAll.setTextColor(getResources().getColor(R.color.pink));
-        menuDraft.setTextColor(getResources().getColor(R.color.grey_tranparent));
+        menuDraft.setTextColor(getResources().getColor(R.color.pink));
         menuUnresolved.setTextColor(getResources().getColor(R.color.grey_tranparent));
         menuResolved.setTextColor(getResources().getColor(R.color.grey_tranparent));
     }
@@ -301,7 +308,6 @@ public class ProfileFragment extends BaseFragment implements ProfileView {
         adapter.addSection(Constants.TAG_SECTION_DRAFTS, draftSection);
         adapter.notifyDataSetChanged();
 
-        menuAll.setTextColor(getResources().getColor(R.color.grey_tranparent));
         menuDraft.setTextColor(getResources().getColor(R.color.pink));
         menuUnresolved.setTextColor(getResources().getColor(R.color.grey_tranparent));
         menuResolved.setTextColor(getResources().getColor(R.color.grey_tranparent));
@@ -314,7 +320,6 @@ public class ProfileFragment extends BaseFragment implements ProfileView {
         adapter.addSection(Constants.TAG_SECTION_UNRESOLVED, unresolvedSection);
         adapter.notifyDataSetChanged();
 
-        menuAll.setTextColor(getResources().getColor(R.color.grey_tranparent));
         menuDraft.setTextColor(getResources().getColor(R.color.grey_tranparent));
         menuUnresolved.setTextColor(getResources().getColor(R.color.pink));
         menuResolved.setTextColor(getResources().getColor(R.color.grey_tranparent));
@@ -327,14 +332,14 @@ public class ProfileFragment extends BaseFragment implements ProfileView {
         adapter.addSection(Constants.TAG_SECTION_RESOLVED, resolvedSection);
         adapter.notifyDataSetChanged();
 
-        menuAll.setTextColor(getResources().getColor(R.color.grey_tranparent));
         menuDraft.setTextColor(getResources().getColor(R.color.grey_tranparent));
         menuUnresolved.setTextColor(getResources().getColor(R.color.grey_tranparent));
         menuResolved.setTextColor(getResources().getColor(R.color.pink));
     }
 
-    @OnClick({R.id.menu_anos_all, R.id.menu_anos_drafts, R.id.menu_anos_unresolved, R.id.menu_anos_resolved})
+    @OnClick({R.id.menu_anos_drafts, R.id.menu_anos_unresolved, R.id.menu_anos_resolved})
     public void onMenuClicked(final View view) {
+
         presenter.onMenuClicked(view.getId());
     }
 

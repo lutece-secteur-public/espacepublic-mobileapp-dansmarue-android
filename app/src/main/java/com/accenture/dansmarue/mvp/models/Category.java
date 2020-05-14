@@ -14,10 +14,13 @@ public class Category {
     private String id;
     private String parentId;
     private String name;
+    private boolean isAgent;
     private String alias;
     private List<Category> children;
     private String image;
     private String imageMobile;
+    private boolean hasMessageHorsDMR;
+    private String messageHorsDMR;
 
     public String getImageMobile() {
         return imageMobile;
@@ -59,6 +62,10 @@ public class Category {
         this.name = name;
     }
 
+    public boolean isAgent() {return isAgent; }
+
+    public void setIsAgent( boolean isAgent) { this.isAgent = isAgent; }
+
     public List<Category> getChildren() {
         if (children == null) {
             children = new ArrayList<>();
@@ -76,5 +83,21 @@ public class Category {
 
     public void setAlias(String alias) {
         this.alias = alias;
+    }
+
+    public String getMessageHorsDMR() {
+        return messageHorsDMR;
+    }
+
+    public void setMessageHorsDMR(String messageHorsDMR) {
+        this.messageHorsDMR = messageHorsDMR;
+    }
+
+    public boolean isHasMessageHorsDMR() {
+        return hasMessageHorsDMR;
+    }
+
+    public void setHasMessageHorsDMR(boolean hasMessageHorsDMR) {
+        this.hasMessageHorsDMR = hasMessageHorsDMR;
     }
 }

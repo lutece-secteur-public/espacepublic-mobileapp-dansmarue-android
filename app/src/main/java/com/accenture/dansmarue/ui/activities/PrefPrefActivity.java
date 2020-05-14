@@ -1,7 +1,7 @@
 package com.accenture.dansmarue.ui.activities;
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 
 import com.accenture.dansmarue.R;
 

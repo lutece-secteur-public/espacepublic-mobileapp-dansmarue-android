@@ -55,6 +55,7 @@ public final class CategoryHelper {
         CAT_ICONS.put("11000", R.drawable.ic_type_svg_water_11000);
         CAT_ICONS.put("12005", R.drawable.icon_12005);
         CAT_ICONS.put("12000", R.drawable.icon_12005);
+        CAT_ICONS.put("12008", R.drawable.icon_12008);
 
         MAP_ICONS.put(ID_CATEGORIE_RAMEN, R.drawable.ic_ano_1000);
         MAP_ICONS.put("1000", R.drawable.ic_ano_1000);
@@ -71,6 +72,7 @@ public final class CategoryHelper {
         MAP_ICONS.put("11000", R.drawable.ic_ano_11000);
         MAP_ICONS.put("12005", R.drawable.ano_12005);
         MAP_ICONS.put("12000", R.drawable.ano_12005);
+        MAP_ICONS.put("12008", R.drawable.ic_ano_12008);
 
         MAP_ICONS_RESOLVED.put(ID_CATEGORIE_RAMEN, R.drawable.ic_ano_done_1000);
         MAP_ICONS_RESOLVED.put("1000", R.drawable.ic_ano_done_1000);
@@ -87,6 +89,7 @@ public final class CategoryHelper {
         MAP_ICONS_RESOLVED.put("11000", R.drawable.ic_ano_done_11000);
         MAP_ICONS_RESOLVED.put("12005", R.drawable.ano_done_12005);
         MAP_ICONS_RESOLVED.put("12000", R.drawable.ano_done_12005);
+        MAP_ICONS_RESOLVED.put("12008", R.drawable.ic_ano_done_12008);
 
         MAP_GENERIC_PICTURES.put(ID_CATEGORIE_RAMEN, R.drawable.ic_type_svg_obj_lost_1000_grey);
         MAP_GENERIC_PICTURES.put("1000", R.drawable.ic_type_svg_obj_lost_1000_grey);
@@ -103,6 +106,7 @@ public final class CategoryHelper {
         MAP_GENERIC_PICTURES.put("11000", R.drawable.ic_type_svg_water_11000_grey);
         MAP_GENERIC_PICTURES.put("12005", R.drawable.image_12005);
         MAP_GENERIC_PICTURES.put("12000", R.drawable.image_12005);
+        MAP_GENERIC_PICTURES.put("12008", R.drawable.image_12008);
 
     }
 
@@ -230,6 +234,9 @@ public final class CategoryHelper {
         final Category cat = new Category();
         cat.setId(id);
         cat.setName(catAnswer.getName());
+        cat.setIsAgent(catAnswer.isAgent());
+        cat.setHasMessageHorsDMR(catAnswer.isHasMessageHorsDMR());
+        cat.setMessageHorsDMR(catAnswer.getMessageHorsDMR());
         cat.setParentId(catAnswer.getParentId());
         cat.setAlias(catAnswer.getAlias());
         cat.setImage(catAnswer.getImage());
@@ -259,6 +266,16 @@ public final class CategoryHelper {
         }
         return null;
     }
+
+    public static boolean hasChildren(String categorieId) {
+        List<Category> listChildren = extractChildren(categorieId, ALL_CATEGORIES);
+        if(listChildren != null && ! listChildren.isEmpty()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
 
 }

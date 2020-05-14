@@ -3,6 +3,7 @@ package com.accenture.dansmarue.utils;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.location.Address;
 import android.media.ExifInterface;
 import android.util.Base64;
 import android.util.Log;
@@ -12,6 +13,7 @@ import com.crashlytics.android.Crashlytics;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
@@ -167,5 +169,45 @@ public class MiscTools {
         else {
             return Integer.signum(vals1.length - vals2.length);
         }
+    }
+
+
+    /**
+     * Select the most coherent address in the list.
+     * @param addresses
+     *          List of address
+     * @param cityName
+     *          The city name
+     * @param searchBarMode
+     *          true if use AutoComplete Address component
+     * @param searchBarAddress
+     *         Address type in search bar
+     * @return the selected address
+     */
+    public static Address selectAddress(List<Address> addresses , String cityName, boolean searchBarMode, String searchBarAddress) {
+
+        final String invalidRoadName = "Unnamed Road";
+
+        int index = 0;
+        int indexMax = addresses.size() -1;
+
+        while ( index < indexMax) {
+
+         boolean validAddress =  addresses.get(index).getThoroughfare() != null &&
+                    ! addresses.get(index).getAddressLine(0).toUpperCase().contains(invalidRoadName.toUpperCase()) &&
+                    addresses.get(index).getLocality().toUpperCase().contains(cityName.toUpperCase());
+
+         if(validAddress && searchBarMode && searchBarAddress != null) {
+             validAddress = searchBarAddress.toUpperCase().contains( addresses.get(index).getThoroughfare().toUpperCase());
+         }
+
+         if (validAddress) {
+             return addresses.get(index);
+         }
+
+         index ++;
+
+        }
+        return addresses.get(indexMax);
     }
 }

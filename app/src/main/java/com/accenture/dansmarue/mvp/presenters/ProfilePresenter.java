@@ -52,6 +52,8 @@ public class ProfilePresenter extends BasePresenter<ProfileView> implements Sing
     private Application application;
     private PrefManager prefManager;
 
+    private String filterState;
+
     @Inject
     public ProfilePresenter(final ProfileView view, final SiraApiService service, final ApiServiceEquipement apiServiceEquipement, final Application application, final PrefManager prefManager) {
         this.view = view;
@@ -61,7 +63,9 @@ public class ProfilePresenter extends BasePresenter<ProfileView> implements Sing
         this.apiServiceEquipement = apiServiceEquipement;
     }
 
-
+    /**
+     * Load draft incidents save on device.
+     */
     public void loadDrafts() {
         final List<Incident> drafts = new ArrayList<>();
         if (application.getApplicationContext().fileList().length > 0) {
@@ -91,15 +95,20 @@ public class ProfilePresenter extends BasePresenter<ProfileView> implements Sing
         application.deleteFile(draftId + Constants.FILE_DRAFT_SUFFIXE);
     }
 
-    public void loadIncidentsByUser() {
+    public void loadIncidentsByUser(String filterState) {
         if (prefManager.isConnected()) {
-
-            final GetIncidentsByUserRequest request = new GetIncidentsByUserRequest();
-            request.setGuid(prefManager.getGuid());
-            apiServiceEquipement.getIncidentsByUser(request)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(this);
+            this.filterState= filterState;
+            if (prefManager.getTypesEquipement() != null) {
+                final GetIncidentsByUserRequest request = new GetIncidentsByUserRequest();
+                request.setGuid(prefManager.getGuid());
+                request.setFilterIncidentStatus(this.filterState);
+                apiServiceEquipement.getIncidentsByUser(request)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(this);
+            } else {
+                callWsAnosOutdoor(new ArrayList<Incident>(),new ArrayList<Incident>());
+            }
 
         } else {
             view.showUnsolvedIncidents(null);
@@ -109,7 +118,7 @@ public class ProfilePresenter extends BasePresenter<ProfileView> implements Sing
     }
 
     /**
-     * TODO get the user name in prefManager
+     * Init user name.
      */
     public void initUser() {
         if (prefManager.isConnected()) {
@@ -127,20 +136,19 @@ public class ProfilePresenter extends BasePresenter<ProfileView> implements Sing
         prefManager.setLastMenu(idMenu);
 
         switch (idMenu) {
-            case R.id.menu_anos_all:
-                view.showMenuAll();
-                break;
             case R.id.menu_anos_drafts:
                 view.showMenuDrafts();
                 break;
             case R.id.menu_anos_unresolved:
+                view.loadIncidents(Incident.STATE_OPEN);
                 view.showMenuUnresolved();
                 break;
             case R.id.menu_anos_resolved:
+                view.loadIncidents(Incident.STATE_RESOLVED);
                 view.showMenuResolved();
                 break;
             default:
-                view.showMenuAll();
+                view.showMenuDrafts();
                 break;
         }
     }
@@ -150,10 +158,12 @@ public class ProfilePresenter extends BasePresenter<ProfileView> implements Sing
     }
 
     public void onItemClicked(boolean isDraft, final Incident item) {
-        if (isDraft) {
-            view.modifyDraft(item);
-        } else {
-            view.showAnomalyDetails(item);
+        if (item != null) {
+            if (isDraft) {
+                view.modifyDraft(item);
+            } else {
+                view.showAnomalyDetails(item);
+            }
         }
     }
 
@@ -187,7 +197,6 @@ public class ProfilePresenter extends BasePresenter<ProfileView> implements Sing
                             }
                         }
 
-//                        incident.setIconIncident(maListeDeTypesDequipements.get(index).getIconTypeEquipement());
                         incident.setIconParentId(idParentCategory);
                         incident.setTypeEquipementName(maListeDeTypesDequipements.get(index).getNomTypeEquipement());
 
@@ -196,7 +205,6 @@ public class ProfilePresenter extends BasePresenter<ProfileView> implements Sing
                         final String idParentCategory2 = CategoryHelper.getFirstParent(incident.getCategoryId(), mesCat);
                         incident.setIconIncident(mesCat.get(idParentCategory2).getImageMobile());
 
-//                        incident.setIconIncident(mesCat.get(incident.getCategoryId()).getImageMobile());
 
                         if (incident.isResolu()) {
                             resolvedIncidents.add(incident);
@@ -205,11 +213,6 @@ public class ProfilePresenter extends BasePresenter<ProfileView> implements Sing
                         }
                     }
                 }
-//                Collections.sort(resolvedIncidents, IncidentComparator.getInstance());
-//                Collections.sort(unresolvedIncidents, IncidentComparator.getInstance());
-
-//                view.showSolvedIncidents(resolvedIncidents);
-//                view.showUnsolvedIncidents(unresolvedIncidents);
 
                 callWsAnosOutdoor(resolvedIncidents, unresolvedIncidents);
             }
@@ -229,6 +232,7 @@ public class ProfilePresenter extends BasePresenter<ProfileView> implements Sing
 
         final GetIncidentsByUserRequest request = new GetIncidentsByUserRequest();
         request.setGuid(prefManager.getGuid());
+        request.setFilterIncidentStatus(filterState);
         service.getIncidentsByUser(request)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -312,16 +316,9 @@ public class ProfilePresenter extends BasePresenter<ProfileView> implements Sing
                         final String idParentCategory = CategoryHelper.getFirstParent(incident.getCategoryId(), CategoryHelper.getAllCategories(application));
 
                         if (incident.isResolu()) {
-
-//                            incident.getPictures().setGenericPictureId(CategoryHelper.MAP_ICONS_RESOLVED.get(idParentCategory));
                             incident.getPictures().setGenericPictureId(CategoryHelper.MAP_GENERIC_PICTURES.get(idParentCategory));
-
                         } else {
-
-//                            incident.getPictures().setGenericPictureId(CategoryHelper.CAT_ICONS.get(idParentCategory));
                             incident.getPictures().setGenericPictureId(CategoryHelper.MAP_GENERIC_PICTURES.get(idParentCategory));
-
-
                         }
 
                         Log.i(TAG, "outdoor");
@@ -339,11 +336,15 @@ public class ProfilePresenter extends BasePresenter<ProfileView> implements Sing
                         }
                     }
 
-                    Collections.sort(resolvedIncidents, IncidentComparator.getInstance());
-                    view.showSolvedIncidents(resolvedIncidents);
+                    if( Incident.STATE_RESOLVED.equals(filterState)) {
+                        Collections.sort(resolvedIncidents, IncidentComparator.getInstance());
+                        view.showSolvedIncidents(resolvedIncidents);
+                    }
 
-                    Collections.sort(unresolvedIncidents, IncidentComparator.getInstance());
-                    view.showUnsolvedIncidents(unresolvedIncidents);
+                    if( Incident.STATE_OPEN.equals(filterState)) {
+                        Collections.sort(unresolvedIncidents, IncidentComparator.getInstance());
+                        view.showUnsolvedIncidents(unresolvedIncidents);
+                    }
 
                 }
             } else {

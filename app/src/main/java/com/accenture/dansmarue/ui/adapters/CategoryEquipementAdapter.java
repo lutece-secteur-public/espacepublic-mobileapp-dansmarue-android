@@ -1,9 +1,9 @@
 package com.accenture.dansmarue.ui.adapters;
 
 import android.content.Context;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +12,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.accenture.dansmarue.BuildConfig;
 import com.accenture.dansmarue.R;
 import com.accenture.dansmarue.mvp.models.Category;
 import com.accenture.dansmarue.utils.MiscTools;

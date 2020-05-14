@@ -1,6 +1,6 @@
 package com.accenture.dansmarue.mvp.presenters;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.accenture.dansmarue.BuildConfig;
@@ -51,10 +51,12 @@ public class LoginPresenter extends BasePresenter<LoginView> {
     }
 
     /**
-     * TODO refacto ?
+     * Call authentification service.
      *
      * @param myLogin
+     *          login
      * @param myPwd
+     *         password
      */
     public void login(@NonNull final String myLogin, @NonNull final String myPwd) {
 
@@ -108,6 +110,8 @@ public class LoginPresenter extends BasePresenter<LoginView> {
                                                                 prefManager.setFirstName(value.getAnswer().getUser().getFirstname());
                                                                 prefManager.setLastName(value.getAnswer().getUser().getName());
                                                                 prefManager.setEmail(value.getAnswer().getUser().getMail());
+                                                                prefManager.setIsAgent(value.getAnswer().getUser().isAgent());
+                                                                //prefManager.setIsAgent(true);
                                                                 view.loginSuccess();
                                                             }
                                                         }

@@ -1,26 +1,30 @@
 package com.accenture.dansmarue.ui.activities;
 
 import android.Manifest;
-import android.content.DialogInterface;
+import android.app.Dialog;
+
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
-import android.net.Uri;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -29,42 +33,51 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.accenture.dansmarue.BuildConfig;
 import com.accenture.dansmarue.R;
 import com.accenture.dansmarue.app.DansMaRueApplication;
 import com.accenture.dansmarue.di.components.DaggerPresenterComponent;
 import com.accenture.dansmarue.di.modules.PresenterModule;
 import com.accenture.dansmarue.mvp.models.Incident;
+import com.accenture.dansmarue.mvp.models.MessageServiceFait;
 import com.accenture.dansmarue.mvp.presenters.AnomalyDetailsPresenter;
 import com.accenture.dansmarue.mvp.views.AnomalyDetailsView;
 import com.accenture.dansmarue.utils.BitmapScaler;
 import com.accenture.dansmarue.utils.Constants;
 import com.accenture.dansmarue.utils.MiscTools;
+import com.accenture.dansmarue.utils.NetworkUtils;
+import com.accenture.dansmarue.utils.PrefManager;
 import com.bumptech.glide.Glide;
 import com.crashlytics.android.Crashlytics;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import butterknife.Optional;
 
-
-public class AnomalyDetailsActivity extends BaseActivity implements AnomalyDetailsView {
+/**
+ * AnomalyDetailsActivity
+ *  Activity to display incident detail.
+ */
+public class AnomalyDetailsActivity extends BaseAnomalyActivity implements AnomalyDetailsView {
 
     private static final String TAG = AnomalyDetailsActivity.class.getCanonicalName();
 
     private final static int REQUEST_CODE_LOGIN = 7;
-    private static final int TAKE_PICTURE_REQUEST_CODE = 1980;
     private static final int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
-    private static final int CHOOSE_FROM_GALLERY_REQUEST_CODE = 1981;
-    String mCurrentPhotoPath = "";
+    private static final int CHOOSE_TYPE_REQUEST_CODE = 1982;
+    private static final int SET_COMMENTAIRE_AGENT_REQUALIFICATION_REQUEST_CODE = 1983;
+    private static final int CHOOSE_MESSAGE_SF_REQUEST_CODE = 1984;
+
+
 
     @Inject
     protected AnomalyDetailsPresenter anomalyDetailsPresenter;
@@ -80,6 +93,9 @@ public class AnomalyDetailsActivity extends BaseActivity implements AnomalyDetai
     protected TextView anomalyCategory;
     @BindView(R.id.anomaly_details)
     protected TextView anomalyDetail;
+    @BindView(R.id.anomaly_commentaire_agent)
+    @Nullable
+    protected TextView anomalyCommentaireAgentTerrain;
     @BindView(R.id.anomaly_nb_followers)
     protected TextView nbFollowers;
     @BindView(R.id.anomaly_nb_greetings)
@@ -94,8 +110,91 @@ public class AnomalyDetailsActivity extends BaseActivity implements AnomalyDetai
     @BindView(R.id.resolve)
     protected Button resolveBtn;
 
+    //AGENT LAYOUT
+
+    //requalification
+    @BindView(R.id.linear_layout_requalification)
+    @Nullable
+    protected LinearLayout requalificationLayout;
+    @BindView(R.id.linear_layout_requalification2)
+    @Nullable
+    protected LinearLayout requalification2Layout;
+    @BindView(R.id.image_languette_requalification)
+    @Nullable
+    protected ImageButton pictoLanguetteRequalification;
+
+    //Type
+    @BindView(R.id.image_choose_type)
+    @Nullable
+    protected ImageView chooseType;
+    @BindView(R.id.text_choose_type_subtitle)
+    @Nullable
+    protected TextView chooseTypeSubtitle;
+
+    @BindView(R.id.requalification_photo)
+    @Nullable
+    protected ImageButton pictureRequalificationButton;
+
+    @BindView(R.id.requalification_photo_layout)
+    @Nullable
+    protected RelativeLayout photoRequalificationLayout;
+
+    @BindView(R.id.requalification_choose_picture)
+    @Nullable
+    protected ImageView requalificationChoosePicture;
+
+    @BindView(R.id.requalificationImageChoiceLayout)
+    @Nullable
+    protected RelativeLayout requalificationImageChoiceLayout;
+
+    @BindView(R.id.requalificationImageChoice)
+    @Nullable
+    protected ImageView requalificationImage;
+
+    @BindView(R.id.requalificationImageChoiceClose)
+    @Nullable
+    protected ImageView requalificationImageChoiceClose;
+
+    //Commentaire agent
+    @BindView(R.id.text_commentagent_subtitle)
+    @Nullable
+    protected AppCompatTextView textCommentAgent;
+    @BindView(R.id.commentagent_choose_type)
+    @Nullable
+    protected ImageView chooseCommentAgent;
+
+    @BindView(R.id.button_requalification)
+    @Nullable
+    protected Button resqualificationBtn;
+
+    //requalification fin
+
+    // service fait
+    @BindView(R.id.linear_layout_service_fait)
+    @Nullable
+    protected LinearLayout serviceFaitLayout;
+    @BindView(R.id.linear_layout_service_fait2)
+    @Nullable
+    protected LinearLayout serviceFait2Layout;
+    @BindView(R.id.image_languette_service_fait)
+    @Nullable
+    protected ImageButton pictoLanguetteServiceFait;
     @BindView(R.id.photo_service_fait_layout)
     protected LinearLayout photoServiceFaitLayout;
+
+    @BindView(R.id.image_choose_type_sf)
+    @Nullable
+    protected ImageView chooseMessageServiceFaitImage;
+
+    @BindView(R.id.layout_choose_message_sf)
+    @Nullable
+    protected LinearLayout messageServiceFait;
+
+    @BindView(R.id.text_choose_type_subtitle_sf)
+    @Nullable
+    protected TextView chooseMessageServiceFait;
+
+    //FIN AGENT LAYOUT
 
     //Pictures
     @BindView(R.id.image_choose_picture)
@@ -103,8 +202,10 @@ public class AnomalyDetailsActivity extends BaseActivity implements AnomalyDetai
     @BindView(R.id.myImageChoice)
     protected ImageView image1;
 
+
     @BindView(R.id.add_anomaly_photo)
     protected ImageButton addPictureButton;
+
 
     @BindView(R.id.myImageChoiceLayout)
     protected RelativeLayout myImageChoiceLayout;
@@ -123,6 +224,7 @@ public class AnomalyDetailsActivity extends BaseActivity implements AnomalyDetai
     private boolean congratulated;
 
     private Incident incident;
+    private MessageServiceFait messageServiceFaitSelect;
     private int indexPicture = 0;
     private int maxIndex = 0;
 
@@ -130,6 +232,13 @@ public class AnomalyDetailsActivity extends BaseActivity implements AnomalyDetai
     private int nbGreetingsDisplay = 0;
 
     private boolean incidentComeFromNotif;
+    private boolean isLayoutAgent;
+    private boolean isRequalificationPhoto;
+    private boolean isMessageServiceFaitSelect;
+
+    private HashMap<Integer,MessageServiceFait> messagesServiceFait;
+
+    private Dialog bePatientDialog;
 
 
     @Override
@@ -142,12 +251,13 @@ public class AnomalyDetailsActivity extends BaseActivity implements AnomalyDetai
 
         final Long incidentId = intent.getLongExtra(Constants.EXTRA_INCIDENT_ID, 0);
 
+        isMessageServiceFaitSelect = false;
+
         String incidentByNotif = intent.getStringExtra(Constants.EXTRA_INCIDENT_TYPE);
         if(null!=incidentByNotif) incidentComeFromNotif =true;
 
         final String source = intent.getStringExtra(Constants.EXTRA_INCIDENT_SOURCE);
 
-        //TODO Pay Attention
         if (incidentId == 0) {
             finish();
         }
@@ -196,7 +306,16 @@ public class AnomalyDetailsActivity extends BaseActivity implements AnomalyDetai
 
     @Override
     protected int getContentView() {
-        return R.layout.anomaly_details_activity_layout;
+
+        PrefManager prefManager = new PrefManager(getApplicationContext());
+
+        if(prefManager.getIsAgent())  {
+            isLayoutAgent = true;
+            return R.layout.anomaly_details_activity_agent_layout;
+        } else {
+            isLayoutAgent = false;
+            return R.layout.anomaly_details_activity_layout;
+        }
     }
 
 
@@ -221,6 +340,9 @@ public class AnomalyDetailsActivity extends BaseActivity implements AnomalyDetai
     }
 
 
+    /**
+     * On display fallow success
+     */
     public void displayFollow() {
         incident.setIncidentFollowedByUser(true);
         fabDetailsAno.setImageResource(R.drawable.ic_followed);
@@ -229,10 +351,16 @@ public class AnomalyDetailsActivity extends BaseActivity implements AnomalyDetai
         nbFollowers.setText(nbFollowersDisplay + " ");
     }
 
+    /**
+     * On display fallow failure
+     */
     public void displayFollowFailure() {
         Snackbar.make(findViewById(R.id.rl_add_ano_details), R.string.follow_anomaly_failure, Snackbar.LENGTH_LONG).show();
     }
 
+    /**
+     * On display unfallow success
+     */
     public void displayUnfollow() {
         incident.setIncidentFollowedByUser(false);
         fabDetailsAno.setImageResource(R.drawable.ic_follow);
@@ -241,6 +369,9 @@ public class AnomalyDetailsActivity extends BaseActivity implements AnomalyDetai
         nbFollowers.setText(nbFollowersDisplay + " ");
     }
 
+    /**
+     * On display unfallow failure
+     */
     public void displayUnfollowFailure() {
         Snackbar.make(findViewById(R.id.rl_add_ano_details), R.string.unfollow_anomaly_failure, Snackbar.LENGTH_LONG).show();
     }
@@ -252,17 +383,18 @@ public class AnomalyDetailsActivity extends BaseActivity implements AnomalyDetai
         } else {
             incident = loadedIncident;
 
+            messageServiceFaitSelect =null;
             maxIndex = incident.getAllPictures().size() - 1;
-            if (maxIndex == -1) {
+            if (maxIndex == -1 && leftPicNavigation != null && rightPicNavigation != null) {
                 leftPicNavigation.setVisibility(View.GONE);
                 rightPicNavigation.setVisibility(View.GONE);
             }
 
-            if (indexPicture == 0) {
+            if (indexPicture == 0 && leftPicNavigation != null) {
                 leftPicNavigation.setVisibility(View.GONE);
             }
 
-            if (indexPicture == maxIndex) {
+            if (indexPicture == maxIndex && rightPicNavigation != null) {
                 rightPicNavigation.setVisibility(View.GONE);
             }
 
@@ -272,11 +404,12 @@ public class AnomalyDetailsActivity extends BaseActivity implements AnomalyDetai
                         .load(incident.getPictures().getGenericPictureId())
                         .into(imageView);
             } else if (incident.getFirstAvailablePicture() != null) {
-                Glide.with(this)
-                        .load(incident.getFirstAvailablePicture())
-                        .fallback(incident.getPictures().getGenericPictureId())
-                        .error(incident.getPictures().getGenericPictureId())
-                        .into(imageView);
+                    Glide.with(this)
+                            .load(incident.getFirstAvailablePicture())
+                            .fallback(incident.getPictures().getGenericPictureId())
+                            .error(incident.getPictures().getGenericPictureId())
+                            .into(imageView);
+
             } else {
                 Glide.with(this).load(incident.getPictures().getGenericPictureId()).into(imageView);
             }
@@ -309,6 +442,14 @@ public class AnomalyDetailsActivity extends BaseActivity implements AnomalyDetai
                     fabDetailsAno.setImageResource(R.drawable.ic_greetings_white);
                     fabDetailsAno.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.greetings_green)));
                 }
+
+                //isAgentLayout and isResolve
+                if(isLayoutAgent) {
+                    requalificationLayout.setVisibility(View.GONE);
+                    serviceFaitLayout.setVisibility(View.GONE);
+                }
+
+
             } else {
 
                 TextView txtOverPicture = (TextView) findViewById(R.id.txt_over_picture);
@@ -327,17 +468,23 @@ public class AnomalyDetailsActivity extends BaseActivity implements AnomalyDetai
                 }
 
                 fabDetailsAno.setClickable(!incident.isFromRamen());
-//                if (!incident.isFromRamen() && anomalyDetailsPresenter.isResolvable(incident.getReporterGuid()) && !incident.isResolu()) {
-                    if (!incident.isFromRamen() && incident.isResolvable()) {
+                 if (!incident.isFromRamen() && incident.isResolvable() && !isLayoutAgent ) {
                     photoServiceFaitLayout.setVisibility(View.VISIBLE);
                     resolveBtn.setVisibility(View.VISIBLE);
-
-                } else {
+                 } else if(!incident.isFromRamen() && incident.isResolvable() && isLayoutAgent){
+                     serviceFaitLayout.setVisibility(View.VISIBLE);
+                 } else {
                     resolveBtn.setVisibility(View.GONE);
                     photoServiceFaitLayout.setVisibility(View.GONE);
-
+                    if (isLayoutAgent)  {
+                        serviceFaitLayout.setVisibility(View.GONE);
+                    }
                 }
 
+            }
+
+            if (isLayoutAgent) {
+                anomalyCommentaireAgentTerrain.setText(incident.getCommentaireAgent());
             }
         }
 
@@ -348,6 +495,25 @@ public class AnomalyDetailsActivity extends BaseActivity implements AnomalyDetai
         nbGreetings.setText(nbGreetingsDisplay + " ");
 
 
+    }
+
+    public void populateMessageServiceFaitGeneric(List<MessageServiceFait> messages) {
+        messagesServiceFait = new HashMap<Integer,MessageServiceFait>();
+        int index = 0;
+        for(MessageServiceFait message : messages) {
+            message.setIsGeneric(true);
+            messagesServiceFait.put(index,message);
+            index++;
+        }
+    }
+
+    public void populateMessageServiceFaitType(List<MessageServiceFait> messages) {
+        int index = messagesServiceFait.size();
+        for(MessageServiceFait message : messages) {
+            message.setIsGeneric(false);
+            messagesServiceFait.put(index,message);
+            index++;
+        }
     }
 
     private void congratulate() {
@@ -387,10 +553,14 @@ public class AnomalyDetailsActivity extends BaseActivity implements AnomalyDetai
                     public void onDismissed(Snackbar snackbar, int event) {
                         switch (event) {
                             case Snackbar.Callback.DISMISS_EVENT_TIMEOUT:
-                                anomalyDetailsPresenter.resolveIncident(String.valueOf(incident.getId()));
+                                resolveBtn.setEnabled(false);
 
-                                if(image1.getVisibility()==View.VISIBLE)
-                                anomalyDetailsPresenter.uploadPictureServiceFait(String.valueOf(incident.getId()));
+                                if(image1.getVisibility()==View.VISIBLE) {
+                                    anomalyDetailsPresenter.uploadPicture(String.valueOf(incident.getId()), false, "done");
+                                    // after call resolveIncident
+                                } else {
+                                   callResolveIncident();
+                                }
 
                                 break;
                         }
@@ -402,6 +572,11 @@ public class AnomalyDetailsActivity extends BaseActivity implements AnomalyDetai
                     }
                 })
                 .show();
+    }
+
+    @Override
+    public void callResolveIncident() {
+        anomalyDetailsPresenter.resolveIncident(String.valueOf(incident.getId()), messageServiceFaitSelect);
     }
 
     @Override
@@ -431,17 +606,27 @@ public class AnomalyDetailsActivity extends BaseActivity implements AnomalyDetai
     public void displayResolveKo() {
         //TODO quelle message afficher
         Toast.makeText(this, "Erreur lors de la prise en copmpte de la déclaration", Toast.LENGTH_LONG).show();
+        if(isLayoutAgent) {
+            resolveBtn.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.pink));
+            resolveBtn.setEnabled(true);
+        }
     }
 
     @Override
     public void displayResolveOk() {
-        final Toast toastMessage = Toast.makeText(this, "Cette anomalie a été résolue", Toast.LENGTH_LONG);
-        toastMessage.setGravity(Gravity.TOP, 5, 5);
-        toastMessage.show();
-        incident.setState(Incident.STATE_RESOLVED);
-        populateFields(incident);
-        photoServiceFaitLayout.setVisibility(View.INVISIBLE);
-        resolveBtn.setVisibility(View.INVISIBLE);
+        final Toast toastMessage = Toast.makeText(this, "Cette anomalie a été clôturée", Toast.LENGTH_LONG);
+        if (isLayoutAgent) {
+            finish();
+            startActivity(getIntent());
+        }
+        else {
+            toastMessage.setGravity(Gravity.TOP, 5, 5);
+            toastMessage.show();
+            incident.setState(Incident.STATE_RESOLVED);
+            populateFields(incident);
+            photoServiceFaitLayout.setVisibility(View.INVISIBLE);
+            resolveBtn.setVisibility(View.INVISIBLE);
+        }
     }
 
     @OnClick(R.id.navLeft)
@@ -476,18 +661,138 @@ public class AnomalyDetailsActivity extends BaseActivity implements AnomalyDetai
         startActivity(new Intent(this, WelcomeMapActivity.class));
     }
 
-    /**
-     * Evolution photo service fait
-     */
 
+    @Optional
+    @OnClick({R.id.linear_layout_requalification, R.id.image_languette_requalification})
+    public void showhideLayoutRequalification() {
+
+        if (requalification2Layout.getVisibility() == View.VISIBLE) {
+            requalification2Layout.setVisibility(View.GONE);
+            pictoLanguetteRequalification.setImageResource(R.drawable.ic_arrow_right);
+
+        } else {
+            requalification2Layout.setVisibility(View.VISIBLE);
+            pictoLanguetteRequalification.setImageResource(R.drawable.ic_arrow_drop_down);
+        }
+    }
+
+    @Optional
+    @OnClick({R.id.linear_layout_service_fait, R.id.image_languette_service_fait})
+    public void showhideLayoutServicefait() {
+
+        if (serviceFait2Layout.getVisibility() == View.VISIBLE) {
+            serviceFait2Layout.setVisibility(View.GONE);
+            photoServiceFaitLayout.setVisibility(View.GONE);
+            messageServiceFait.setVisibility(View.GONE);
+            resolveBtn.setVisibility(View.GONE);
+            pictoLanguetteServiceFait.setImageResource(R.drawable.ic_arrow_right);
+
+        } else {
+            serviceFait2Layout.setVisibility(View.VISIBLE);
+            photoServiceFaitLayout.setVisibility(View.VISIBLE);
+            if (!incident.isAnonyme() ) {
+                messageServiceFait.setVisibility(View.VISIBLE);
+                if(isMessageServiceFaitSelect) {
+                    resolveBtn.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.pink));
+                    resolveBtn.setEnabled(true);
+                } else {
+                    resolveBtn.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.grey_icon));
+                    resolveBtn.setEnabled(false);
+                }
+            }  else if (incident.isAnonyme()) {
+                //anonymous report
+                resolveBtn.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.pink));
+                resolveBtn.setEnabled(true);
+            }
+            resolveBtn.setVisibility(View.VISIBLE);
+            pictoLanguetteServiceFait.setImageResource(R.drawable.ic_arrow_drop_down);
+        }
+    }
+
+    @Optional
+    @OnClick(R.id.layout_choose_type)
+    public void chooseType() {
+        startActivityForResult(new Intent(this, CategoryActivity.class), CHOOSE_TYPE_REQUEST_CODE);
+    }
+
+    @Optional
+    @OnClick({R.id.layout_commentagent, R.id.commentagent_layout_parent})
+    public void setDescription() {
+        final Intent intent = new Intent(AnomalyDetailsActivity.this, SetDescriptionActivity.class);
+        intent.putExtra(Constants.EXTRA_COMMENTAIRE_AGENT_REQUALIFICATION, anomalyDetailsPresenter.getRequalificationComment());
+        intent.putExtra(Constants.EXTRA_CALLING_ACTIVITY, Constants.ACTIVITY_DETAILS_ANOMALY);
+        startActivityForResult(intent, SET_COMMENTAIRE_AGENT_REQUALIFICATION_REQUEST_CODE);
+    }
+
+    @Optional
+    @OnClick(R.id.button_requalification)
+    public void onRequalification() {
+        if (NetworkUtils.isConnected(getApplicationContext())) {
+            pleaseBePatientDialog();
+            anomalyDetailsPresenter.doRequalification(incident);
+        } else {
+            Toast.makeText(this, R.string.info_no_network, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    /**
+     * Requalification work
+     */
+    public void requalificationSuccess() {
+
+        if(requalificationImage.getVisibility()==View.VISIBLE) {
+            String typePhoto = "far";
+            if(!incident.getPictures().getFar().isEmpty() && incident.getPictures().getClose().isEmpty()) {
+                typePhoto = "close";
+            }
+            anomalyDetailsPresenter.uploadPicture(String.valueOf(incident.getId()),true, typePhoto);
+        } else {
+            uploadRequalificationDone();
+        }
+    }
+
+    public void uploadRequalificationDone() {
+        bePatientDialog.dismiss();
+        // reload activity with new type
+        finish();
+        startActivity(getIntent());
+    }
+
+    /**
+     * Requalification fail
+     */
+    public void requalificationFaillure() {
+        bePatientDialog.dismiss();
+        Toast.makeText(this, R.string.dmr_error_requalification,Toast.LENGTH_LONG).show();
+    }
 
     @OnClick(R.id.add_anomaly_photo)
     public void takePhotoOrViewGallery() {
+        isRequalificationPhoto = false;
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
         } else {
             selectImage();
         }
+    }
+
+    @Optional
+    @OnClick(R.id.requalification_photo)
+    public void takePhotoOrViewGalleryRequalification() {
+        isRequalificationPhoto = true;
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+        } else {
+            selectImage();
+        }
+    }
+
+    @Optional
+    @OnClick(R.id.layout_choose_message_sf)
+    public void chooseMessageServiceFait() {
+        Intent intent = new Intent(this, MessageSFActivity.class);
+        intent.putExtra(Constants.EXTRA_LIST_MESSAGE_SERVICE_FAIT,messagesServiceFait);
+        startActivityForResult(intent, CHOOSE_MESSAGE_SF_REQUEST_CODE);
     }
 
     @Override
@@ -502,57 +807,6 @@ public class AnomalyDetailsActivity extends BaseActivity implements AnomalyDetai
         }
     }
 
-    //TODO remettre au propre et PAS en dur
-    public void selectImage() {
-        final CharSequence[] items = {"Prendre une photo", "Choisir dans la galerie", "Annuler"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Ajouter");
-        builder.setItems(items, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if ("Prendre une photo".equals(items[which])) {
-                    cameraIntent();
-                } else if ("Choisir dans la galerie".equals(items[which])) {
-                    galleryIntent();
-
-                } else {
-                    dialog.dismiss();
-                }
-            }
-        });
-        builder.show();
-    }
-
-
-    private void cameraIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException e) {
-                Crashlytics.logException(e);
-            }
-
-            if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this,
-                        BuildConfig.APPLICATION_ID + ".fileprovider",
-                        photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, TAKE_PICTURE_REQUEST_CODE);
-            }
-        }
-    }
-
-    private void galleryIntent() {
-        final Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Sélectionnez une photo"), CHOOSE_FROM_GALLERY_REQUEST_CODE);
-    }
-
     // A place has been received; use requestCode to track the request.
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -561,34 +815,31 @@ public class AnomalyDetailsActivity extends BaseActivity implements AnomalyDetai
             case TAKE_PICTURE_REQUEST_CODE:
                 if (resultCode == RESULT_OK) {
                     rotateResizeAndCompress();
-                    showPicture(mCurrentPhotoPath);
+                    if(isRequalificationPhoto) {
+                        showPictureRequalification(mCurrentPhotoPath);
+                    } else {
+                        showPicture(mCurrentPhotoPath);
+                    }
                 }
                 break;
             case CHOOSE_FROM_GALLERY_REQUEST_CODE:
                 if (resultCode == RESULT_OK) {
-                    onSelectFromGalleryResult(data);
+                    onSelectFromGalleryResult(data, isRequalificationPhoto);
                 }
                 break;
+            case CHOOSE_TYPE_REQUEST_CODE:
+                onTypeResult(resultCode, data);
+                break;
 
+            case SET_COMMENTAIRE_AGENT_REQUALIFICATION_REQUEST_CODE:
+                onCommentaireAgentRequalificationResult(resultCode, data);
+                break;
+            case CHOOSE_MESSAGE_SF_REQUEST_CODE:
+                onMessageServiceFaitResult(resultCode, data);
+                break;
             default:
                 Log.d(TAG, "onActivityResult : " + requestCode);
                 break;
-        }
-    }
-
-    private void rotateResizeAndCompress() {
-        // Rotate, Scrale and compress
-        Bitmap resizedBitmap = BitmapScaler.scaleToFitTheGoodOne(MiscTools.rotateBitmapOrientation(mCurrentPhotoPath));
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 80, bytes);
-        File resizedFile = new File(mCurrentPhotoPath);
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(resizedFile);
-            fos.write(bytes.toByteArray());
-            fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -609,27 +860,25 @@ public class AnomalyDetailsActivity extends BaseActivity implements AnomalyDetai
 
     }
 
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
+    public void showPictureRequalification (final String fileName) {
 
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = image.getAbsolutePath();
-        return image;
+        pictureRequalificationButton.setVisibility(View.GONE);
+        photoRequalificationLayout.setVisibility(View.GONE);
+
+        anomalyDetailsPresenter.addPictureRequalificationToModel(fileName);
+
+        requalificationChoosePicture.setImageResource(R.drawable.ic_check_circle_pink_24px);
+        requalificationImageChoiceLayout.setVisibility(View.VISIBLE);
+        requalificationImage.setVisibility(View.VISIBLE);
+        Glide.with(this).load(fileName).fitCenter().into(requalificationImage);
+        requalificationImageChoiceClose.setVisibility(View.VISIBLE);
     }
 
-    private void onSelectFromGalleryResult(final Intent data) {
+    private void onSelectFromGalleryResult(final Intent data, final boolean isForRequalification) {
         if (data != null) {
             try {
                 Bitmap thumbnail = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
-                addPictureToPlaceHolder(thumbnail);
+                addPictureToPlaceHolder(thumbnail, isForRequalification);
             } catch (IOException e) {
                 Crashlytics.logException(e);
                 Log.e(TAG, e.getMessage(), e);
@@ -637,6 +886,58 @@ public class AnomalyDetailsActivity extends BaseActivity implements AnomalyDetai
         }
 
     }
+
+    private void onTypeResult(int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            typeTreatment(data.getStringExtra(Constants.EXTRA_CATEGORY_NAME), data.getStringExtra(Constants.EXTRA_CATEGORY_ID));
+        }
+    }
+
+    private void onMessageServiceFaitResult(int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            messageServiceFaitSelect = (MessageServiceFait) data.getSerializableExtra(Constants.EXTRA_MESSAGE_SERVICE_FAIT_SELECT);
+            chooseMessageServiceFait.setText(messageServiceFaitSelect.getMessage());
+            chooseMessageServiceFait.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.pink));
+            chooseMessageServiceFaitImage.setImageResource(R.drawable.ic_check_circle_pink_24px);
+            resolveBtn.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.pink));
+            resolveBtn.setEnabled(true);
+            isMessageServiceFaitSelect = true;
+        }
+    }
+
+    /**
+     * Callback after SET_COMMENTAIRE_AGENT_REQUALIFICATION_REQUEST_CODE
+     *
+     * @param resultCode result
+     * @param data       intent containig the description
+     */
+    private void onCommentaireAgentRequalificationResult(final int resultCode, final Intent data) {
+        if (resultCode == RESULT_OK) {
+            String txtCommentaireAgent = data.getStringExtra(Constants.EXTRA_COMMENTAIRE_AGENT_REQUALIFICATION);
+            String txtCommentaireAgentLimit = txtCommentaireAgent;
+            if (txtCommentaireAgent.length() > 40) {
+                txtCommentaireAgentLimit = txtCommentaireAgent.substring(0, 40) + "...";
+            }
+            textCommentAgent.setText(txtCommentaireAgentLimit);
+            if (txtCommentaireAgent.length() > 0) {
+                chooseCommentAgent.setImageResource(R.drawable.ic_check_circle_pink_24px);
+            } else {
+                chooseCommentAgent.setImageResource(R.drawable.ic_check_circle_grey_24px);
+            }
+            anomalyDetailsPresenter.setRequalificationComment(data.getStringExtra(Constants.EXTRA_COMMENTAIRE_AGENT_REQUALIFICATION));
+        }
+    }
+
+    private void typeTreatment(String typeSubtitle, String categoryType) {
+        chooseTypeSubtitle.setText(typeSubtitle);
+        anomalyDetailsPresenter.setCategory(categoryType);
+        chooseType.setImageResource(R.drawable.ic_check_circle_pink_24px);
+        if(! incident.getAlias().equals(typeSubtitle)) {
+            resqualificationBtn.setEnabled(true);
+            resqualificationBtn.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.pink));
+        }
+    }
+
 
     @OnClick(R.id.myImageChoiceClose)
     public void disablePic1() {
@@ -649,8 +950,20 @@ public class AnomalyDetailsActivity extends BaseActivity implements AnomalyDetai
         testPicturesAndGreyCheck();
     }
 
-    private void addPictureToPlaceHolder(Bitmap thumbnail) {
-        anomalyDetailsPresenter.savePictureInFile(thumbnail);
+    @Optional
+    @OnClick(R.id.requalificationImageChoiceClose)
+    public void disablePicRequalification() {
+        anomalyDetailsPresenter.removePictureRequalification();
+        requalificationImageChoiceLayout.setVisibility(View.GONE);
+        requalificationImage.setVisibility(View.GONE);
+        requalificationImageChoiceLayout.setVisibility(View.GONE);
+        photoRequalificationLayout.setVisibility(View.VISIBLE);
+        pictureRequalificationButton.setVisibility(View.VISIBLE);
+        requalificationChoosePicture.setImageResource(R.drawable.ic_check_circle_grey_24px);
+    }
+
+    private void addPictureToPlaceHolder(Bitmap thumbnail, boolean isForRequalification) {
+        anomalyDetailsPresenter.savePictureInFile(thumbnail, isForRequalification);
     }
 
     public void testPicturesAndGreyCheck() {
@@ -659,5 +972,28 @@ public class AnomalyDetailsActivity extends BaseActivity implements AnomalyDetai
         }
     }
 
+    /**
+     * Show Be patient dialog
+     */
+    private void pleaseBePatientDialog() {
+
+        bePatientDialog = new Dialog(this);
+        bePatientDialog.setContentView(R.layout.greetings_dialog_send_incident);
+        bePatientDialog.setCancelable(false);
+
+        if (bePatientDialog.getWindow() != null) {
+            bePatientDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+            // Fix Dialog Size
+            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+            lp.copyFrom(bePatientDialog.getWindow().getAttributes());
+            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
+            bePatientDialog.getWindow().setAttributes(lp);
+            bePatientDialog.show();
+        }
+
+    }
 
 }

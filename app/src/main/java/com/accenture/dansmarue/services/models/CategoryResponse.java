@@ -87,6 +87,10 @@ public class CategoryResponse extends SiraResponse {
             @SerializedName("parent_id")
             private String parentId;
             private String name;
+            private boolean isAgent;
+            @SerializedName("horsDMR")
+            private boolean hasMessageHorsDMR;
+            private String messageHorsDMR;
             private String alias;
             private String image;
             @SerializedName("image_mobile")
@@ -140,6 +144,12 @@ public class CategoryResponse extends SiraResponse {
                 this.name = name;
             }
 
+            public boolean isAgent() { return isAgent;}
+
+            public boolean isHasMessageHorsDMR() {return hasMessageHorsDMR;}
+
+            public String getMessageHorsDMR() { return  messageHorsDMR;}
+
 
             @Override
             public String toString() {
@@ -147,6 +157,7 @@ public class CategoryResponse extends SiraResponse {
                         "childrenIds=" + childrenIds +
                         ", parentId='" + parentId + '\'' +
                         ", name='" + name + '\'' +
+                        ", isAgent='" + isAgent + '\'' +
                         '}';
             }
         }

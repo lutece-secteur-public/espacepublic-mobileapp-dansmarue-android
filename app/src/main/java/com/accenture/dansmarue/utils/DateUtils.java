@@ -5,10 +5,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * TODO mettre au propre
+ * DateUtils
  * Created by PK on 15/05/2017.
  */
-
 public class DateUtils {
 
     public static SimpleDateFormat DATE_FORMAT_SIRA = new SimpleDateFormat("yyyy-MM-dd HH:mm");

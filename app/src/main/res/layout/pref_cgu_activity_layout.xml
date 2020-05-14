@@ -4,11 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
     tools:context="com.accenture.dansmarue.ui.activities.PrefCGUActivity">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,7 +17,7 @@
         android:minHeight="?attr/actionBarSize"
         app:titleTextColor="@color/white" />
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/toolbar"
@@ -31,40 +32,57 @@
             android:layout_marginRight="20dp"
             android:orientation="vertical">
 
-            <TextView
+            <WebView
+                android:id="@+id/cgu_one"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="@string/cgu_part_one" />
+                android:layout_marginTop="20dp"/>
 
-            <TextView
+            <WebView
+                android:id="@+id/cgu_two"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="@string/cgu_part_two" />
+                android:layout_marginTop="20dp" />
 
-            <TextView
+            <WebView
+                android:id="@+id/cgu_three"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="@string/cgu_part_three" />
+                android:layout_marginTop="20dp" />
 
-            <TextView
+            <WebView
+                android:id="@+id/cgu_four"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="@string/cgu_part_four" />
+                android:layout_marginTop="20dp" />
 
-            <TextView
+            <WebView
+                android:id="@+id/cgu_five"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="@string/cgu_part_five" />
+                android:layout_marginTop="20dp" />
 
+            <WebView
+                android:id="@+id/cgu_six"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp" />
+
+            <WebView
+                android:id="@+id/cgu_seven"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp" />
+
+            <WebView
+                android:id="@+id/cgu_height"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp" />
 
         </LinearLayout>
 
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 
 </RelativeLayout>

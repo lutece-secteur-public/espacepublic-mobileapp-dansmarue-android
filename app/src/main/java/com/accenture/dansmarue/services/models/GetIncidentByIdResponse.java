@@ -1,6 +1,10 @@
 package com.accenture.dansmarue.services.models;
 
 import com.accenture.dansmarue.mvp.models.Incident;
+import com.accenture.dansmarue.mvp.models.MessageServiceFait;
+import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 /**
  * Created by d4v1d on 15/05/2017.
@@ -24,6 +28,14 @@ public class GetIncidentByIdResponse extends SiraResponse {
 
         private Incident incident;
 
+        private boolean resolved_authorization;
+
+        @SerializedName("messages_sf_generic")
+        private List<MessageServiceFait> messagesGeneric;
+
+        @SerializedName("messages_sf_typologie")
+        private List<MessageServiceFait> messagesTypologie;
+
         public String getStatus() {
             return status;
         }
@@ -40,8 +52,6 @@ public class GetIncidentByIdResponse extends SiraResponse {
             this.incident = incident;
         }
 
-        private boolean resolved_authorization;
-
         public boolean isResolved_authorization() {
             return resolved_authorization;
         }
@@ -50,5 +60,12 @@ public class GetIncidentByIdResponse extends SiraResponse {
             this.resolved_authorization = resolved_authorization;
         }
 
+        public List<MessageServiceFait> getMessagesGeneric() {
+            return messagesGeneric;
+        }
+
+        public List<MessageServiceFait> getMessagesTypologie() {
+            return messagesTypologie;
+        }
     }
 }

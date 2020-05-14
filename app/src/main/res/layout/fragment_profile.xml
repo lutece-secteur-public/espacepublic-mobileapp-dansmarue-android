@@ -50,23 +50,13 @@
 
 
         <TextView
-            android:id="@+id/menu_anos_all"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/anomaly_all"
-            android:textAlignment="center"
-            android:textColor="@color/pink"
-            android:textSize="16sp" />
-
-        <TextView
             android:id="@+id/menu_anos_drafts"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/anomaly_draft"
             android:textAlignment="center"
-            android:textColor="@color/grey_tranparent"
+            android:textColor="@color/pink"
             android:textSize="16sp" />
 
         <TextView
@@ -91,20 +81,20 @@
 
     </LinearLayout>
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/menu_anos"
         android:background="@color/white">
 
-        <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+        <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/my_recycler_view_anomaly_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/white"
             android:paddingBottom="100dp" />
 
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 </RelativeLayout>
 

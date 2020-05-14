@@ -1,7 +1,7 @@
 package com.accenture.dansmarue.ui.adapters;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +24,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     public RecyclerViewAdapter(Context context, int recyclerItemRes, List<Incident> data) {
         this.recyclerItemRes = recyclerItemRes;
-        this.data = data;
         this.context = context;
+        this.data = data;
+
     }
 
     @Override
@@ -63,7 +64,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             }
         }
 
-        holder.title.setText(incident.getAlias());
+        if(incident.isFromRamen()) {
+            holder.title.setText(R.string.desc_ramen);
+        } else {
+            holder.title.setText(incident.getAlias());
+        }
         holder.subtitle.setText(incident.getAddress());
     }
 
@@ -73,6 +78,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
         return null;
 
+    }
+
+    public List<Incident> getData() {
+        return data;
     }
 
     @Override

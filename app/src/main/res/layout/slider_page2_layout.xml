@@ -39,7 +39,7 @@
                     fontPath="fonts/Montserrat-Light.otf"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="40dp"
+                    android:layout_marginTop="20dp"
                     android:text="@string/slide2_title"
                     android:textAlignment="center"
                     android:textColor="@color/white"
@@ -47,14 +47,57 @@
                     tools:ignore="MissingPrefix" />
 
                 <TextView
+                    fontPath="fonts/Montserrat-Light.otf"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:lineSpacingMultiplier="1.3"
                     android:paddingLeft="@dimen/slider_padding_txt"
                     android:paddingRight="@dimen/slider_padding_txt"
-                    android:text="@string/slide2_subtitle"
-                    android:textAlignment="center"
+                    android:text="@string/slide2_subtitle_1"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/slider_subtitle_size"
+                    tools:ignore="MissingPrefix" />
+
+                <TextView
+                    fontPath="fonts/Montserrat-Light.otf"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:lineSpacingMultiplier="1.3"
+                    android:paddingLeft="@dimen/slider_padding_txt"
+                    android:paddingRight="@dimen/slider_padding_txt"
+                    android:text="@string/slide2_subtitle_2"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/slider_subtitle_size"
+                    tools:ignore="MissingPrefix" />
+
+                <TextView
+                    fontPath="fonts/Montserrat-Light.otf"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:lineSpacingMultiplier="1.3"
+                    android:paddingLeft="@dimen/slider_padding_txt"
+                    android:paddingRight="@dimen/slider_padding_txt"
+                    android:text="@string/slide2_subtitle_3"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/slider_subtitle_size"
+                    tools:ignore="MissingPrefix" />
+
+                <TextView
+                    fontPath="fonts/Montserrat-Light.otf"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:lineSpacingMultiplier="1.3"
+                    android:paddingLeft="@dimen/slider_padding_txt"
+                    android:paddingRight="@dimen/slider_padding_txt"
+                    android:text="@string/slide2_subtitle_4"
+                    android:textAlignment="textStart"
                     android:textColor="@color/white"
                     android:textSize="@dimen/slider_subtitle_size"
                     tools:ignore="MissingPrefix" />

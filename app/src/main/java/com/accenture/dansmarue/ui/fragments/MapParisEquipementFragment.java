@@ -18,13 +18,13 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.CardView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AlertDialog;
+import androidx.cardview.widget.CardView;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -62,7 +62,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
-import com.google.android.gms.location.places.Places;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -82,7 +82,7 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link androidx.fragment.app.Fragment} subclass.
  * Activities that contain this fragment must implement the
  * {@link MapParisEquipementFragment.OnMapParisEquipementFragmentInteractionListener} interface
  * to handle interaction events.
@@ -526,8 +526,8 @@ public class MapParisEquipementFragment extends BaseFragment implements Equipeme
             mGoogleApiClient = new GoogleApiClient.Builder(getContext())
                     .addConnectionCallbacks(this)
                     .addApi(LocationServices.API)
-                    .addApi(Places.GEO_DATA_API)
-                    .addApi(Places.PLACE_DETECTION_API)
+                    //.addApi(Places.GEO_DATA_API)
+                    //.addApi(Places.PLACE_DETECTION_API)
                     .addOnConnectionFailedListener(this)
                     .addApi(LocationServices.API).build();
         }

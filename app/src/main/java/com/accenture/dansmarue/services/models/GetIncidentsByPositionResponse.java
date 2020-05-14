@@ -26,12 +26,22 @@ public class GetIncidentsByPositionResponse extends SiraResponse {
         @SerializedName("closest_incidents")
         private List<Incident> closestIncidents;
 
+        private List<Incident> incident;
+
         public List<Incident> getClosestIncidents() {
             return closestIncidents;
         }
 
         public void setClosestIncidents(List<Incident> closestIncidents) {
             this.closestIncidents = closestIncidents;
+        }
+
+        public List<Incident> getIncident() {
+            return incident;
+        }
+
+        public void setIncident(List<Incident> incident) {
+            this.incident = incident;
         }
 
         public String getStatus() {

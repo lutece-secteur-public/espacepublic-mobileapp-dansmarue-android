@@ -14,24 +14,28 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.design.widget.TextInputEditText;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import com.google.android.material.textfield.TextInputEditText;
+import androidx.core.app.ActivityCompat;
+
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,22 +53,22 @@ import com.accenture.dansmarue.utils.MiscTools;
 import com.accenture.dansmarue.utils.NetworkUtils;
 import com.bumptech.glide.Glide;
 import com.crashlytics.android.Crashlytics;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.places.AutocompleteFilter;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
+
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.RectangularBounds;
+import com.google.android.libraries.places.api.model.TypeFilter;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.gson.GsonBuilder;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+
+import java.util.Arrays;
+
 import java.util.List;
 import java.util.Locale;
 
@@ -76,8 +80,11 @@ import butterknife.OnClick;
 import static com.accenture.dansmarue.ui.activities.ChoosePriorityActivity.PRIORITIES_IDS;
 import static com.accenture.dansmarue.ui.activities.ChoosePriorityActivity.PRIORITIES_LIBELLE;
 
-
-public class AddAnomalyActivity extends BaseActivity implements AddAnomalyView {
+/**
+ * AddAnomalyActivity
+ *   Activity to create new incident
+ */
+public class AddAnomalyActivity extends BaseAnomalyActivity implements AddAnomalyView {
 
     private static final String TAG = AddAnomalyActivity.class.getCanonicalName();
     private static final int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
@@ -88,9 +95,8 @@ public class AddAnomalyActivity extends BaseActivity implements AddAnomalyView {
     private static final int CHOOSE_TYPE_REQUEST_CODE = 1977;
     private static final int SET_DESCRIPTION_REQUEST_CODE = 1978;
     private static final int CHOOSE_PRIORITY_REQUEST_CODE = 1979;
-    private static final int TAKE_PICTURE_REQUEST_CODE = 1980;
-    private static final int CHOOSE_FROM_GALLERY_REQUEST_CODE = 1981;
     private static final int LOGIN_REQUEST_CODE = 1982;
+    private static final int SET_COMMENTAIRE_AGENT_REQUEST_CODE = 1983;
 
     private static LatLng myLastPosition = null;
 
@@ -131,12 +137,19 @@ public class AddAnomalyActivity extends BaseActivity implements AddAnomalyView {
     @BindView(R.id.myImageChoice2Close)
     protected ImageView myImageChoice2Close;
 
-
     //Description
     @BindView(R.id.text_description_subtitle)
     protected AppCompatTextView textDescription;
     @BindView(R.id.description_choose_type)
     protected ImageView chooseDescription;
+
+    //Commentaire Agent
+    @BindView(R.id.commentagent_layout_parent)
+    protected LinearLayout layoutCommentAgent;
+    @BindView(R.id.text_commentagent_subtitle)
+    protected AppCompatTextView textCommentAgent;
+    @BindView(R.id.commentagent_choose_type)
+    protected ImageView chooseCommentAgent;
 
     //Priority
     @BindView(R.id.text_default)
@@ -153,8 +166,7 @@ public class AddAnomalyActivity extends BaseActivity implements AddAnomalyView {
 
     private boolean byUser;
     private boolean isValidAddress;
-
-    String mCurrentPhotoPath = "";
+    private boolean isValidAddressWithNumber;
 
     boolean firstPicLayout;
 
@@ -163,6 +175,10 @@ public class AddAnomalyActivity extends BaseActivity implements AddAnomalyView {
 
     String txtDescription;
     String txtDescriptionLimit;
+
+    String txtCommentaireAgent;
+    String txtCommentaireAgentLimit;
+
 
     int priorityId;
 
@@ -185,6 +201,8 @@ public class AddAnomalyActivity extends BaseActivity implements AddAnomalyView {
 
     protected void onViewReady(Bundle savedInstanceState, Intent intent) {
         super.onViewReady(savedInstanceState, intent);
+
+        presenter.isAgentConnected();
 
         //check if we come from a draft
         if (TextUtils.isEmpty(intent.getStringExtra(Constants.EXTRA_DRAFT))) {
@@ -212,6 +230,11 @@ public class AddAnomalyActivity extends BaseActivity implements AddAnomalyView {
             if (!TextUtils.isEmpty(draft.getDescriptive())) {
                 onDescriptionResult(RESULT_OK, new Intent().putExtra(Constants.EXTRA_DESCRIPTION, draft.getDescriptive()));
             }
+
+            if (!TextUtils.isEmpty(draft.getCommentaireAgent())) {
+                onCommentaireAgentResult(RESULT_OK, new Intent().putExtra(Constants.EXTRA_COMMENTAIRE_AGENT, draft.getCommentaireAgent()));
+            }
+
             onPriorityResult(RESULT_OK, new Intent().putExtra(Constants.EXTRA_PRIORITY_ID, PRIORITIES_IDS.keyAt(PRIORITIES_IDS.indexOfValue(draft.getPriorityId()))));
 
             if (draft.getLat() != null && draft.getLng() != null) {
@@ -228,6 +251,8 @@ public class AddAnomalyActivity extends BaseActivity implements AddAnomalyView {
             if (draft.getPicture2() != null) {
                 showPicture(draft.getPicture2());
             }
+
+            isValidAddressWithNumber = draft.isValidAddressWithNumber();
 
         }
 
@@ -256,10 +281,12 @@ public class AddAnomalyActivity extends BaseActivity implements AddAnomalyView {
     }
 
     /**
-     * TODO
+     * Update adress on bottom sheet.
      *
      * @param adress
+     *          adress
      * @param location
+     *          Location latitude longitude.
      */
     private void setUpCurrentAdress(String adress, LatLng location) {
         // setup fragment and hide or not bottom sheet
@@ -303,79 +330,6 @@ public class AddAnomalyActivity extends BaseActivity implements AddAnomalyView {
         }
     }
 
-    //TODO remettre au propre et PAS en dur
-    public void selectImage() {
-        final CharSequence[] items = {"Prendre une photo", "Choisir dans la galerie", "Annuler"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Ajouter");
-        builder.setItems(items, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if ("Prendre une photo".equals(items[which])) {
-                    cameraIntent();
-                } else if ("Choisir dans la galerie".equals(items[which])) {
-                    galleryIntent();
-
-                } else {
-                    dialog.dismiss();
-                }
-            }
-        });
-        builder.show();
-    }
-
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = image.getAbsolutePath();
-        return image;
-    }
-
-    private void cameraIntent() {
-
-//        if (android.os.Build.VERSION.SDK_INT > 20) {
-
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException e) {
-                Crashlytics.logException(e);
-            }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this,
-                        BuildConfig.APPLICATION_ID+".fileprovider",
-                        photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, TAKE_PICTURE_REQUEST_CODE);
-
-            }
-        }
-//        } else {
-//            startActivityForResult(new Intent(MediaStore.ACTION_IMAGE_CAPTURE), TAKE_PICTURE_REQUEST_CODE);
-//        }
-    }
-
-    private void galleryIntent() {
-        final Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Sélectionnez une photo"), CHOOSE_FROM_GALLERY_REQUEST_CODE);
-    }
-
     @OnClick(R.id.layout_choose_type)
     public void chooseType() {
         startActivityForResult(new Intent(AddAnomalyActivity.this, CategoryActivity.class), CHOOSE_TYPE_REQUEST_CODE);
@@ -395,29 +349,35 @@ public class AddAnomalyActivity extends BaseActivity implements AddAnomalyView {
         startActivityForResult(intent, SET_DESCRIPTION_REQUEST_CODE);
     }
 
-    // Setup search screen in add anomaly
-    public void findPlace(View view) {
-        try {
-            AutocompleteFilter filter = new AutocompleteFilter.Builder()
-                    .setCountry("Fr")
-                    .setTypeFilter(AutocompleteFilter.TYPE_FILTER_ADDRESS)
-                    .build();
-            // .zzdB(getString(R.string.google_searchbar_wording)) in case you change wording
-
-            Intent intent =
-                    new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
-                            .setFilter(filter)
-                            .setBoundsBias(new LatLngBounds(
-                                    new LatLng(48.811310, 2.217569),
-                                    new LatLng(48.905509, 2.413468)
-                            ))
-                            .build(this);
-
-            startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
-
-        } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {
-            Crashlytics.logException(e);
+    @OnClick({R.id.layout_commentagent, R.id.commentagent_layout_parent})
+    public void setCommentAgent() {
+        final Intent intent = new Intent(AddAnomalyActivity.this, SetDescriptionActivity.class);
+        if (presenter.getRequest().getIncident().getCommentaireAgent() != null) {
+            intent.putExtra(Constants.EXTRA_COMMENTAIRE_AGENT, presenter.getRequest().getIncident().getCommentaireAgent());
         }
+        startActivityForResult(intent, SET_COMMENTAIRE_AGENT_REQUEST_CODE);
+    }
+
+    /**
+     * Search place address
+     * @param view
+     *         activity view
+     */
+    public void findPlace(View view) {
+
+        if (!Places.isInitialized()) {
+            Places.initialize(getApplicationContext(), getString(R.string.google_maps_key));
+        }
+
+        Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, Arrays.asList(Place.Field.values()))
+                .setCountry("Fr")
+                .setTypeFilter(TypeFilter.ADDRESS)
+                .setLocationRestriction( RectangularBounds.newInstance(
+                        new LatLng(48.811310, 2.217569),
+                        new LatLng(48.905509, 2.413468))) //Restriction limitation paris
+                .build(this);
+
+        startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
     }
 
     // A place has been received; use requestCode to track the request.
@@ -426,11 +386,11 @@ public class AddAnomalyActivity extends BaseActivity implements AddAnomalyView {
         switch (requestCode) {
             case PLACE_AUTOCOMPLETE_REQUEST_CODE:
                 if (resultCode == RESULT_OK) {
-                    Place place = PlaceAutocomplete.getPlace(this, data);
+                    Place place = Autocomplete.getPlaceFromIntent(data);
 
                     Log.i(TAG, "onActivityResult: " + place.getAddress().toString());
 
-                    if (!place.getAddress().toString().contains("Paris")) {
+                    if (!place.getAddress().toString().contains(getString(R.string.city_name))) {
                         new AlertDialog.Builder(AddAnomalyActivity.this)
                                 .setMessage(R.string.not_in_paris)
                                 .setCancelable(true)
@@ -442,6 +402,7 @@ public class AddAnomalyActivity extends BaseActivity implements AddAnomalyView {
                                     }
                                 }).show();
 
+
                     } else {
                         myLastPosition = place.getLatLng();
                         if (NetworkUtils.isConnected(getApplicationContext())) {
@@ -451,8 +412,8 @@ public class AddAnomalyActivity extends BaseActivity implements AddAnomalyView {
                         }
                     }
 
-                } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
-                    Status status = PlaceAutocomplete.getStatus(this, data);
+                } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                    Status status = Autocomplete.getStatusFromIntent(data);
                     // TODO: Handle the error.
                     Log.i(TAG, status.getStatusMessage());
                 }
@@ -463,17 +424,16 @@ public class AddAnomalyActivity extends BaseActivity implements AddAnomalyView {
             case SET_DESCRIPTION_REQUEST_CODE:
                 onDescriptionResult(resultCode, data);
                 break;
+            case SET_COMMENTAIRE_AGENT_REQUEST_CODE:
+                onCommentaireAgentResult(resultCode, data);
+                break;
             case CHOOSE_PRIORITY_REQUEST_CODE:
                 onPriorityResult(resultCode, data);
                 break;
             case TAKE_PICTURE_REQUEST_CODE:
                 if (resultCode == RESULT_OK) {
-//                    if (android.os.Build.VERSION.SDK_INT < 20) {
                     rotateResizeAndCompress();
                     showPicture(mCurrentPhotoPath);
-//                    } else {
-//                        onCaptureImageResult(data);
-//                    }
                 }
                 break;
             case CHOOSE_FROM_GALLERY_REQUEST_CODE:
@@ -493,33 +453,26 @@ public class AddAnomalyActivity extends BaseActivity implements AddAnomalyView {
         }
     }
 
-    private void rotateResizeAndCompress() {
-        // Rotate, Scrale and compress
-        Bitmap resizedBitmap = BitmapScaler.scaleToFitTheGoodOne(MiscTools.rotateBitmapOrientation(mCurrentPhotoPath));
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 80, bytes);
-        File resizedFile = new File(mCurrentPhotoPath);
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(resizedFile);
-            fos.write(bytes.toByteArray());
-            fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     private void onTypeResult(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            typeTreatment(data.getStringExtra(Constants.EXTRA_CATEGORY_NAME), data.getStringExtra(Constants.EXTRA_CATEGORY_ID));
+            if(data.hasExtra(Constants.EXTRA_MESSAGE_HORS_DMR)) {
+                Intent intentAddAnomaly = new Intent(AddAnomalyActivity.this, SimpleMessageActivity.class);
+                intentAddAnomaly.putExtra(Constants.EXTRA_MESSAGE_HORS_DMR,data.getStringExtra(Constants.EXTRA_MESSAGE_HORS_DMR));
+                startActivity(intentAddAnomaly);
+            } else {
+                typeTreatment(data.getStringExtra(Constants.EXTRA_CATEGORY_NAME), data.getStringExtra(Constants.EXTRA_CATEGORY_ID));
+            }
         }
         enableCreateIncident();
     }
 
     private void typeTreatment(String typeSubtitle, String categoryType) {
-        chooseTypeSubtitle.setText(typeSubtitle);
         presenter.setCategory(categoryType);
-        chooseType.setImageResource(R.drawable.ic_check_circle_pink_24px);
+        if (presenter.getRequest().getIncident().getCategoryId() != null) {
+            chooseTypeSubtitle.setText(typeSubtitle);
+            chooseType.setImageResource(R.drawable.ic_check_circle_pink_24px);
+        }
     }
 
     /**
@@ -542,6 +495,29 @@ public class AddAnomalyActivity extends BaseActivity implements AddAnomalyView {
                 chooseDescription.setImageResource(R.drawable.ic_check_circle_grey_24px);
             }
             presenter.setDescription(data.getStringExtra(Constants.EXTRA_DESCRIPTION));
+        }
+    }
+
+    /**
+     * Callback after SET_COMMENTAIRE_AGENT_REQUEST_CODE
+     *
+     * @param resultCode result
+     * @param data       intent containig the description
+     */
+    private void onCommentaireAgentResult(final int resultCode, final Intent data) {
+        if (resultCode == RESULT_OK) {
+            txtCommentaireAgent = data.getStringExtra(Constants.EXTRA_COMMENTAIRE_AGENT);
+            txtCommentaireAgentLimit = txtCommentaireAgent;
+            if (txtCommentaireAgent.length() > 40) {
+                txtCommentaireAgentLimit = txtCommentaireAgent.substring(0, 40) + "...";
+            }
+            textCommentAgent.setText(txtCommentaireAgentLimit);
+            if (txtCommentaireAgent.length() > 0) {
+                chooseCommentAgent.setImageResource(R.drawable.ic_check_circle_pink_24px);
+            } else {
+                chooseCommentAgent.setImageResource(R.drawable.ic_check_circle_grey_24px);
+            }
+            presenter.setCommentaireAgent(data.getStringExtra(Constants.EXTRA_COMMENTAIRE_AGENT));
         }
     }
 
@@ -627,8 +603,12 @@ public class AddAnomalyActivity extends BaseActivity implements AddAnomalyView {
 
         if (null != textDescription)
             outState.putString(Constants.ADD_ANO_TXT_DESCRIPTION, txtDescription);
+        if (null != textCommentAgent)
+            outState.putString(Constants.ADD_ANO_TXT_COMMENTAIRE_AGENT, txtCommentaireAgent);
         if (null != txtDescriptionLimit)
             outState.putString(Constants.ADD_ANO_TXT_DESCRIPTION_SHORT, txtDescriptionLimit);
+        if (null != txtCommentaireAgentLimit)
+            outState.putString(Constants.ADD_ANO_TXT_COMMENTAIRE_AGENT_SHORT, txtCommentaireAgentLimit);
 
         super.onSaveInstanceState(outState);
     }
@@ -654,6 +634,16 @@ public class AddAnomalyActivity extends BaseActivity implements AddAnomalyView {
                 chooseDescription.setImageResource(R.drawable.ic_check_circle_pink_24px);
             } else {
                 chooseDescription.setImageResource(R.drawable.ic_check_circle_grey_24px);
+            }
+        }
+
+        if (null != state.getString(Constants.ADD_ANO_TXT_COMMENTAIRE_AGENT) && null != state.getString(Constants.ADD_ANO_TXT_COMMENTAIRE_AGENT_SHORT)) {
+            textCommentAgent.setText(state.getString(Constants.ADD_ANO_TXT_COMMENTAIRE_AGENT_SHORT));
+            presenter.setCommentaireAgent(state.getString(Constants.ADD_ANO_TXT_COMMENTAIRE_AGENT));
+            if (state.getString(Constants.ADD_ANO_TXT_COMMENTAIRE_AGENT).length() > 0) {
+                chooseCommentAgent.setImageResource(R.drawable.ic_check_circle_pink_24px);
+            } else {
+                chooseCommentAgent.setImageResource(R.drawable.ic_check_circle_grey_24px);
             }
         }
 
@@ -744,6 +734,8 @@ public class AddAnomalyActivity extends BaseActivity implements AddAnomalyView {
      *
      * @param latlng
      *         Latitude, Longitude
+     * @param searchBarAddress
+     *         Address enter in search address
      *
      */
     private void findAdresseWithLatLng(LatLng latlng, String searchBarAddress) {
@@ -751,39 +743,63 @@ public class AddAnomalyActivity extends BaseActivity implements AddAnomalyView {
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         String currentAddress = "";
         try {
+            boolean searchBarMode = searchBarAddress != null && !"".equals(searchBarAddress);
+            final List<Address> addresses = geocoder.getFromLocation(latlng.latitude, latlng.longitude, 4); // Here 4 represent max location result to returned, by documents it recommended 1 to 5
+            if ( addresses != null && !addresses.isEmpty()) {
+                final Address addressSelect = MiscTools.selectAddress(addresses, getString(R.string.city_name), searchBarMode, searchBarAddress);
 
-            final List<Address> addresses = geocoder.getFromLocation(latlng.latitude, latlng.longitude, 2); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
-            int index = 0;
+                final String address = addressSelect.getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+                Log.i(TAG, "adress " + address);
+                final String city = addressSelect.getLocality();
+                Log.i(TAG, "city " + city);
+                final String country = addressSelect.getCountryName();
+                Log.i(TAG, "country " + country);
 
-            if(addresses.get(index).getThoroughfare() == null) {
-                //fisrt address as consider invalid
-                index = 1;
+
+                final String postalCode = addressSelect.getPostalCode();
+                Log.i(TAG, "cp " + postalCode);
+
+                currentAddress = address;
+
+                if (searchBarMode) {
+                    if(searchBarAddress.split(",").length > 3 ) {
+                        //fix commercial address
+                        searchBarAddress = searchBarAddress.replace(searchBarAddress.substring(0, searchBarAddress.indexOf(",")+1),"");
+                    }
+                    currentAddress = currentAddress.replace(currentAddress.substring(0, currentAddress.indexOf(",")), searchBarAddress);
+                }
+                Log.i(TAG, "current " + currentAddress);
+
+                isValidAddressWithNumber = true;
+                if (! Character.isDigit(currentAddress.trim().charAt(0)) && Character.isDigit(address.trim().charAt(0))) {
+                    Log.i(TAG, "address not started with number");
+                    isValidAddressWithNumber = false;
+                    presenter.getRequest().getIncident().setValidAddressWithNumber(false);
+                }
             }
-
-            final String address = addresses.get(index).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-            Log.i(TAG, "adress " + address);
-            final String city = addresses.get(index).getLocality();
-            Log.i(TAG, "city " + city);
-            final String country = addresses.get(index).getCountryName();
-            Log.i(TAG, "country " + country);
-
-
-            final String postalCode = addresses.get(index).getPostalCode();
-            Log.i(TAG, "cp " + postalCode);
-
-            currentAddress = address;
-
-            if ( searchBarAddress != null && ! "".equals(searchBarAddress)  ) {
-                currentAddress = currentAddress.replace(currentAddress.substring(0, currentAddress.indexOf(",")), searchBarAddress);
-            }
-            Log.i(TAG, "current " + currentAddress);
-
         } catch (IOException e) {
             Crashlytics.logException(e);
             Log.e(TAG, e.getMessage(), e);
         }
 
         setUpCurrentAdress(currentAddress, latlng);
+    }
+
+    private Address findLatLngWithAddress(String addressText) {
+
+        if (NetworkUtils.isConnected(getApplicationContext())) {
+            try {
+                Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+                List<Address> addresses =  geocoder.getFromLocationName(addressText, 1);
+                return addresses.get(0);
+            } catch (IOException e) {
+                Crashlytics.logException(e);
+                Log.e(TAG, e.getMessage(), e);
+                return null;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -801,13 +817,18 @@ public class AddAnomalyActivity extends BaseActivity implements AddAnomalyView {
     @OnClick(R.id.button_publish)
     public void onPublish() {
 
-        if (!isValidAddress) {
-            if (NetworkUtils.isConnected(getApplicationContext())) {
-                findAdresseWithLatLng(myLastPosition, null);
-                isValidAddress = true;
-            }
+        if (!isValidAddressWithNumber) {
+            showDialogError();
         }
-        presenter.onPublish();
+        else {
+            if (!isValidAddress && null != myLastPosition) {
+                if (NetworkUtils.isConnected(getApplicationContext())) {
+                    findAdresseWithLatLng(myLastPosition, null);
+                    isValidAddress = true;
+                }
+            }
+            presenter.onPublish();
+        }
 
     }
 
@@ -880,6 +901,87 @@ public class AddAnomalyActivity extends BaseActivity implements AddAnomalyView {
 
     }
 
+    /**
+     * Show dialog error when user click Publish
+     * with incomplete address.
+     */
+    private void showDialogError() {
+
+        Dialog dialog = new Dialog(this);
+
+        View viewInflated = LayoutInflater.from(this).inflate(R.layout.dialog_incomplete_address,null, false);
+
+        final EditText input = (EditText) viewInflated.findViewById(R.id.input_street_number);
+        final Spinner complementAddress = (Spinner)  viewInflated.findViewById(R.id.spinner_address_complement);
+
+        Button buttonPublish = ( Button ) viewInflated.findViewById(R.id.button_publish);
+        buttonPublish.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (input.getText().toString().length() > 0) {
+                    try {
+                        if (Integer.parseInt(input.getText().toString()) > 0) {
+                            String newAddress = "";
+                            if( complementAddress.getSelectedItem().toString().length() > 0) {
+                                newAddress = input.getText().toString()+complementAddress.getSelectedItem().toString().charAt(0) + " " + presenter.getRequest().getIncident().getAddress();
+                            } else{
+                                newAddress = input.getText().toString() + " " + presenter.getRequest().getIncident().getAddress();
+                            }
+
+                            presenter.getRequest().getIncident().setAddress(newAddress.trim());
+
+                            //find new latitude longitude code postal for newAddress
+                            Address address =findLatLngWithAddress(newAddress);
+                            if ( address != null) {
+                                presenter.getRequest().getIncident().setLat(String.valueOf(address.getLatitude()));
+                                presenter.getRequest().getIncident().setLng(String.valueOf(address.getLongitude()));
+                                presenter.getRequest().getPosition().setLatitude(address.getLatitude());
+                                presenter.getRequest().getPosition().setLongitude(address.getLongitude());
+                                presenter.getRequest().getIncident().setAddress(newAddress.replaceFirst("75[0-9][0-9][0-9]", address.getPostalCode()).trim());
+                            }
+
+                            isValidAddressWithNumber = true;
+                            onPublish();
+                            dialog.dismiss();
+                        }
+                    } catch ( NumberFormatException e ) {
+                        input.requestFocus();
+                    }
+                } else {
+                    input.requestFocus();
+                }
+            }
+        });
+
+        // set the custom dialog components - text, image and button
+        ImageView close = (ImageView) viewInflated.findViewById(R.id.btnCloseFailure);
+        // Close Button
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.setContentView(viewInflated);
+        dialog.setCancelable(true);
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+            // Fix Dialog Size
+            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+            lp.copyFrom(dialog.getWindow().getAttributes());
+            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
+            dialog.getWindow().setAttributes(lp);
+            dialog.show();
+        }
+    }
+
+    /**
+     * Patient dialog after publish incident.
+     */
     private void pleaseBePatientDialog() {
 
         if (null != greetingsDialog) greetingsDialog.dismiss();
@@ -901,6 +1003,24 @@ public class AddAnomalyActivity extends BaseActivity implements AddAnomalyView {
             greetingsDialogSendIncident.show();
         }
 
+    }
+
+    @Override
+    public void displayDialogDmrOffline() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyDialogTheme);
+        builder
+                .setTitle(R.string.information)
+                .setMessage(getString(R.string.dmr_offline_publish))
+                .setCancelable(false)
+                .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        presenter.saveDraft();
+                        dialog.dismiss();
+                        navigateBack();
+                    }
+                });
+
+        builder.create().show();
     }
 
 
@@ -1073,8 +1193,6 @@ public class AddAnomalyActivity extends BaseActivity implements AddAnomalyView {
     @Override
     public void onIncidentCreated(Integer incidentId) {
         presenter.uploadPictures(incidentId);
-//        startActivity(new Intent(AddAnomalyActivity.this, WelcomeMapActivity.class));
-//        finish();
     }
 
 
@@ -1091,17 +1209,17 @@ public class AddAnomalyActivity extends BaseActivity implements AddAnomalyView {
     @Override
     public void proposeDraft() {
         new AlertDialog.Builder(this)
-                .setTitle("Attention")
-                .setMessage("Vous n'avez pas finalisé votre déclaration d'anomalie.\nSouhaitez vous enregistrer un brouillon ?")
+                .setTitle(R.string.popup_error_title)
+                .setMessage(R.string.save_draft)
                 .setCancelable(true)
-                .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.label_yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         presenter.saveDraft();
                         dialog.cancel();
                         navigateBack();
                     }
-                }).setNegativeButton("Non", new DialogInterface.OnClickListener() {
+                }).setNegativeButton(R.string.label_no, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 presenter.removeDraft();
@@ -1109,6 +1227,14 @@ public class AddAnomalyActivity extends BaseActivity implements AddAnomalyView {
                 navigateBack();
             }
         }).show();
+    }
+
+    public void showHideAgentCommentaryField(final boolean agentConnected) {
+       if (agentConnected) {
+           layoutCommentAgent.setVisibility(LinearLayout.VISIBLE);
+       } else {
+           layoutCommentAgent.setVisibility(LinearLayout.GONE);
+       }
     }
 
     @Override

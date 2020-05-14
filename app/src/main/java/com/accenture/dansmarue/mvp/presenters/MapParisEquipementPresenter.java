@@ -213,6 +213,12 @@ public class MapParisEquipementPresenter extends BasePresenter<MapParisEquipemen
     }
 
     public List<Equipement> getListEquipementsOfTypeByDefault() {
+        if ( prefManager.getEquipementTypeByDefault() == null ) {
+            Log.w(TAG, "unexpected case");
+            if (prefManager.getTypesEquipement() != null && ! prefManager.getTypesEquipement().isEmpty() ) {
+                prefManager.setEquipementTypeByDefault(prefManager.getTypesEquipement().get(0));
+            }
+        }
         return prefManager.getEquipementTypeByDefault().getListEquipementByType();
     }
 

@@ -9,7 +9,7 @@ import java.util.List;
  */
 public interface CategoryView extends BaseView {
 
-    void updateListView(final List<Category> categories);
+    void updateListView(final List<Category> categories, boolean displayFavoriteItems);
 
     void onChildSelected(final Category category);
 

@@ -3,12 +3,13 @@ package com.accenture.dansmarue.mvp.presenters;
 import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 
 import com.accenture.dansmarue.R;
+import com.accenture.dansmarue.mvp.models.Category;
 import com.accenture.dansmarue.mvp.views.AddAnomalyView;
 import com.accenture.dansmarue.mvp.views.BaseView;
 import com.accenture.dansmarue.services.SiraApiService;
@@ -19,6 +20,7 @@ import com.accenture.dansmarue.services.models.SiraSimpleResponse;
 import com.accenture.dansmarue.utils.CategoryHelper;
 import com.accenture.dansmarue.utils.Constants;
 import com.accenture.dansmarue.utils.DateUtils;
+import com.accenture.dansmarue.utils.NetworkUtils;
 import com.accenture.dansmarue.utils.PrefManager;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.maps.model.LatLng;
@@ -76,16 +78,18 @@ public class AddAnomalyPresenter extends BasePresenter<AddAnomalyView> implement
         this.application = application;
     }
 
-    //TODO changer le mode de remplissage de la requete ? --> le remplissage au fil de l'eau permet de sauvegarder les brouillons au fur et à mesure du remplissage
     public void setCategory(final String categoryId) {
-        getRequest().getIncident().setCategoryId(categoryId);
-        getRequest().getIncident().setAlias(CategoryHelper.getAllCategories(application).get(categoryId).getName());
 
-        final String idParentCategory = CategoryHelper.getFirstParent(getRequest().getIncident().getCategoryId(), CategoryHelper.getAllCategories(application));
-//        getRequest().getIncident().setIconIncidentSignalement(CategoryHelper.CAT_ICONS.get(idParentCategory));
+        Category category = CategoryHelper.getAllCategories(application).get(categoryId);
+        if(category != null) {
+            getRequest().getIncident().setCategoryId(categoryId);
+            getRequest().getIncident().setAlias(category.getName());
 
-        getRequest().getIncident().setIconIncidentSignalement(CategoryHelper.MAP_GENERIC_PICTURES.get(idParentCategory));
+            final String idParentCategory = CategoryHelper.getFirstParent(getRequest().getIncident().getCategoryId(), CategoryHelper.getAllCategories(application));
 
+
+            getRequest().getIncident().setIconIncidentSignalement(CategoryHelper.MAP_GENERIC_PICTURES.get(idParentCategory));
+        }
 
     }
 
@@ -104,6 +108,10 @@ public class AddAnomalyPresenter extends BasePresenter<AddAnomalyView> implement
 
     public void setDescription(String description) {
         getRequest().getIncident().setDescriptive(description);
+    }
+
+    public void setCommentaireAgent(String description) {
+        getRequest().getIncident().setCommentaireAgent(description);
     }
 
     public void setPriority(Integer priorityId) {
@@ -178,8 +186,14 @@ public class AddAnomalyPresenter extends BasePresenter<AddAnomalyView> implement
 
     @Override
     public void onError(final Throwable e) {
-        Log.e(TAG, "onError", e);
-        view.showDialogErrorSaveDraft();
+        if (NetworkUtils.isConnected(application.getApplicationContext())){
+            Log.i(TAG, "DMR is off");
+            view.displayDialogDmrOffline();
+        } else {
+            Log.e(TAG, "onError", e);
+            view.showDialogErrorSaveDraft();
+        }
+
     }
 
 
@@ -192,15 +206,14 @@ public class AddAnomalyPresenter extends BasePresenter<AddAnomalyView> implement
     public void onSuccess(SaveIncidentResponse saveIncidentResponse) {
         if (null != saveIncidentResponse && null != saveIncidentResponse.getAnswer() && (saveIncidentResponse.getAnswer().getStatus()).equals(Constants.STATUT_WS_OK)) {
             Log.i(TAG, "onSuccess: save incident");
-            //we start by removing the potential draft
-            removeDraft();
-            // remove the model so its not savable anymore (and no more draft well be created after the onquit action)
-            request = null;
             //let know the view about the creation
             view.onIncidentCreated(saveIncidentResponse.getAnswer().getIncidentId());
         } else if (null != saveIncidentResponse && saveIncidentResponse.getErrorMessage() != null) {
             Log.i(TAG, "onError: save incident");
             view.showDialogErrorSaveDraft();
+        } else {
+            Log.i(TAG, "DMR is off");
+            view.displayDialogDmrOffline();
         }
     }
 
@@ -261,6 +274,11 @@ public class AddAnomalyPresenter extends BasePresenter<AddAnomalyView> implement
     }
 
 
+    /**
+     * Call Lutece Workflow DMR to initialiaze state incident
+     * @param incidentId
+     *          id incident
+     */
     private void callWorkFlow(@NonNull final Integer incidentId) {
         ProcessWorkflowRequest request = new ProcessWorkflowRequest();
         request.setId(incidentId.toString());
@@ -282,6 +300,10 @@ public class AddAnomalyPresenter extends BasePresenter<AddAnomalyView> implement
         @Override
         public void onSuccess(SiraSimpleResponse value) {
             Log.i(TAG, "onSuccess: workflow");
+            //we start by removing the potential draft
+            removeDraft();
+            // remove the model so its not savable anymore (and no more draft well be created after the onquit action)
+            request = null;
             view.showIncidentAndPhotosOkThankYou(true);
         }
 
@@ -320,7 +342,6 @@ public class AddAnomalyPresenter extends BasePresenter<AddAnomalyView> implement
             getRequest().getIncident().setIconParentId(idParentCategory);
 
             if (getRequest().getIncident().getIconIncidentSignalement()==0) {
-//                getRequest().getIncident().getPictures().setGenericPictureId(R.drawable.ano_outdoor_type);
                 getRequest().getIncident().getPictures().setGenericPictureId(R.drawable.ic_streetview_grey_24dp);
             }
 
@@ -378,6 +399,7 @@ public class AddAnomalyPresenter extends BasePresenter<AddAnomalyView> implement
         application.getApplicationContext().deleteFile(prefix + Constants.FILE_DRAFT_SUFFIXE);
     }
 
+
     public void savePictureInFile(final Bitmap thumbnail) {
         try {
             final String fileName = new Date().getTime() + Constants.FILE_PICTURE_SUFFIXE;
@@ -413,6 +435,10 @@ public class AddAnomalyPresenter extends BasePresenter<AddAnomalyView> implement
         getRequest().getIncident().deletePicture2();
         application.deleteFile(picture2.substring(picture2.lastIndexOf('/') + 1, picture2.length()));
         picture2 = null;
+    }
+
+    public void isAgentConnected () {
+        view.showHideAgentCommentaryField(prefManager.getIsAgent());
     }
 
     @Override
@@ -473,7 +499,7 @@ public class AddAnomalyPresenter extends BasePresenter<AddAnomalyView> implement
             Log.e(TAG, e.getMessage(), e);
 
             ++nbPhotosSentWithError;
-            callWorkFlowTest();
+            view.showIncidentAndPhotosOkThankYou(false);
 
 
         }

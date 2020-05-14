@@ -54,7 +54,7 @@
             android:textSize="20sp"
             android:visibility="gone" />
 
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/my_proper_location_button"
             android:layout_width="56dp"
             android:layout_height="56dp"
@@ -69,7 +69,7 @@
     </FrameLayout>
 
     <!-- By default, the fragment has no border or background. To provide a consistent visual appearance, nest the fragment within another layout element such as a CardView. -->
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/cardview_place_autocomplete_fragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -80,12 +80,12 @@
 
         <fragment
             android:id="@+id/place_autocomplete_fragment"
-            android:name="com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment"
+            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/autocomplete_cardview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -129,7 +129,7 @@
 
 
         </LinearLayout>
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
 
 </RelativeLayout>

@@ -4,8 +4,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
-import android.util.Log;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+
 
 import com.accenture.dansmarue.BuildConfig;
 import com.accenture.dansmarue.R;
@@ -14,13 +16,10 @@ import com.accenture.dansmarue.di.modules.PresenterModule;
 import com.accenture.dansmarue.mvp.presenters.SplashScreenPresenter;
 import com.accenture.dansmarue.mvp.views.SplashScreenView;
 import com.accenture.dansmarue.utils.Constants;
-import com.accenture.dansmarue.utils.MiscTools;
-import com.aritraroy.rxmagneto.core.RxMagneto;
+import com.accenture.dansmarue.utils.NetworkUtils;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import javax.inject.Inject;
-
-import io.reactivex.Single;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 
 
 /**
@@ -34,6 +33,8 @@ public class SplashScreenActivity extends BaseActivity implements SplashScreenVi
     private Long incidentId = null;
 
     private String anomalyType ="";
+
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @SuppressWarnings("WeakerAccess")
     @Inject
@@ -55,8 +56,16 @@ public class SplashScreenActivity extends BaseActivity implements SplashScreenVi
     }
 
     @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+    }
+
+
+    @Override
     protected void onViewReady(Bundle savedInstanceState, Intent intent) {
         super.onViewReady(savedInstanceState, intent);
+
         final String anomalyId = intent.getStringExtra(Constants.NOTIF_ANOMALY_ID_KEY);
         anomalyType = intent.getStringExtra(Constants.NOTIF_ANOMALY_TYPE);
 
@@ -64,69 +73,75 @@ public class SplashScreenActivity extends BaseActivity implements SplashScreenVi
             incidentId = Long.valueOf(anomalyId);
         }
 
-        // Check Version With RxMagneto and Go
-       retreiveAppVersionOnThePlayStore();
+        if (NetworkUtils.isConnected(this)) {
+            presenter.dmrIsOnline();
+        } else {
+            //check if user need update application
+            presenter.checkVersion();
+        }
+
+
     }
 
-    public void retreiveAppVersionOnThePlayStore(){
-        RxMagneto rxMagneto = RxMagneto.getInstance();
-        rxMagneto.initialize(this);
 
-        Log.i(TAG, "checkVersionAndPopup: package before " + BuildConfig.APPLICATION_ID);
+    /**
+     * Display popup to ask for dowload last version of the application.
+     */
+    public void displayPopupUpdateNotMandory() {
+
         final String packageDMRFinal = BuildConfig.APPLICATION_ID.endsWith(".debug") ? BuildConfig.APPLICATION_ID.substring(0, BuildConfig.APPLICATION_ID.length() - 6) : BuildConfig.APPLICATION_ID;
 
-        Single<String> version = rxMagneto.grabVersion(packageDMRFinal);
-        version.observeOn(AndroidSchedulers.mainThread())
-                .subscribe(versionStore -> {
-                    Log.i(TAG, "checkVersionAndPopup: package after " + packageDMRFinal);
-                    checkVersionAndPopup(String.valueOf(BuildConfig.VERSION_NAME), versionStore, packageDMRFinal);
-                }, throwable -> {
-                    Log.d("RxMagneto", "Error");
-                    presenter.checkAndLoadCategories();
+        AlertDialog.Builder builder = new AlertDialog.Builder(SplashScreenActivity.this, R.style.MyDialogTheme);
+        builder
+                .setMessage(getString(R.string.popup_msg))
+                .setCancelable(false)
+                .setPositiveButton(R.string.label_yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User clicked OK button
+                        dialog.dismiss();
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse("market://details?id=" + packageDMRFinal));
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+                .setNegativeButton(R.string.label_no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                        dialog.dismiss();
+                        presenter.checkAndLoadCategories();
+                    }
                 });
+
+        builder.create().show();
+
     }
 
-    public void checkVersionAndPopup(String versionAppTel, String versionAppStore, String packageDmrName) {
+    /**
+     * Display popup to force update.
+     */
+    public void displayPopupUpdateMandory() {
 
-//        versionAppTel = "2.0.2";
-        Integer result = MiscTools.versionCompare(versionAppTel, versionAppStore);
+        final String packageDMRFinal = BuildConfig.APPLICATION_ID.endsWith(".debug") ? BuildConfig.APPLICATION_ID.substring(0, BuildConfig.APPLICATION_ID.length() - 6) : BuildConfig.APPLICATION_ID;
 
-        Log.i(TAG, "checkVersionAndPopup: " + "onMyMobile : " + versionAppTel + " - on store : " + versionAppStore);
-        if (result < 0) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(SplashScreenActivity.this, R.style.MyDialogTheme);
+        builder
+                .setMessage(getString(R.string.popup_msg_mandatory))
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User clicked OK button
+                        dialog.dismiss();
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse("market://details?id=" + packageDMRFinal));
+                        startActivity(intent);
+                        finish();
+                    }
+                });
 
-            Log.i(TAG, "checkVersionAndPopup: " + "update please");
+        builder.create().show();
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(SplashScreenActivity.this, R.style.MyDialogTheme);
-            builder
-                    .setMessage(getString(R.string.popup_msg))
-                    .setCancelable(false)
-                    .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // User clicked OK button
-                            dialog.dismiss();
-                            Intent intent = new Intent(Intent.ACTION_VIEW);
-                            intent.setData(Uri.parse("market://details?id=" + packageDmrName));
-                            startActivity(intent);
-                            finish();
-                        }
-                    })
-                    .setNegativeButton("Non", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // User cancelled the dialog
-                            dialog.dismiss();
-                            presenter.checkAndLoadCategories();
-                        }
-                    });
-
-            builder.create().show();
-
-
-        } else {
-            Log.i(TAG, "checkVersionAndPopup: " + "no update is needed");
-            presenter.checkAndLoadCategories();
-        }
     }
-
 
     /**
      * {@inheritDoc}
@@ -161,6 +176,7 @@ public class SplashScreenActivity extends BaseActivity implements SplashScreenVi
         }
 
         // close this activity
+
         finish();
     }
 
@@ -179,13 +195,49 @@ public class SplashScreenActivity extends BaseActivity implements SplashScreenVi
                 });
 
         builder.create().show();
-
     }
 
 
     @Override
     public void dataReady() {
         presenter.onDataReady();
+    }
+
+    /**
+     * Display alert dialog if back office is down.
+     */
+    public void displayDialogDmrOffline() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(SplashScreenActivity.this, R.style.MyDialogTheme);
+        builder
+                .setTitle(R.string.information)
+                .setMessage(getString(R.string.dmr_offline))
+                .setCancelable(false)
+                .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                        dialog.dismiss();
+                        finish();
+                    }
+                });
+
+        builder.create().show();
+    }
+
+    @Override
+    public void displayDialogMessageInformation( String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(SplashScreenActivity.this, R.style.MyDialogTheme);
+        builder
+                .setMessage(message.replaceFirst("\\.","\n\n"))
+                .setCancelable(false)
+                .setNegativeButton("Fermer", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                        dialog.dismiss();
+                        presenter.checkVersion();
+                    }
+                });
+        builder.create().show();
     }
 
 

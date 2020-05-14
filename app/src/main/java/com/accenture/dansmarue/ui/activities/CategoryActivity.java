@@ -1,6 +1,7 @@
 package com.accenture.dansmarue.ui.activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,8 +16,11 @@ import com.accenture.dansmarue.mvp.models.Category;
 import com.accenture.dansmarue.mvp.presenters.CategoryPresenter;
 import com.accenture.dansmarue.mvp.views.CategoryView;
 import com.accenture.dansmarue.ui.adapters.CategoryAdapter;
+import com.accenture.dansmarue.utils.CategoryHelper;
 import com.accenture.dansmarue.utils.Constants;
+import com.accenture.dansmarue.utils.PrefManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -28,6 +32,8 @@ public class CategoryActivity extends BaseActivity implements AdapterView.OnItem
 
     private static final String TAG = CategoryActivity.class.getName();
 
+    private final static int REQUEST_FAVORITE_ITEM = 200;
+
     @Inject
     protected CategoryPresenter presenter;
     @BindView(R.id.categories)
@@ -38,6 +44,7 @@ public class CategoryActivity extends BaseActivity implements AdapterView.OnItem
 
     private CategoryAdapter adapter;
     private String idPreviousParent;
+    private Category lastParentItemSelected;
 
     @Override
     protected void onViewReady(final Bundle savedInstanceState, final Intent intent) {
@@ -47,6 +54,7 @@ public class CategoryActivity extends BaseActivity implements AdapterView.OnItem
         Log.i(TAG, "onViewReady: load type outdoor");
         presenter.loadCategories();
         idPreviousParent = null;
+        lastParentItemSelected = null;
 
     }
 
@@ -58,13 +66,30 @@ public class CategoryActivity extends BaseActivity implements AdapterView.OnItem
 
     @OnClick(R.id.arrow_back_type)
     public void backType() {
-        Log.i(TAG, "customBack: " + idPreviousParent);
-        if (idPreviousParent == null) {
-            finish();
-        } else {
-            presenter.onCategorySelected(idPreviousParent);
-        }
 
+        if (adapter.getDisplayFavoriteItems()) {
+            if(lastParentItemSelected ==null) {
+                titleCategory.setText(R.string.text_type);
+                presenter.extractChildren(Category.ID_FIRST_PARENT);
+            } else {
+                titleCategory.setText(lastParentItemSelected.getName());
+                presenter.extractChildren(lastParentItemSelected.getId());
+            }
+
+        } else {
+            Log.i(TAG, "customBack: " + idPreviousParent);
+            if (idPreviousParent == null) {
+                finish();
+            } else {
+                presenter.onCategorySelected(idPreviousParent);
+            }
+        }
+    }
+
+    @OnClick(R.id.favoris)
+    public void openFavorisItems() {
+        final Intent intent = new Intent(CategoryActivity.this, FavoriteCategoryActivity.class);
+        startActivityForResult(intent, REQUEST_FAVORITE_ITEM);
     }
 
 
@@ -91,7 +116,7 @@ public class CategoryActivity extends BaseActivity implements AdapterView.OnItem
     }
 
     @Override
-    public void updateListView(final List<Category> categories) {
+    public void updateListView(final List<Category> categories, boolean displayFavoriteItems) {
         if (adapter == null) {
             adapter = new CategoryAdapter(this, R.layout.category, categories);
             listView.setAdapter(adapter);
@@ -99,6 +124,7 @@ public class CategoryActivity extends BaseActivity implements AdapterView.OnItem
             adapter.clear();
             adapter.addAll(categories);
         }
+        adapter.setDisplayFavoriteItems(displayFavoriteItems);
         adapter.notifyDataSetChanged();
     }
 
@@ -111,6 +137,11 @@ public class CategoryActivity extends BaseActivity implements AdapterView.OnItem
         } else {
             intent.putExtra(Constants.EXTRA_CATEGORY_NAME, category.getName());
         }
+
+        if(category.getMessageHorsDMR() != null) {
+            intent.putExtra(Constants.EXTRA_MESSAGE_HORS_DMR, category.getMessageHorsDMR());
+        }
+
         setResult(RESULT_OK, intent);
         finish();
     }
@@ -118,6 +149,7 @@ public class CategoryActivity extends BaseActivity implements AdapterView.OnItem
     @Override
     public void onParentSelected(final Category catParent) {
         idPreviousParent = catParent.getParentId();
+        lastParentItemSelected = catParent;
         if (catParent.getName() != null ) {
             titleCategory.setText(catParent.getName());
         } else {
@@ -129,5 +161,17 @@ public class CategoryActivity extends BaseActivity implements AdapterView.OnItem
     @Override
     public void categoriesReady() {
         presenter.extractChildren(Category.ID_FIRST_PARENT);
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode ==RESULT_OK) {
+            Category favoriteCategory = new Category();
+            favoriteCategory.setId(data.getStringExtra(Constants.EXTRA_CATEGORY_ID));
+            favoriteCategory.setName(data.getStringExtra(Constants.EXTRA_CATEGORY_NAME));
+            if (data.hasExtra(Constants.EXTRA_MESSAGE_HORS_DMR)) {
+                favoriteCategory.setMessageHorsDMR(data.getStringExtra(Constants.EXTRA_MESSAGE_HORS_DMR));
+            }
+            onChildSelected(favoriteCategory);
+        }
     }
 }

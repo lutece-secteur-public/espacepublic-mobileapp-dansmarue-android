@@ -1,9 +1,11 @@
 package com.accenture.dansmarue.ui.fragments;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+
 import android.view.Gravity;
 import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
 
 import com.accenture.dansmarue.R;
 import com.accenture.dansmarue.app.DansMaRueApplication;

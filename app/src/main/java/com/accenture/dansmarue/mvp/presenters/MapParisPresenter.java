@@ -3,6 +3,8 @@ package com.accenture.dansmarue.mvp.presenters;
 import android.app.Application;
 import android.util.Log;
 
+import com.accenture.dansmarue.R;
+import com.accenture.dansmarue.mvp.models.DossierRamen;
 import com.accenture.dansmarue.mvp.models.Incident;
 import com.accenture.dansmarue.mvp.models.Position;
 import com.accenture.dansmarue.mvp.views.BaseView;
@@ -17,9 +19,12 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.GsonBuilder;
 
 import org.apache.commons.collections4.CollectionUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +33,9 @@ import javax.inject.Inject;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.ResponseBody;
 
 /**
  * Created by PK on 19/04/2017.
@@ -51,14 +58,32 @@ public class MapParisPresenter extends BasePresenter<MapParisView> implements Si
 
     }
 
+    /**
+     * On selected location change.
+     * Call WS to load close incident
+     * @param newLocation
+     *        selected location
+     *
+     */
     public void locationChanged(final Position newLocation) {
+
+        view.clearAnomaly();
+        view.updateAnomalyList(null,true);
+
         GetIncidentsByPositionRequest request = new GetIncidentsByPositionRequest();
         request.setPosition(newLocation);
         request.setGuid(prefManager.getGuid());
+        //Get incidents DMR
         service.getIncidentsByPosition(request)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this);
+
+        //GetDosierRamen
+        service.getDossiersRamenByPosition(newLocation)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe( new GetDossiersRamenByPositionObserver());
     }
 
     @Override
@@ -68,11 +93,50 @@ public class MapParisPresenter extends BasePresenter<MapParisView> implements Si
 
     @Override
     public void onSuccess(final GetIncidentsByPositionResponse value) {
+        Log.i(TAG,value.toString());
         if (null != value && null != value.getAnswer() && value.getAnswer().getStatus().equals(Constants.STATUT_WS_OK)) {
             if (CollectionUtils.isNotEmpty(value.getAnswer().getClosestIncidents())) {
-                final List<MarkerOptions> markers = new ArrayList<>(value.getAnswer().getClosestIncidents().size());
-                final List<Incident> anomalyList = new ArrayList<>(value.getAnswer().getClosestIncidents().size());
-                for (Incident incident : value.getAnswer().getClosestIncidents()) {
+                displayIncidents(value.getAnswer().getClosestIncidents());
+            } else if (CollectionUtils.isNotEmpty(value.getAnswer().getIncident())) {
+                displayIncidents(value.getAnswer().getIncident());
+                LatLng latlngIncident = new LatLng(Double.valueOf(value.getAnswer().getIncident().get(0).getLat()),Double.valueOf(value.getAnswer().getIncident().get(0).getLng()));
+                view.callBackFindByNumber(null, false, latlngIncident);
+            }
+        } else if ( null != value.getErrorMessage()) {
+            view.callBackFindByNumber(value.getErrorMessage(), false,null);
+        } else if ( value.getAnswer() == null) {
+            view.callBackFindByNumber(null, true,null);
+        }
+    }
+
+    @Override
+    public void onError(final Throwable e) {
+        Log.e(TAG, e.getMessage(), e);
+        networkError();
+    }
+
+    /**
+     * Call WebService Find incident by number
+     * @param incidentNumber
+     */
+    public void findByNumber(final String incidentNumber) {
+           service.getAnomalieByNumber(incidentNumber)
+                   .subscribeOn(Schedulers.io())
+                   .observeOn(AndroidSchedulers.mainThread())
+                   .subscribe(this);
+    }
+
+    /**
+     * Display on map DMR and Ramen incident.
+     * @param incidentsTodisplay
+     *          list incident to display on map
+     */
+    private void displayIncidents(List <Incident> incidentsTodisplay) {
+
+            if (CollectionUtils.isNotEmpty(incidentsTodisplay)) {
+                final List<MarkerOptions> markers = new ArrayList<>(incidentsTodisplay.size());
+                final List<Incident> anomalyList = new ArrayList<>(incidentsTodisplay.size());
+                for (Incident incident : incidentsTodisplay) {
                     LatLng newLatLng = new LatLng(Double.parseDouble(incident.getLat()), Double.parseDouble(incident.getLng()));
                     if (incident.isFromRamen()) {
                         // Category "Encombrants"
@@ -82,19 +146,13 @@ public class MapParisPresenter extends BasePresenter<MapParisView> implements Si
                     if (CategoryHelper.CAT_ICONS.get(idParentCategory) != null) {
                         if (incident.isResolu()) {
                             incident.setIconIncidentSignalement(CategoryHelper.MAP_ICONS_RESOLVED.get(idParentCategory));
-//                            incident.setIconIncidentSignalement(CategoryHelper.MAP_GENERIC_PICTURES.get(idParentCategory));
-
                         } else {
                             incident.setIconIncidentSignalement(CategoryHelper.MAP_ICONS.get(idParentCategory));
-//                            incident.setIconIncidentSignalement(CategoryHelper.MAP_GENERIC_PICTURES.get(idParentCategory));
 
                             anomalyList.add(incident);
                         }
-//                        incident.getPictures().setGenericPictureId(CategoryHelper.MAP_GENERIC_PICTURES.get(idParentCategory));
-//                        incident.getPictures().setGenericPictureId(CategoryHelper.CAT_ICONS.get(idParentCategory));
 
                         incident.getPictures().setGenericPictureId(CategoryHelper.MAP_GENERIC_PICTURES.get(idParentCategory));
-
 
                         // anchor : centre de l'image = position gps
                         markers.add(new MarkerOptions()
@@ -106,25 +164,11 @@ public class MapParisPresenter extends BasePresenter<MapParisView> implements Si
                 }
                 view.updateAnomalyMarkers(markers);
 
-                view.updateAnomalyList(anomalyList);
+                view.updateAnomalyList(anomalyList, false);
                 view.updatePosMarker();
             } else {
-                view.clearAnomaly();
-                view.updateAnomalyList(null);
                 view.updatePosMarker();
             }
-        } else {
-            view.clearAnomaly();
-            view.updateAnomalyList(null);
-            view.updatePosMarker();
-        }
-
-    }
-
-    @Override
-    public void onError(final Throwable e) {
-        Log.e(TAG, e.getMessage(), e);
-        networkError();
     }
 
 
@@ -148,4 +192,32 @@ public class MapParisPresenter extends BasePresenter<MapParisView> implements Si
     protected BaseView getView() {
         return view;
     }
+
+
+    private class GetDossiersRamenByPositionObserver implements SingleObserver<ResponseBody> {
+
+        @Override
+        public void onSubscribe(Disposable d) {
+        }
+
+        @Override
+        public void onSuccess(ResponseBody value) {
+
+            if (null != value) {
+                try {
+                    DossierRamen[] dossiers =  new GsonBuilder().create().fromJson("["+value.string()+"]",DossierRamen[].class);
+                    List<Incident> incidents = DossierRamen.convertToIncident(dossiers);
+                    displayIncidents(incidents);
+                } catch (IOException e) {
+                    Log.e(TAG, e.getMessage(), e);
+                }
+            }
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Log.e(TAG, e.getMessage(), e);
+        }
+    }
+
 }

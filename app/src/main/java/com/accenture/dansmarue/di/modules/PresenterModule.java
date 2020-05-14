@@ -104,8 +104,8 @@ public class PresenterModule {
 
     @Provides
     @ActivityScope
-    CategoryPresenter provideCategoryPresenter(final Application application) {
-        return new CategoryPresenter(application, (CategoryView) this.view);
+    CategoryPresenter provideCategoryPresenter(final Application application, final PrefManager prefManager) {
+        return new CategoryPresenter(application, (CategoryView) this.view, prefManager);
     }
 
     @Provides

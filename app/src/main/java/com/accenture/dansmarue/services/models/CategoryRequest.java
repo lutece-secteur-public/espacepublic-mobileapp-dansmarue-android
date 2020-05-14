@@ -1,5 +1,6 @@
 package com.accenture.dansmarue.services.models;
 
+import com.accenture.dansmarue.BuildConfig;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -15,8 +16,13 @@ public class CategoryRequest extends SiraRequest {
     @Expose
     private String curVersion;
 
+    @SerializedName("curVersionMobileProd")
+    @Expose
+    private String curVersionMobileProd;
+
     public CategoryRequest(String curVersion) {
         this.curVersion = curVersion;
+        this.curVersionMobileProd = BuildConfig.VERSION_NAME;
     }
 
     @Override

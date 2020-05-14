@@ -23,15 +23,22 @@ public class Incident {
 
     public static final String RAMEN_SOURCE = "Ramen";
     public static final String STATE_RESOLVED = "R";
+    public static final String STATE_OPEN = "O";
+    public static final String STATE_NOT_RESOLVABLE = "ONR";  //Anomalie dans un statut non résolvalble
 
     @Expose
     private String address;
     @Expose
     private String descriptive = "";
     @Expose
+    private String commentaireAgent = "";
+    @Expose
     private String categoryId;
     private String date;
     private long id;
+    @SerializedName("numero")
+    private String reference;
+    private String token;
     @Expose(serialize = false)
     private Pictures pictures;
     private int invalidations;
@@ -48,6 +55,9 @@ public class Incident {
 
     private boolean isIncidentFollowedByUser;
     private boolean isResolvable;
+    private boolean isValidAddressWithNumber = true;
+    @SerializedName("isIncidentAnonyme")
+    private boolean isAnonyme;
 
     private List<Encombrants> encombrants;
 
@@ -79,6 +89,7 @@ public class Incident {
         return "Incident{" +
                 "address='" + address + '\'' +
                 ", descriptive='" + descriptive + '\'' +
+                ", commentaire agent='" + commentaireAgent + '\'' +
                 ", categoryId='" + categoryId + '\'' +
                 ", date='" + date + '\'' +
                 ", id=" + id +
@@ -184,7 +195,6 @@ public class Incident {
         this.date = date;
     }
 
-
     public long getId() {
         return id;
     }
@@ -193,6 +203,21 @@ public class Incident {
         this.id = id;
     }
 
+    public String getReference() {
+        return reference;
+    }
+
+    public void setReference(String reference) {
+        this.reference = reference;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 
     public int getInvalidations() {
         return invalidations;
@@ -211,13 +236,21 @@ public class Incident {
         this.state = state;
     }
 
-
     public String getDescriptive() {
         return descriptive;
     }
 
     public void setDescriptive(String descriptive) {
         this.descriptive = descriptive;
+    }
+
+
+    public String getCommentaireAgent() {
+        return commentaireAgent;
+    }
+
+    public void setCommentaireAgent(String commentaireAgent) {
+        this.commentaireAgent = commentaireAgent;
     }
 
     public int getPriorityId() {
@@ -292,7 +325,20 @@ public class Incident {
             return fixUrlPictures(pictures.getIncidentPicture());
         }
         if (CollectionUtils.isNotEmpty(getAllPictures())) {
-            return fixUrlPictures(getAllPictures().get(0));
+            int idPhotoCur = 0;
+            String firstUrlPicture = fixUrlPictures(getAllPictures().get(0));
+            for(String urlPicture : getAllPictures()){
+                String idPhoto =  urlPicture.substring(urlPicture.lastIndexOf("=")+1);
+                try {
+                    if (Integer.parseInt(idPhoto) > idPhotoCur) {
+                        firstUrlPicture = urlPicture;
+                        idPhotoCur = Integer.parseInt(idPhoto);
+                    }
+                } catch (NumberFormatException e) {
+                    return firstUrlPicture;
+                }
+            }
+            return firstUrlPicture;
         }
         return null;
     }
@@ -363,6 +409,8 @@ public class Incident {
     public String getOrigin() {
         return Constants.ORIGIN_ANDROID;
     }
+
+    public boolean isAnonyme() { return isAnonyme; }
 
     /**
      * FIXME !!!!!!!!!!
@@ -444,6 +492,13 @@ public class Incident {
         this.guid = guid;
     }
 
+    public boolean isValidAddressWithNumber() {
+        return isValidAddressWithNumber;
+    }
+
+    public void setValidAddressWithNumber(boolean validAddressWithNumber) {
+        isValidAddressWithNumber = validAddressWithNumber;
+    }
 
     /**
      * Inner class to hold pictures URL

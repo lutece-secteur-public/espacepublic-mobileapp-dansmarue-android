@@ -2,6 +2,7 @@ package com.accenture.dansmarue.ui.fragments;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,6 +12,8 @@ import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -18,34 +21,43 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.CardView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.accenture.dansmarue.ui.activities.SplashScreenActivity;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AlertDialog;
+import androidx.cardview.widget.CardView;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.accenture.dansmarue.R;
 import com.accenture.dansmarue.app.DansMaRueApplication;
 import com.accenture.dansmarue.di.components.DaggerPresenterComponent;
 import com.accenture.dansmarue.di.modules.PresenterModule;
+import com.accenture.dansmarue.mvp.models.FavoriteAddress;
 import com.accenture.dansmarue.mvp.models.Incident;
 import com.accenture.dansmarue.mvp.models.Position;
 import com.accenture.dansmarue.mvp.presenters.MapParisPresenter;
 import com.accenture.dansmarue.mvp.views.MapParisView;
+import com.accenture.dansmarue.ui.activities.FavoriteAddressActivity;
 import com.accenture.dansmarue.ui.activities.TypeEquipementChooser;
+import com.accenture.dansmarue.utils.Constants;
 import com.accenture.dansmarue.utils.MiscTools;
 import com.accenture.dansmarue.utils.NetworkUtils;
+import com.accenture.dansmarue.utils.PrefManager;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -58,11 +70,6 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
-import com.google.android.gms.location.places.AutocompleteFilter;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.Places;
-import com.google.android.gms.location.places.ui.PlaceSelectionListener;
-import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -72,16 +79,24 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.RectangularBounds;
+import com.google.android.libraries.places.api.model.TypeFilter;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link androidx.fragment.app.Fragment} subclass.
  * Activities that contain this fragment must implement the
  * {@link MapParisFragment.OnMapParisFragmentInteractionListener} interface
  * to handle interaction events.
@@ -100,15 +115,18 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
     private GoogleMap googleMap;
     private GoogleApiClient mGoogleApiClient;
 
+    private PrefManager prefManager;
 
     private boolean validLocation = true;
     private LatLng myCurrentLocationPosition;
 
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private final static int REQUEST_LOCATION = 199;
+    private final static int REQUEST_FAVORITE_ADDRESS = 200;
 
     private ImageView locationButton;
     private FloatingActionButton myProperFloatActionButton;
+    private FloatingActionButton findByNumberButton;
     private BroadcastReceiver gpsReceiver;
     private BroadcastReceiver internetReceiver;
 
@@ -117,7 +135,11 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
 
     private Boolean searchBarMode = false;
 
-    private String searchBarAddress;
+    private String searchBarAddress ="";
+    private String favoriteAddressSelect="";
+    private String searchNumberIncident="";
+
+    private Dialog dialogFindByNumber;
 
     /**
      * My position (choosen) marker
@@ -166,11 +188,28 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
             initAutoCompleteSearchBar();
             initLocationButton();
             intLongPress();
-
+            initFavoriteAddress();
         }
 
     }
 
+    /**
+     * Init favorite address function.
+     */
+    public void initFavoriteAddress() {
+       ImageView imgViewFavoriteAddress =  getView().findViewById(R.id.favoris);
+       imgViewFavoriteAddress.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               Intent intent = new Intent(getActivity(), FavoriteAddressActivity.class);
+               startActivityForResult(intent, REQUEST_FAVORITE_ADDRESS);
+           }
+       });
+    }
+
+    /**
+     * Init on long press on map function.
+     */
     private void intLongPress() {
         googleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
@@ -178,6 +217,7 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
                 if (myPrecisionMode == true) activity.onClickPrecisePosition();
                 longPress = true;
                 searchBarMode = false;
+                favoriteAddressSelect="";
                 updateLocation(latLng);
             }
         });
@@ -185,32 +225,22 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
 
     private void popInGps() {
         if (!NetworkUtils.isGpsEnable(getContext())) {
-//            Toast.makeText(getContext(), "Merci d'activer votre GPS.", Toast.LENGTH_SHORT).show();
             Log.i(TAG, "popInGps: +1");
             enableLocationViaGooglePopUp();
         }
     }
 
+    /**
+     * Init google map.
+     * @param map
+     */
     private void initMap(GoogleMap map) {
         googleMap = map;
         googleMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
         googleMap.setOnMarkerClickListener(this);
         googleMap.getUiSettings().setZoomControlsEnabled(true);
         if (null == myCurrentLocationPosition || validLocation == false) {
-
             updateMapToCentralParis();
-
-//            googleMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
-//                @Override
-//                public void onMyLocationChange(Location location) {
-//                    if (null != googleMap) {
-//                        if (null != googleMap.getMyLocation()) {
-//                            updateLocation(new LatLng(googleMap.getMyLocation().getLatitude(), googleMap.getMyLocation().getLongitude()));
-//                            googleMap.setOnMyLocationChangeListener(null);
-//                        }
-//                    }
-//                }
-//            });
         } else {
             updateLocation(myCurrentLocationPosition);
         }
@@ -218,39 +248,51 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
 
     }
 
+    /**
+     * Center map on Paris.
+     */
     private void updateMapToCentralParis() {
-
         if (null != googleMap) {
             LatLng centralParis = new LatLng(48.864716, 2.349014);
-//            myPosMarker = googleMap.addMarker(new MarkerOptions().position(centralParis).icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_pink)));
 
 //        By Default, we center the map on Notre Dame
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(centralParis, 12));
         }
     }
 
+    /**
+     * Init module auto complete search address.
+     */
     private void initAutoCompleteSearchBar() {
+
+        if (!Places.isInitialized()) {
+            Places.initialize(getContext(), getString(R.string.google_maps_key));
+        }
+
+        // Create a new Places client instance.
+        PlacesClient placesClient = Places.createClient(getContext());
+
         //        Search and place pin
-        SupportPlaceAutocompleteFragment autocompleteFragment = (SupportPlaceAutocompleteFragment)
+        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getChildFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
 
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.values()));
 //        Be more specific : limit result to a rectangle Meudon > Bobigny
-        autocompleteFragment.setBoundsBias(parisBounds);
+        autocompleteFragment.setLocationBias(RectangularBounds.newInstance(parisBounds));
         autocompleteFragment.setHint(getString(R.string.google_searchbar_wording));
 
+
 //        Limit to France
-        AutocompleteFilter autocompleteFilter = new AutocompleteFilter.Builder()
-                .setCountry("Fr")
-                .setTypeFilter(AutocompleteFilter.TYPE_FILTER_ADDRESS)
-                .build();
-        autocompleteFragment.setFilter(autocompleteFilter);
+        autocompleteFragment.setCountry("Fr");
+        autocompleteFragment.setTypeFilter(TypeFilter.ADDRESS);
 
 //        Search Results
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
-            public void onPlaceSelected(Place place) {
+            public void onPlaceSelected(@NonNull Place place) {
                 if (null != place) {
                     searchBarMode = true;
+                    favoriteAddressSelect="";
                     LatLng latLngPlace = place.getLatLng();
                     if (myPrecisionMode == true) {
                         precisePositionModeFunction(false);
@@ -263,15 +305,15 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
             }
 
             @Override
-            public void onError(Status status) {
+            public void onError(@NonNull Status status) {
                 Log.i(TAG, "onError: " + status);
             }
-        });
-
-
+        } );
     }
 
-
+    /**
+     * Init my current position function and find by number.
+     */
     private void initLocationButton() {
         permissionCheck = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION);
         //        No Geolocation Button if Permission has not been granted and Gps is NOT enable
@@ -284,49 +326,67 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
             locationNetwork = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
 
             // Zoom on my position at the beginnning
-            if (!searchBarMode) searchPositionAndUpdate(false);
+            if (!searchBarMode && favoriteAddressSelect.length() ==  0 ) searchPositionAndUpdate(false);
 
             // TODO Check LastLocation
             // How to find, customize and position the location button
             locationButton = (ImageView) getView().findViewWithTag("GoogleMapMyLocationButton");
-            locationButton.setVisibility(View.INVISIBLE);
-            locationButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (!myPrecisionMode) {
-                        searchBarMode = false;
-                        searchPositionAndUpdate(true);
+            if ( null != locationButton) {
+                locationButton.setVisibility(View.INVISIBLE);
+                locationButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!myPrecisionMode && favoriteAddressSelect.length() ==  0) {
+                            searchBarMode = false;
+                            searchPositionAndUpdate(true);
+                        }
                     }
-                }
-            });
+                });
 
 
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(160, 160); // size of button in dp
-            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
-            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(160, 160); // size of button in dp
+                params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
+                params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
 
 //            Fix the position of the LocationButton (convert DP to pixels)
-            int rightMargin = (int) ((13) * Resources.getSystem().getDisplayMetrics().density);
-            int bottomMargin = (int) ((204) * Resources.getSystem().getDisplayMetrics().density);
-            params.setMargins(rightMargin, 0, 0, bottomMargin);
-            locationButton.setLayoutParams(params);
+                int rightMargin = (int) ((13) * Resources.getSystem().getDisplayMetrics().density);
+                int bottomMargin = (int) ((204) * Resources.getSystem().getDisplayMetrics().density);
+                params.setMargins(rightMargin, 0, 0, bottomMargin);
+                locationButton.setLayoutParams(params);
 
-            myProperFloatActionButton = (FloatingActionButton) getView().findViewById(R.id.my_proper_location_button);
-            myProperFloatActionButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.white)));
-            myProperFloatActionButton.setVisibility(View.VISIBLE);
+                myProperFloatActionButton = (FloatingActionButton) getView().findViewById(R.id.my_proper_location_button);
+                myProperFloatActionButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.white)));
+                myProperFloatActionButton.setVisibility(View.VISIBLE);
 
-            myProperFloatActionButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (!NetworkUtils.isGpsEnable(getContext())) enableLocationViaGooglePopUp();
-                    locationButton.performClick();
-                }
-            });
+                myProperFloatActionButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        favoriteAddressSelect="";
+                        if (!NetworkUtils.isGpsEnable(getContext())) enableLocationViaGooglePopUp();
+                        locationButton.performClick();
+                    }
+                });
 
+                //Find signalement by numero
+                findByNumberButton = (FloatingActionButton) getView().findViewById(R.id.find_by_number_button);
+                findByNumberButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getActivity(), R.color.white)));
+                findByNumberButton.setVisibility(View.VISIBLE);
+                findByNumberButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showDialogFindByNumber(null);
+                    }
+                });
+
+            }
         }
 
     }
 
+    /**
+     * Search select position.
+     * @param popUpEnable
+     */
     private void searchPositionAndUpdate(boolean popUpEnable) {
         if (null != googleMap) {
 
@@ -386,6 +446,7 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
                 googleMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
                     @Override
                     public void onCameraIdle() {
+                        favoriteAddressSelect="";
                         //Get latlng at the center by calling
                         final LatLng midLatLng = googleMap.getCameraPosition().target;
                         if (myCurrentLocationPosition == null || !myCurrentLocationPosition.equals(midLatLng)) {
@@ -404,7 +465,9 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
 
                 anomalyPinBlack.setVisibility(View.GONE);
                 anomalyHowToPinBlack.setVisibility(View.GONE);
-                anomalyChoiceBox.setVisibility(View.VISIBLE);
+                if (prefManager.getTypesEquipement() != null) {
+                    anomalyChoiceBox.setVisibility(View.VISIBLE);
+                }
 
             }
 
@@ -413,6 +476,14 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
 
     }
 
+    /**
+     * Check if network or gps is enable.
+     * @return true is No network and No Gps
+     */
+    public boolean isNotConnectedMode() {
+
+        return !NetworkUtils.isConnected(getContext()) && !NetworkUtils.isGpsEnable(getContext());
+    }
 
     public LatLng getMyCurrentLocationPosition() {
         return myCurrentLocationPosition;
@@ -427,8 +498,14 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
         return searchBarMode;
     }
 
+    public String getFavoriteAddressSelect() {
+        return favoriteAddressSelect;
+    }
+
+    /**
+     * Selected location is invalid.
+     */
     public void invalidLocation() {
-//        if (validLocation && getContext() != null) {
         if (getContext() != null) {
 
             new AlertDialog.Builder(getContext()).setMessage(R.string.not_in_paris)
@@ -458,6 +535,12 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
 
     public void locationChanged(LatLng location) {
 
+        //location not changed
+        Boolean locationChanged = true;
+        if( myCurrentLocationPosition != null && location.latitude == myCurrentLocationPosition.latitude && location.longitude == myCurrentLocationPosition.longitude ) {
+            locationChanged = false;
+        }
+
         validLocation = true;
         myCurrentLocationPosition = location;
         Log.i(TAG, "locationChanged: LAT current / location" + myCurrentLocationPosition.latitude + " - " + location.latitude);
@@ -474,8 +557,6 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
         }
         longPress = false;
 
-//        myPosMarker = googleMap.addMarker(new MarkerOptions().position(myCurrentLocationPosition).icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_pink)));
-
         if (NetworkUtils.isConnected(getContext())) {
 
             // Pay Attention... My MapFragement has disappeared - click on bottom bar but geocoder is still running ...
@@ -488,40 +569,56 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
 
                     try {
 
-                        final List<Address> addresses = geocoder.getFromLocation(location.latitude, location.longitude, 2);
-                        int index = 0;
+                        String currentAdress = "";
+                        final List<Address> addresses = geocoder.getFromLocation(location.latitude, location.longitude, 4);
+                        if ( addresses != null && !addresses.isEmpty()) {
+                            EditText searchBarText = (EditText) getChildFragmentManager().findFragmentById(R.id.place_autocomplete_fragment).getView().findViewById(R.id.places_autocomplete_search_input);
 
-                        if(addresses.get(index).getThoroughfare() == null) {
-                            //fisrt address as consider invalid
-                            index = 1;
-                        }
+                            final Address addressSelect = MiscTools.selectAddress(addresses, getString(R.string.city_name), searchBarMode,searchBarText.getText().toString());
 
+                            final String address = addressSelect.getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+                            Log.i(TAG, "adress " + address);
+                            final String city = addressSelect.getLocality();
+                            Log.i(TAG, "city " + city);
 
-                        final String address = addresses.get(index).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-                        Log.i(TAG, "adress " + address);
-                        final String city = addresses.get(index).getLocality();
-                        Log.i(TAG, "city " + city);
+                            final String country = addressSelect.getCountryName();
+                            Log.i(TAG, "country " + country);
+                            final String postalCode = addressSelect.getPostalCode();
+                            Log.i(TAG, "cp " + postalCode);
 
-                        final String country = addresses.get(index).getCountryName();
-                        Log.i(TAG, "country " + country);
-                        final String postalCode = addresses.get(index).getPostalCode();
-                        Log.i(TAG, "cp " + postalCode);
-
-                        final String currentAdress = address;
-                        Log.i(TAG, "current " + currentAdress);
+                            currentAdress = address;
+                            Log.i(TAG, "current " + currentAdress);
 
 
+                            Log.i(TAG, "Map Paris Refactor Adress " + MiscTools.reformatArrondissement(currentAdress));
 
-                        Log.i(TAG, "Map Paris Refactor Adress " + MiscTools.reformatArrondissement(currentAdress));
+                            //not in Paris
+                            if (locationChanged && city != null && (!city.toUpperCase().toUpperCase().contains(getString(R.string.city_name).toUpperCase()))) {
+                                invalidLocation();
+                                return;
+                            }
+                            if (favoriteAddressSelect.length() > 0) {
+                                activity.onUpdateLocation(myCurrentLocationPosition, favoriteAddressSelect);
+                                searchBarMode = false;
+                            }
+                            else if (searchBarMode) {
+                                if (!searchBarText.getText().toString().isEmpty()) {
 
-                        EditText searchBarText = (EditText) getChildFragmentManager().findFragmentById(R.id.place_autocomplete_fragment).getView().findViewById(R.id.place_autocomplete_search_input);
-                        if (searchBarMode) {
-                            searchBarAddress =  currentAdress.replace(currentAdress.substring(0,currentAdress.indexOf(",")),searchBarText.getText().toString());
-                            activity.onUpdateLocation(myCurrentLocationPosition, searchBarAddress);
-                        } else {
+                                    if(searchBarText.getText().toString().split(",").length > 1 ) {
+                                        //fix commercial address
+                                        String commercialAddress = searchBarText.getText().toString();
+                                        String noCommercialAddress = searchBarText.getText().toString().replace(commercialAddress.substring(0, commercialAddress.indexOf(",")+1),"");
+                                        searchBarText.setText(noCommercialAddress);
+                                    }
+                                    searchBarAddress = currentAdress.replace(currentAdress.substring(0, currentAdress.indexOf(",")), searchBarText.getText().toString());
+                                }
+                                activity.onUpdateLocation(myCurrentLocationPosition, searchBarAddress);
+                            } else {
+                                activity.onUpdateLocation(myCurrentLocationPosition, currentAdress);
+                            }
+                        }else {
                             activity.onUpdateLocation(myCurrentLocationPosition, currentAdress);
                         }
-
                     } catch (IOException e) {
                         Crashlytics.logException(e);
                         Log.e(TAG, e.getMessage(), e);
@@ -578,8 +675,8 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
             mGoogleApiClient = new GoogleApiClient.Builder(getContext())
                     .addConnectionCallbacks(this)
                     .addApi(LocationServices.API)
-                    .addApi(Places.GEO_DATA_API)
-                    .addApi(Places.PLACE_DETECTION_API)
+                    //.addApi(Places.GEO_DATA_API)
+                    //.addApi(Places.PLACE_DETECTION_API)
                     .addOnConnectionFailedListener(this)
                     .addApi(LocationServices.API).build();
         }
@@ -633,19 +730,26 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
 
         View viewFragment = inflater.inflate(R.layout.fragment_map_paris, container, false);
 
-        TextView anomalyChoiceBox = (TextView) viewFragment.findViewById(R.id.anomaly_choice_box);
-        // chevron inversé
-        String libelle = getString(R.string.anomalie_espace_public_libelle) + "  " + Html.fromHtml("&#8744;");
-        anomalyChoiceBox.setText(libelle);
+        prefManager = new PrefManager(getActivity());
 
-        anomalyChoiceBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i(TAG, "Passage anos equipements");
-                Intent i = new Intent(getActivity(), TypeEquipementChooser.class);
-                startActivity(i);
-            }
-        });
+        TextView anomalyChoiceBox = (TextView) viewFragment.findViewById(R.id.anomaly_choice_box);
+        if (prefManager.getTypesEquipement() != null) {
+            // chevron inversé
+            String libelle = getString(R.string.anomalie_espace_public_libelle) + "  " + Html.fromHtml("&#8744;");
+            anomalyChoiceBox.setText(libelle);
+            anomalyChoiceBox.setVisibility(View.VISIBLE);
+            anomalyChoiceBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.i(TAG, "Passage anos equipements");
+                    Intent i = new Intent(getActivity(), TypeEquipementChooser.class);
+                    startActivity(i);
+                }
+            });
+        } else {
+            anomalyChoiceBox.setVisibility(View.GONE);
+        }
+
 
         return viewFragment;
 
@@ -683,9 +787,9 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
     }
 
     @Override
-    public void updateAnomalyList(List<Incident> closestIncidents) {
+    public void updateAnomalyList(List<Incident> closestIncidents, boolean reset) {
         if (activity != null)
-            activity.onUpdateClosestIncidents(closestIncidents);
+            activity.onUpdateClosestIncidents(closestIncidents, reset);
     }
 
     @Override
@@ -734,12 +838,14 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
 
                         if (null != locationButton) {
                             myProperFloatActionButton.setVisibility(View.VISIBLE);
+                            findByNumberButton.setVisibility(View.VISIBLE);
                             Log.i(TAG, "Localisation : OK");
                         }
 
                     } else {
                         if (null != googleMap && null != locationButton && null != googleMap.getMyLocation() && NetworkUtils.isConnected(getContext()) == false) {
                             myProperFloatActionButton.setVisibility(View.GONE);
+                            findByNumberButton.setVisibility(View.GONE);
                             Log.i(TAG, "Localisation : KO");
                         }
                     }
@@ -771,13 +877,14 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
 
                         isNetworkOkReceiver = true;
 
+
                         if (null != myCurrentLocationPosition) {
                             locationChanged(myCurrentLocationPosition);
-
                         }
 
                         if (null != googleMap && null != locationButton)
                             myProperFloatActionButton.setVisibility(View.VISIBLE);
+                            findByNumberButton.setVisibility(View.VISIBLE);
 
 
                     } else if (networkInfo != null && networkInfo.getDetailedState() == NetworkInfo.DetailedState.DISCONNECTED) {
@@ -789,6 +896,7 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
                         if (null != googleMap) {
                             if (null != locationButton && null != googleMap.getMyLocation() && NetworkUtils.isGpsEnable(getContext()) == false)
                                 myProperFloatActionButton.setVisibility(View.GONE);
+                                findByNumberButton.setVisibility(View.GONE);
                         }
                     }
 
@@ -806,7 +914,7 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
     @Override
     public void updateAnomalyMarkers(List<MarkerOptions> markers) {
         if (googleMap != null) {
-            googleMap.clear();
+            //googleMap.clear();
 
             for (MarkerOptions marker : markers) {
                 googleMap.addMarker(marker);
@@ -891,13 +999,114 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
                         break;
                     }
                 }
+            case REQUEST_FAVORITE_ADDRESS: {
+               if(Activity.RESULT_OK == resultCode && data.getSerializableExtra(Constants.EXTRA_FAVORITE_ADDRESS_SELECT) != null)  {
+                 FavoriteAddress favAddress = (FavoriteAddress) data.getSerializableExtra(Constants.EXTRA_FAVORITE_ADDRESS_SELECT);
+                   myCurrentLocationPosition = new LatLng(favAddress.getLatitude(),favAddress.getLongitude());
+                   favoriteAddressSelect = favAddress.getAddress();
+               }
+            }
+            default: {
                 break;
+            }
         }
     }
 
+    /**
+     * Display modal dialog find incident by number.
+     * @param errorMessage
+     */
+    private void showDialogFindByNumber(String errorMessage) {
+
+        dialogFindByNumber = new Dialog(getContext());
+
+        View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_find_by_number,null, false);
+
+        final EditText input = (EditText) viewInflated.findViewById(R.id.input_number);
+        if (searchNumberIncident != null) {
+            input.setText(searchNumberIncident);
+        }
+
+        final TextView errorMessageText = viewInflated.findViewById(R.id.dialog_message_error);
+        if(errorMessage != null) {
+            errorMessageText.setText(errorMessage);
+        }
+
+        Button buttonPublish = ( Button ) viewInflated.findViewById(R.id.button_search);
+        buttonPublish.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (input.getText().toString().toUpperCase().matches("[BSGA][2][0-9]{3}[A-L][0-9]+")) {
+                    searchNumberIncident = input.getText().toString();
+                    presenter.findByNumber(searchNumberIncident);
+                } else {
+                    errorMessageText.setText(R.string.incorect_number);
+                    input.requestFocus();
+                }
+            }
+        });
+
+        // set the custom dialog components - text, image and button
+        ImageView close = (ImageView) viewInflated.findViewById(R.id.btnCloseFailure);
+        // Close Button
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialogFindByNumber.dismiss();
+            }
+        });
+
+        dialogFindByNumber.setContentView(viewInflated);
+        dialogFindByNumber.setCancelable(true);
+        if (dialogFindByNumber.getWindow() != null) {
+            dialogFindByNumber.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+            // Fix Dialog Size
+            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+            lp.copyFrom(dialogFindByNumber.getWindow().getAttributes());
+            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
+            dialogFindByNumber.getWindow().setAttributes(lp);
+            dialogFindByNumber.show();
+        }
+    }
+
+    /**
+     * callbak for ws find incident by number.
+     * @param errorMessage
+     *         ws response is an error message
+     * @param dmrOffline
+     *          true if backoffice is down
+     * @param posIncident
+     *          position of the incident find.
+     */
+    public void callBackFindByNumber(String errorMessage, boolean dmrOffline, LatLng posIncident) {
+           dialogFindByNumber.dismiss();
+           if (dmrOffline) {
+              searchNumberIncident = null;
+               AlertDialog.Builder builder = new AlertDialog.Builder( getContext() , R.style.MyDialogTheme);
+               builder
+                       .setTitle(R.string.information)
+                       .setMessage(getString(R.string.dmr_offline))
+                       .setCancelable(false)
+                       .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                           public void onClick(DialogInterface dialog, int id) {
+                               // User cancelled the dialog
+                               dialog.dismiss();
+                           }
+                       });
+               builder.create().show();
+           } else if (errorMessage != null) {
+               showDialogFindByNumber(errorMessage);
+           } else {
+               searchNumberIncident = null;
+               updateLocation(posIncident);
+           }
+    }
 
     public interface OnMapParisFragmentInteractionListener {
-        void onUpdateClosestIncidents(final List<Incident> closestIncidents);
+        void onUpdateClosestIncidents(final List<Incident> closestIncidents, boolean reset);
 
         void onUpdateLocation(LatLng location, String myAddr);
 

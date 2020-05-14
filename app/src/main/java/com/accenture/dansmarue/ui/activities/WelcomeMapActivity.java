@@ -1,22 +1,22 @@
 package com.accenture.dansmarue.ui.activities;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,6 +32,7 @@ import com.accenture.dansmarue.R;
 import com.accenture.dansmarue.app.DansMaRueApplication;
 import com.accenture.dansmarue.di.components.DaggerPresenterComponent;
 import com.accenture.dansmarue.di.modules.PresenterModule;
+import com.accenture.dansmarue.mvp.models.FavoriteAddress;
 import com.accenture.dansmarue.mvp.models.Incident;
 import com.accenture.dansmarue.mvp.presenters.WelcomeMapPresenter;
 import com.accenture.dansmarue.mvp.views.WelcomeMapView;
@@ -47,13 +48,19 @@ import com.google.android.gms.maps.model.LatLng;
 
 import org.apache.commons.collections4.CollectionUtils;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
+/**
+ * WelcomeMapActivity
+ * Activity for main view
+ */
 public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, MapParisFragment.OnMapParisFragmentInteractionListener, ProfileFragment.OnProfileFragmentInteractionListener {
 
     private static final String TAG = WelcomeMapActivity.class.getCanonicalName();
@@ -89,6 +96,8 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
     protected LinearLayout layoutSelectedIncident;
     @BindView(R.id.image_bottom_sheet_my_adress)
     protected ImageButton buttonSelectedAdress;
+    @BindView(R.id.image_bottom_sheet_favorite_address)
+    protected ImageButton buttonFavoriteAdress;
     @BindView(R.id.navigation)
     protected BottomNavigationView bottomNavigationView;
     @BindView(R.id.my_recycler_view)
@@ -120,6 +129,7 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
 
     private boolean congratulated;
 
+    private String selectedAddressWithCodePostal;
 
     @Override
     protected void resolveDaggerDependency() {
@@ -226,7 +236,6 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
             @Override
             public void onAnimationEnd(Animation animation) {
                 addAnomalyFloatingButton.setVisibility(View.GONE);
-//                followAnomalyFloatingButton.setVisibility(View.GONE);
             }
 
             @Override
@@ -236,7 +245,9 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
         });
     }
 
-
+    /**
+     * Init bottom sheet application.
+     */
     private void initBottomSheet() {
         behavior = BottomSheetBehavior.from(bottomSheet);
 
@@ -306,6 +317,9 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
 
     }
 
+    /**
+     * On expand bottom sheet.
+     */
     private void expandListOfActions() {
         showFAB = false;
 
@@ -327,6 +341,9 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
 
     }
 
+    /**
+     * On collapse bottom sheet.
+     */
     private void collapseListOfActions() {
         if (showFAB) {
             layoutSelectedAdress.setVisibility(View.VISIBLE);
@@ -351,6 +368,7 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
         selectedAdress.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
         buttonSelectedAdress.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
         buttonSelectedAdress.setImageResource(R.drawable.ic_geoloc_blue_circle);
+        displayIconFavoriteAddress(selectedAddressWithCodePostal);
 
         addAnomalyFloatingButton.setImageResource(R.drawable.ic_add_anomaly_fab);
         addAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.pink)));
@@ -364,12 +382,6 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
         }
 
         behavior.setPeekHeight((int) ((198) * Resources.getSystem().getDisplayMetrics().density));
-
-//        if (preciseMode) {
-//            preciseMode = false;
-//            mapParisFragment.precisePositionModeFunction(preciseMode);
-//        }
-
 
     }
 
@@ -493,13 +505,20 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
             intentAddAnomaly.putExtra(Constants.EXTRA_CURRENT_LOCATION, (mapParisFragment.getMyCurrentLocationPosition()));
             if (mapParisFragment.isSearchBarMode()) {
                 intentAddAnomaly.putExtra(Constants.EXTRA_SEARCH_BAR_ADDRESS, (mapParisFragment.getSearchBarAdress()));
+            } else if (mapParisFragment.getFavoriteAddressSelect().length() > 0) {
+                intentAddAnomaly.putExtra(Constants.EXTRA_SEARCH_BAR_ADDRESS, (mapParisFragment.getFavoriteAddressSelect()));
             }
 
             startActivityForResult(intentAddAnomaly,9821);
 
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         } else {
-            Toast.makeText(getApplicationContext(), "Merci de préciser votre position", Toast.LENGTH_SHORT).show();
+            if (mapParisFragment.isNotConnectedMode()) {
+                Toast.makeText(getApplicationContext(), R.string.add_anomaly_offline_mode, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getApplicationContext(), R.string.add_anomaly_no_location, Toast.LENGTH_SHORT).show();
+            }
+
         }
     }
 
@@ -538,15 +557,31 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
 
 
     @Override
-    public void onUpdateClosestIncidents(List<Incident> closestIncidents) {
-        if (CollectionUtils.isNotEmpty(closestIncidents)) {
-            adapter = new RecyclerViewAdapter(getApplicationContext(), R.layout.recycler_view_item, closestIncidents);
-            recyclerView.setAdapter(adapter);
+    public void onUpdateClosestIncidents(List<Incident> closestIncidents, boolean reset) {
 
-        } else {
+        if (reset) {
             adapter = new RecyclerViewAdapter(getApplicationContext(), R.layout.recycler_view_item, null);
-            recyclerView.setAdapter(adapter);
+        } else {
+            if (CollectionUtils.isNotEmpty(closestIncidents)) {
+                if (adapter != null && adapter.getData()!=null) {
+                    //remove duplicate incident Begin
+                    Map<Long,Incident> mapOrigin = new LinkedHashMap<>();
+                    for( Incident incident : adapter.getData()) {
+                        mapOrigin.put(incident.getId(),incident);
+                    }
+                    Map<Long,Incident> mapNew = new LinkedHashMap<>();
+                    for( Incident incident : closestIncidents) {
+                        mapNew.put(incident.getId(),incident);
+                    }
+                    mapOrigin.putAll(mapNew);
+                    //remove duplicate incident End
+                    closestIncidents.clear();
+                    closestIncidents.addAll(mapOrigin.values());
+                }
+                adapter = new RecyclerViewAdapter(getApplicationContext(), R.layout.recycler_view_item, closestIncidents);
+            }
         }
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
@@ -560,14 +595,41 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
 
         if ("".equals(myAddr)) {
             selectedAdress.setText(location.latitude + ", " + location.longitude);
-        } else if (!myAddr.contains("Paris")) {
+        } else if (!myAddr.contains( getString(R.string.city_name))) {
             selectedAdress.setText("");
         } else {
             selectedAdress.setText(MiscTools.whichPostalCode(myAddr));
+            selectedAddressWithCodePostal = myAddr;
+            displayIconFavoriteAddress(myAddr);
         }
         Log.i(TAG, "onUpdateLocation: adresse ok");
     }
 
+    private void displayIconFavoriteAddress( String address) {
+
+        PrefManager prefManager = new PrefManager(getApplicationContext());
+
+        if(prefManager.getFavoriteAddress().containsKey(address)) {
+            buttonFavoriteAdress.setImageResource(R.drawable.ic_full_star);
+        } else {
+            buttonFavoriteAdress.setImageResource(R.drawable.ic_add_star);
+        }
+
+        buttonFavoriteAdress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!prefManager.getFavoriteAddress().containsKey(address)) {
+                    // add favorite address
+                    prefManager.setFavorisAddress(new FavoriteAddress(address,mapParisFragment.getMyCurrentLocationPosition()),false);
+                    buttonFavoriteAdress.setImageResource(R.drawable.ic_full_star);
+                } else {
+                    // delete favorite address
+                    prefManager.setFavorisAddress(new FavoriteAddress(address,mapParisFragment.getMyCurrentLocationPosition()),true);
+                    buttonFavoriteAdress.setImageResource(R.drawable.ic_add_star);
+                }
+            }
+        });
+    }
 
     // Avoid user to quit the app
     @Override
@@ -595,6 +657,9 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
 
             selectedIncidentAdress.setText(summarizedIncident.getAddress());
             selectedIncidentTitle.setText(summarizedIncident.getAlias());
+            if(summarizedIncident.isFromRamen()) {
+                selectedIncidentTitle.setText(R.string.desc_ramen);
+            }
 
             addAnomalyFloatingButton.setVisibility(View.GONE);
 
@@ -751,6 +816,5 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
         congratulated = false;
         changeGreetingsColorButton();
     }
-
 
 }

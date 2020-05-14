@@ -1,7 +1,7 @@
 package com.accenture.dansmarue.ui.adapters;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -67,49 +67,49 @@ public class ProfileSection extends Section {
         ProfileSection.ViewHolder itemHolder = (ProfileSection.ViewHolder) holder;
         final Incident incident = data.get(position);
 
+        if (incident != null) {
 
+            itemHolder.title.setText(incident.getAlias());
+            itemHolder.subtitle.setText(incident.getAddress());
+            itemHolder.date.setVisibility(View.VISIBLE);
+            itemHolder.date.setText(incident.getFormatedDate());
+            // Traitement des icones différents si anos outdoor ou équipement
+            if (null != incident.getEquipementId()) {
 
-        itemHolder.title.setText(incident.getAlias());
-        itemHolder.subtitle.setText(incident.getAddress());
-        itemHolder.date.setVisibility(View.VISIBLE);
-        itemHolder.date.setText(incident.getFormatedDate());
-        // Traitement des icones différents si anos outdoor ou équipement
-        if (null != incident.getEquipementId()) {
-
-            //indoor
-            if (incident.getFirstAvailablePicture() != null) {
-                Glide.with(context)
-                        .load(incident.getFirstAvailablePicture())
-                        .fallback(R.drawable.ic_broken_image)
-                        .error(R.drawable.ic_broken_image)
-                        .into(itemHolder.icon);
-            } else {
-                itemHolder.icon.setImageBitmap(MiscTools.base64ToBitmap(incident.getIconIncident(), 256));
-            }
-
-            itemHolder.iconTypeAno.setImageBitmap(MiscTools.base64ToBitmap(incident.getIconIncident(), 28));
-//            itemHolder.titleCategorieAno.setTextColor(context.getResources().getColor(R.color.blue_slider));
-            itemHolder.titleCategorieAno.setTextColor(context.getResources().getColor(R.color.colorOrange));
-            itemHolder.titleCategorieAno.setText(incident.getTypeEquipementName());
-
-        } else {
-
-            // outdoor
-            if (incident.getFirstAvailablePicture() != null) {
-                Glide.with(context)
-                        .load(incident.getFirstAvailablePicture())
-                        .fallback(incident.getPictures().getGenericPictureId())
-                        .error(incident.getPictures().getGenericPictureId())
-                        .into(itemHolder.icon);
-            } else {
-                if(0 != incident.getPictures().getGenericPictureId()){
-                    Glide.with(context).load(incident.getPictures().getGenericPictureId()).into(itemHolder.icon);
-                }else if (0 != incident.getIconIncidentSignalement()) {
-                    itemHolder.icon.setImageResource(incident.getIconIncidentSignalement());
-                }else{
-                    Glide.with(context).load(R.drawable.ano_outdoor_type).into(itemHolder.icon);
+                //indoor
+                if (incident.getFirstAvailablePicture() != null) {
+                    Glide.with(context)
+                            .load(incident.getFirstAvailablePicture())
+                            .fallback(R.drawable.ic_broken_image)
+                            .error(R.drawable.ic_broken_image)
+                            .into(itemHolder.icon);
+                } else {
+                    itemHolder.icon.setImageBitmap(MiscTools.base64ToBitmap(incident.getIconIncident(), 256));
                 }
-            }
+
+                itemHolder.iconTypeAno.setImageBitmap(MiscTools.base64ToBitmap(incident.getIconIncident(), 28));
+//            itemHolder.titleCategorieAno.setTextColor(context.getResources().getColor(R.color.blue_slider));
+                itemHolder.titleCategorieAno.setTextColor(context.getResources().getColor(R.color.colorOrange));
+                itemHolder.titleCategorieAno.setText(incident.getTypeEquipementName());
+
+            } else {
+
+                // outdoor
+                if (incident.getFirstAvailablePicture() != null) {
+                    Glide.with(context)
+                            .load(incident.getFirstAvailablePicture())
+                            .fallback(incident.getPictures().getGenericPictureId())
+                            .error(incident.getPictures().getGenericPictureId())
+                            .into(itemHolder.icon);
+                } else {
+                    if (0 != incident.getPictures().getGenericPictureId()) {
+                        Glide.with(context).load(incident.getPictures().getGenericPictureId()).into(itemHolder.icon);
+                    } else if (0 != incident.getIconIncidentSignalement()) {
+                        itemHolder.icon.setImageResource(incident.getIconIncidentSignalement());
+                    } else {
+                        Glide.with(context).load(R.drawable.ano_outdoor_type).into(itemHolder.icon);
+                    }
+                }
 
                 if (incident.isResolu()) {
                     itemHolder.titleCategorieAno.setTextColor(context.getResources().getColor(R.color.colorOrange));
@@ -122,7 +122,7 @@ public class ProfileSection extends Section {
 
             }
 
-
+        }
     }
 
     @Override
