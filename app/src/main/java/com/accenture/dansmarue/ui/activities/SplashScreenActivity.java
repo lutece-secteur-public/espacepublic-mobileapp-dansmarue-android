@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
@@ -18,6 +19,9 @@ import com.accenture.dansmarue.mvp.views.SplashScreenView;
 import com.accenture.dansmarue.utils.Constants;
 import com.accenture.dansmarue.utils.NetworkUtils;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
+import com.mapbox.mapboxsdk.maps.Style;
 
 import javax.inject.Inject;
 
@@ -34,6 +38,8 @@ public class SplashScreenActivity extends BaseActivity implements SplashScreenVi
 
     private String anomalyType ="";
 
+    private com.mapbox.mapboxsdk.maps.MapView mapViewMapbox;
+
     private FirebaseAnalytics mFirebaseAnalytics;
 
     @SuppressWarnings("WeakerAccess")
@@ -43,6 +49,7 @@ public class SplashScreenActivity extends BaseActivity implements SplashScreenVi
 
     @Override
     protected int getContentView() {
+        Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
         return R.layout.splashscreen_activity_layout;
     }
 
@@ -58,6 +65,23 @@ public class SplashScreenActivity extends BaseActivity implements SplashScreenVi
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //MapBox Start
+        mapViewMapbox = (com.mapbox.mapboxsdk.maps.MapView) this.findViewById(R.id.mapboxView);
+        mapViewMapbox.onCreate(savedInstanceState);
+        mapViewMapbox.getMapAsync(new com.mapbox.mapboxsdk.maps.OnMapReadyCallback() {
+            @Override
+            public void onMapReady(@NonNull MapboxMap mapboxMap) {
+                mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
+                    @Override
+                    public void onStyleLoaded(@NonNull Style style) {
+                        // Map is set up and the style has loaded. Now you can add data or make other map adjustments
+                    }
+                });
+            }
+        });
+        //MapBox end
+
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
     }
 

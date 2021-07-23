@@ -25,4 +25,6 @@ public interface MapParisView extends BaseView {
     void updatePosMarker();
 
     void callBackFindByNumber(String errorMessage, boolean dmrOffline, LatLng posIncident);
+
+    String getFindByNumberValue();
 }

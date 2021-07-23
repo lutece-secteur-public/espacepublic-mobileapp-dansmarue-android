@@ -42,7 +42,8 @@ import com.accenture.dansmarue.utils.BitmapScaler;
 import com.accenture.dansmarue.utils.Constants;
 import com.accenture.dansmarue.utils.MiscTools;
 import com.bumptech.glide.Glide;
-import com.crashlytics.android.Crashlytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
+
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -537,7 +538,7 @@ public class AnomalyEquipementDetailsActivity extends BaseActivity implements An
             try {
                 photoFile = createImageFile();
             } catch (IOException e) {
-                Crashlytics.logException(e);
+                FirebaseCrashlytics.getInstance().log(e.getMessage());
             }
 
             if (photoFile != null) {
@@ -635,7 +636,7 @@ public class AnomalyEquipementDetailsActivity extends BaseActivity implements An
                 Bitmap thumbnail = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
                 addPictureToPlaceHolder(thumbnail);
             } catch (IOException e) {
-                Crashlytics.logException(e);
+                FirebaseCrashlytics.getInstance().log(e.getMessage());
                 Log.e(TAG, e.getMessage(), e);
             }
         }

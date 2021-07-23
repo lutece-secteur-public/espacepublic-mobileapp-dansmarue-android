@@ -115,6 +115,16 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/anomaly_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/fab_details_ano"
+                android:layout_alignStart="@+id/linearLayout"
+                android:layout_below="@+id/linearLayout"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/grey_icon" />
+
+            <TextView
                 android:id="@+id/anomaly_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

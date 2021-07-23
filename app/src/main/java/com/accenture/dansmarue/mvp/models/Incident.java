@@ -25,6 +25,7 @@ public class Incident {
     public static final String STATE_RESOLVED = "R";
     public static final String STATE_OPEN = "O";
     public static final String STATE_NOT_RESOLVABLE = "ONR";  //Anomalie dans un statut non résolvalble
+    public static final String STATE_TIERS = "T";  //Anomalie chez un tiers
 
     @Expose
     private String address;
@@ -428,34 +429,7 @@ public class Incident {
             }
 
             if (creationDate != null) {
-                final long diff = new Date().getTime() - creationDate.getTime();
-                long days = TimeUnit.MILLISECONDS.toDays(diff);
-                if (days > 7) {
-                    return date + " " + hour;
-                }
-
-                if (days < 1) {
-                    long hours = TimeUnit.MILLISECONDS.toHours(diff);
-                    if (hours < 1) {
-                        long minutes = TimeUnit.MILLISECONDS.toMinutes(diff);
-                        if (minutes < 1) {
-                            long seconds = TimeUnit.MILLISECONDS.toSeconds(diff);
-                            if (seconds < 20) {
-                                return "Il y a quelques secondes";
-                            } else {
-                                return "Il y a moins de 1 minute";
-                            }
-
-                        } else {
-                            return "Il y a " + minutes + " minutes";
-                        }
-                    } else {
-                        return "Il y a " + hours + " heures";
-                    }
-                } else {
-                    return "Il y a " + days + " jours";
-                }
-
+                return date + " " + hour;
             }
 
         }

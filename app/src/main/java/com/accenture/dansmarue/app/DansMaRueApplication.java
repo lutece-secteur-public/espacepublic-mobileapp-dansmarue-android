@@ -7,11 +7,12 @@ import com.accenture.dansmarue.R;
 import com.accenture.dansmarue.di.components.ApplicationComponent;
 import com.accenture.dansmarue.di.components.DaggerApplicationComponent;
 import com.accenture.dansmarue.di.modules.ApplicationModule;
-import com.crashlytics.android.Crashlytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
+import io.github.inflationx.calligraphy3.CalligraphyConfig;
+import io.github.inflationx.calligraphy3.CalligraphyInterceptor;
+import io.github.inflationx.viewpump.ViewPump;
 
-import io.fabric.sdk.android.Fabric;
-import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 /**
  * Created by PK on 22/03/2017.
@@ -24,7 +25,7 @@ public class DansMaRueApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        Fabric.with(this, new Crashlytics());
+        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
         initializeApplicationComponent();
         initializeCaligraphy();
 
@@ -33,12 +34,13 @@ public class DansMaRueApplication extends MultiDexApplication {
 
     private void initializeCaligraphy() {
         // Initialise Calligraphy
-        CalligraphyConfig.initDefault(
-                new CalligraphyConfig.Builder()
-                        .setDefaultFontPath("fonts/Montserrat-Regular.otf")
-                        .setFontAttrId(R.attr.fontPath)
-                        .build()
-        );
+        ViewPump.init(ViewPump.builder()
+                .addInterceptor(new CalligraphyInterceptor(
+                        new CalligraphyConfig.Builder()
+                                .setDefaultFontPath("fonts/Montserrat-Regular.otf")
+                                .setFontAttrId(R.attr.fontPath)
+                                .build()))
+                .build());
     }
 
     private void initializeApplicationComponent() {

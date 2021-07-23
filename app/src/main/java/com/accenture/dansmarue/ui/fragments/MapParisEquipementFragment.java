@@ -50,7 +50,7 @@ import com.accenture.dansmarue.ui.adapters.EquipementAdapter;
 import com.accenture.dansmarue.utils.Constants;
 import com.accenture.dansmarue.utils.MiscTools;
 import com.accenture.dansmarue.utils.NetworkUtils;
-import com.crashlytics.android.Crashlytics;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -72,6 +72,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
@@ -474,7 +475,7 @@ public class MapParisEquipementFragment extends BaseFragment implements Equipeme
                         activity.onUpdateLocation(myCurrentLocationPosition, currentAdress);
 
                     } catch (IOException e) {
-                        Crashlytics.logException(e);
+                        FirebaseCrashlytics.getInstance().log(e.getMessage());
                         Log.e(TAG, e.getMessage(), e);
                     }
 

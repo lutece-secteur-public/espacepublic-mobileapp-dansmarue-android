@@ -7,7 +7,8 @@ import com.accenture.dansmarue.R;
 import com.accenture.dansmarue.mvp.models.Category;
 import com.accenture.dansmarue.services.models.CategoryResponse;
 import com.accenture.dansmarue.services.models.equipements.CategoryEquipementResponse;
-import com.crashlytics.android.Crashlytics;
+
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.gson.GsonBuilder;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -194,7 +195,7 @@ public final class CategoryHelper {
 
 
         } catch (IOException e) {
-            Crashlytics.logException(e);
+            FirebaseCrashlytics.getInstance().log(e.getMessage());
             Log.e(TAG, e.getMessage(), e);
         }
 

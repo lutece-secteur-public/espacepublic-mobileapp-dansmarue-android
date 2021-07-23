@@ -144,9 +144,6 @@
             android:theme="@style/LoginTheme" />
 
         <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="de2a9cb6ce619d541840b0491f6568489833545f" />
-        <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 

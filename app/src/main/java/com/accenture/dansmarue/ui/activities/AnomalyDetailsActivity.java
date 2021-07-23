@@ -47,7 +47,8 @@ import com.accenture.dansmarue.utils.MiscTools;
 import com.accenture.dansmarue.utils.NetworkUtils;
 import com.accenture.dansmarue.utils.PrefManager;
 import com.bumptech.glide.Glide;
-import com.crashlytics.android.Crashlytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
+
 
 import java.io.File;
 
@@ -102,6 +103,8 @@ public class AnomalyDetailsActivity extends BaseAnomalyActivity implements Anoma
     protected TextView nbGreetings;
     @BindView(R.id.anomaly_time)
     protected TextView anomalyDateTime;
+    @BindView(R.id.anomaly_number)
+    protected TextView anomalyNumber;
     @BindView(R.id.anomaly_layout_followers)
     protected LinearLayout layoutFollowers;
 
@@ -426,6 +429,7 @@ public class AnomalyDetailsActivity extends BaseAnomalyActivity implements Anoma
 
             anomalyAdress.setText(incident.getAddress());
             anomalyDateTime.setText(incident.getFormatedDate());
+            anomalyNumber.setText(incident.getReference());
 
 
             if (incident.isResolu()) {
@@ -485,6 +489,9 @@ public class AnomalyDetailsActivity extends BaseAnomalyActivity implements Anoma
 
             if (isLayoutAgent) {
                 anomalyCommentaireAgentTerrain.setText(incident.getCommentaireAgent());
+                if (Incident.STATE_TIERS.equals(incident.getState())){
+                    requalificationLayout.setVisibility(View.GONE);
+                }
             }
         }
 
@@ -880,7 +887,7 @@ public class AnomalyDetailsActivity extends BaseAnomalyActivity implements Anoma
                 Bitmap thumbnail = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
                 addPictureToPlaceHolder(thumbnail, isForRequalification);
             } catch (IOException e) {
-                Crashlytics.logException(e);
+                FirebaseCrashlytics.getInstance().log(e.getMessage());
                 Log.e(TAG, e.getMessage(), e);
             }
         }

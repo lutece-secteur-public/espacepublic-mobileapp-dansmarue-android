@@ -1,9 +1,9 @@
 {
   "project_info": {
-    "project_number": "yourProjectNumber",
-    "firebase_url": "https://dansmarue-android.firebaseio.com",
-    "project_id": "dansmarue-android",
-    "storage_bucket": "dansmarue-android.appspot.com"
+    "project_number": "",
+    "firebase_url": "",
+    "project_id": "",
+    "storage_bucket": ""
   },
   "client": [
     {

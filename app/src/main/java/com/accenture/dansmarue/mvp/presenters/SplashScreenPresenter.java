@@ -27,7 +27,8 @@ import com.accenture.dansmarue.utils.Constants;
 import com.accenture.dansmarue.utils.MiscTools;
 import com.accenture.dansmarue.utils.NetworkUtils;
 import com.accenture.dansmarue.utils.PrefManager;
-import com.crashlytics.android.Crashlytics;
+
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.gson.GsonBuilder;
 
 import java.io.File;
@@ -150,7 +151,7 @@ public class SplashScreenPresenter extends BasePresenter<SplashScreenView> imple
                     out.write(strObj);
                     out.close();
                 } catch (IOException e) {
-                    Crashlytics.logException(e);
+                    FirebaseCrashlytics.getInstance().log(e.getMessage());
                     Log.e(TAG, e.getMessage(), e);
                 }
 
@@ -307,7 +308,7 @@ public class SplashScreenPresenter extends BasePresenter<SplashScreenView> imple
                     prefManager.setCatsInDoor(null);
 
                 } catch (IOException e) {
-                    Crashlytics.logException(e);
+                    FirebaseCrashlytics.getInstance().log(e.getMessage());
                     Log.e(TAG, e.getMessage(), e);
                 }
                 countWSandLaunch();
@@ -366,7 +367,7 @@ public class SplashScreenPresenter extends BasePresenter<SplashScreenView> imple
                 }
 
             } catch (IOException e) {
-                Crashlytics.logException(e);
+                FirebaseCrashlytics.getInstance().log(e.getMessage());
                 Log.e(TAG, e.getMessage(), e);
             }
 

@@ -20,7 +20,8 @@ import com.accenture.dansmarue.utils.CategoryHelper;
 import com.accenture.dansmarue.utils.Constants;
 import com.accenture.dansmarue.utils.IncidentComparator;
 import com.accenture.dansmarue.utils.PrefManager;
-import com.crashlytics.android.Crashlytics;
+
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.gson.GsonBuilder;
 
 import java.io.FileInputStream;
@@ -79,7 +80,7 @@ public class ProfilePresenter extends BasePresenter<ProfileView> implements Sing
                         final String bufferStr = new String(buffer);
                         drafts.add(new GsonBuilder().create().fromJson(bufferStr, Incident.class));
                     } catch (IOException e) {
-                        Crashlytics.logException(e);
+                        FirebaseCrashlytics.getInstance().log(e.getMessage());
                         view.showDrafts(null);
                     }
                 }

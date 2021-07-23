@@ -155,11 +155,21 @@ public class MapParisPresenter extends BasePresenter<MapParisView> implements Si
                         incident.getPictures().setGenericPictureId(CategoryHelper.MAP_GENERIC_PICTURES.get(idParentCategory));
 
                         // anchor : centre de l'image = position gps
-                        markers.add(new MarkerOptions()
+                        MarkerOptions markerOpt = new MarkerOptions()
                                 .position(newLatLng)
                                 .anchor(0.5f,0.5f)
                                 .snippet(incident.toJson())
-                                .icon(BitmapDescriptorFactory.fromResource(incident.getIconIncidentSignalement())));
+                                .icon(BitmapDescriptorFactory.fromResource(incident.getIconIncidentSignalement()));
+
+                        if ( view.getFindByNumberValue() != null && incident.getReference().equals( view.getFindByNumberValue())) {
+                            //if it's a search by number display only the reporting search  DMR-2146
+                            markers.add(markerOpt);
+                        } else if ( view.getFindByNumberValue() == null || view.getFindByNumberValue().trim().length() == 0) {
+                            markers.add(markerOpt);
+                        }
+
+
+
                     }
                 }
                 view.updateAnomalyMarkers(markers);

@@ -73,6 +73,7 @@ public class ProfileSection extends Section {
             itemHolder.subtitle.setText(incident.getAddress());
             itemHolder.date.setVisibility(View.VISIBLE);
             itemHolder.date.setText(incident.getFormatedDate());
+            itemHolder.number.setText(incident.getReference());
             // Traitement des icones différents si anos outdoor ou équipement
             if (null != incident.getEquipementId()) {
 
@@ -149,6 +150,8 @@ public class ProfileSection extends Section {
         private ImageView icon;
         private ImageView iconTypeAno;
         private TextView date;
+        private TextView number;
+
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -158,6 +161,7 @@ public class ProfileSection extends Section {
             date = (TextView) itemView.findViewById(R.id.date);
             icon = (ImageView) itemView.findViewById(R.id.icon);
             iconTypeAno = (ImageView) itemView.findViewById(R.id.icon_type_ano);
+            number = (TextView) itemView.findViewById(R.id.number);
         }
     }
 

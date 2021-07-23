@@ -19,7 +19,8 @@ import com.accenture.dansmarue.app.DansMaRueApplication;
 import com.accenture.dansmarue.di.components.ApplicationComponent;
 
 import butterknife.ButterKnife;
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
+
 
 /**
  * Created by PK on 24/03/2017.
@@ -72,7 +73,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     // pass context to Calligraphy to use Custom fonts
     @Override
     protected void attachBaseContext(Context context) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(context));
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(context));
     }
 
     void resolveDaggerDependency() {

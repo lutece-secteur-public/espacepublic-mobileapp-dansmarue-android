@@ -37,7 +37,7 @@
     <string name="slide1_title">WELCOME !</string>
     <string name="slide2_title">SEND YOUR INFORMATIONS</string>
     <string name="slide3_title">STAY IN TOUCH</string>
-    <string name="slider_button_txt">Commencer</string>
+    <string name="slider_button_txt">Start</string>
     <string name="priority">Priority</string>
     <string name="valeur_defaut">(default value)</string>
     <string name="text_type">Type</string>
@@ -53,7 +53,7 @@
     <string name="text_priority_medium">Very Embarrassing</string>
     <string name="text_priority_high">Dangerous</string>
     <string name="valeur_defaut_detail">(by default)</string>
-    <string name="how_to_black_pin">Faites glisser la carte pour placer un repère.</string>
+    <string name="how_to_black_pin">Slide the card to place a marker.</string>
     <string name="save_anomaly_failure">We are having some trouble to recording this anomaly. Thank you for trying later. A draft has been saved in your space.</string>
     <string name="greetings_thanks">Thank you !</string>
     <string name="greetings_thanks_line_above">Thank you for your contribution.</string>
@@ -64,7 +64,7 @@
     <string name="greetings_email_line_above">to follow your contribution.</string>
     <string name="greetings_patienter">Please wait while transmitting the information.</string>
     <string name="greetings_failure">We are having some trouble to recording this anomaly. Thank you for trying later.</string>
-    <string name="save_mail_popup_title">Restez informé</string>
+    <string name="save_mail_popup_title">Stay informed</string>
     <string name="save_mail_popul_title_mail_field">Email</string>
     <string name="save_mail_popup_confirm">VALIDATE</string>
     <string name="save_mail_popup_cancel">CANCEL</string>
@@ -88,7 +88,7 @@
     <string name="section_resolved">Closed</string>
     <string name="section_drafts">Drafts</string>
     <string name="section_unresolved">In progress</string>
-    <string name="unfollow_anomaly">Vous ne suivez plus cette anomalie.</string>
+    <string name="unfollow_anomaly">You no longer follow this anomaly.</string>
     <string name="unfollow_anomaly_failure">You still follow this anomaly.</string>
     <string name="greetings_undo">CANCEL</string>
     <string name="resolve_ok">" You report this anomaly as resolved."</string>
@@ -145,6 +145,6 @@
     <string name="greetings_ok">Thank you for sending your congratulations to the agents!</string>
     <string name="nbAnomaliesEquipement">incident(s) open</string>
     <string name="not_in_paris">invalid address</string>
-    <string name="pref_cgu_activity_title" translatable="false">Tterms of use</string>
+    <string name="pref_cgu_activity_title" translatable="false">Terms of use</string>
     <string name="type">Type</string>
 </resources>
