@@ -70,6 +70,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             holder.title.setText(incident.getAlias());
         }
         holder.subtitle.setText(incident.getAddress());
+        holder.number.setText(incident.getReference());
     }
 
     public Incident getData(int position) {
@@ -96,12 +97,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         private TextView title;
         private TextView subtitle;
         private ImageView icon;
+        private TextView number;
 
         public ViewHolder(View itemView) {
             super(itemView);
             title = (TextView) itemView.findViewById(R.id.title);
             subtitle = (TextView) itemView.findViewById(R.id.subtitle);
             icon = (ImageView) itemView.findViewById(R.id.icon);
+            number = (TextView) itemView.findViewById(R.id.number);
         }
     }
 

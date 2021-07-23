@@ -8,7 +8,8 @@ import android.media.ExifInterface;
 import android.util.Base64;
 import android.util.Log;
 
-import com.crashlytics.android.Crashlytics;
+
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import java.io.IOException;
 import java.util.regex.Matcher;
@@ -55,7 +56,7 @@ public class MiscTools {
 
             }
         } catch (Exception e) {
-            Crashlytics.logException(e);
+            FirebaseCrashlytics.getInstance().log(e.getMessage());
         }
 
         return address;
@@ -77,7 +78,7 @@ public class MiscTools {
 
             }
         } catch (Exception e) {
-            Crashlytics.logException(e);
+            FirebaseCrashlytics.getInstance().log(e.getMessage());
         }
 
         return address;

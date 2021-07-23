@@ -52,7 +52,7 @@ import com.accenture.dansmarue.utils.Constants;
 import com.accenture.dansmarue.utils.MiscTools;
 import com.accenture.dansmarue.utils.NetworkUtils;
 import com.bumptech.glide.Glide;
-import com.crashlytics.android.Crashlytics;
+
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -63,6 +63,7 @@ import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
@@ -97,6 +98,8 @@ public class AddAnomalyActivity extends BaseAnomalyActivity implements AddAnomal
     private static final int CHOOSE_PRIORITY_REQUEST_CODE = 1979;
     private static final int LOGIN_REQUEST_CODE = 1982;
     private static final int SET_COMMENTAIRE_AGENT_REQUEST_CODE = 1983;
+
+    private static final String KEYWORD_ADDRESS_BRIDGE = "pont";
 
     private static LatLng myLastPosition = null;
 
@@ -369,7 +372,7 @@ public class AddAnomalyActivity extends BaseAnomalyActivity implements AddAnomal
             Places.initialize(getApplicationContext(), getString(R.string.google_maps_key));
         }
 
-        Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, Arrays.asList(Place.Field.values()))
+        Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, Arrays.asList(Place.Field.ADDRESS,Place.Field.LAT_LNG))
                 .setCountry("Fr")
                 .setTypeFilter(TypeFilter.ADDRESS)
                 .setLocationRestriction( RectangularBounds.newInstance(
@@ -565,7 +568,7 @@ public class AddAnomalyActivity extends BaseAnomalyActivity implements AddAnomal
                 Bitmap thumbnail = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
                 addPictureToPlaceHolder(thumbnail);
             } catch (IOException e) {
-                Crashlytics.logException(e);
+                FirebaseCrashlytics.getInstance().log(e.getMessage());
                 Log.e(TAG, e.getMessage(), e);
             }
         }
@@ -771,18 +774,34 @@ public class AddAnomalyActivity extends BaseAnomalyActivity implements AddAnomal
                 Log.i(TAG, "current " + currentAddress);
 
                 isValidAddressWithNumber = true;
-                if (! Character.isDigit(currentAddress.trim().charAt(0)) && Character.isDigit(address.trim().charAt(0))) {
+                if (warningAddress(currentAddress,address)) {
                     Log.i(TAG, "address not started with number");
                     isValidAddressWithNumber = false;
                     presenter.getRequest().getIncident().setValidAddressWithNumber(false);
                 }
             }
         } catch (IOException e) {
-            Crashlytics.logException(e);
+            FirebaseCrashlytics.getInstance().log(e.getMessage());
             Log.e(TAG, e.getMessage(), e);
         }
 
         setUpCurrentAdress(currentAddress, latlng);
+    }
+
+    /**
+     * Determine if incomplet address pop up must be display.
+     * @return true if display
+     */
+    private boolean warningAddress(String addressToCheck,  String referenceAddress) {
+        boolean isBridgeAddress = KEYWORD_ADDRESS_BRIDGE.equals(addressToCheck.split(" ")[0].toLowerCase()) || KEYWORD_ADDRESS_BRIDGE.equals(referenceAddress.split(" ")[0].toLowerCase());
+        if (!isBridgeAddress) {
+            boolean addressHasANumber = !Character.isDigit(addressToCheck.trim().charAt(0)) && Character.isDigit(referenceAddress.trim().charAt(0));
+            return addressHasANumber;
+        } else {
+            return false;
+        }
+
+
     }
 
     private Address findLatLngWithAddress(String addressText) {
@@ -793,7 +812,7 @@ public class AddAnomalyActivity extends BaseAnomalyActivity implements AddAnomal
                 List<Address> addresses =  geocoder.getFromLocationName(addressText, 1);
                 return addresses.get(0);
             } catch (IOException e) {
-                Crashlytics.logException(e);
+                FirebaseCrashlytics.getInstance().log(e.getMessage());
                 Log.e(TAG, e.getMessage(), e);
                 return null;
             }

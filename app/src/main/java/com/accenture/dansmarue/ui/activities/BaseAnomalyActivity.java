@@ -14,7 +14,8 @@ import com.accenture.dansmarue.BuildConfig;
 import com.accenture.dansmarue.R;
 import com.accenture.dansmarue.utils.BitmapScaler;
 import com.accenture.dansmarue.utils.MiscTools;
-import com.crashlytics.android.Crashlytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
+
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -72,7 +73,7 @@ public abstract class BaseAnomalyActivity extends BaseActivity {
             try {
                 photoFile = createImageFile();
             } catch (IOException e) {
-                Crashlytics.logException(e);
+                FirebaseCrashlytics.getInstance().log(e.getMessage());
             }
             // Continue only if the File was successfully created
             if (photoFile != null) {

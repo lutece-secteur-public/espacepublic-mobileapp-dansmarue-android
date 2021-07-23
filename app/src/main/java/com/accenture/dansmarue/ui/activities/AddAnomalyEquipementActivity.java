@@ -49,8 +49,9 @@ import com.accenture.dansmarue.utils.BitmapScaler;
 import com.accenture.dansmarue.utils.Constants;
 import com.accenture.dansmarue.utils.MiscTools;
 import com.bumptech.glide.Glide;
-import com.crashlytics.android.Crashlytics;
+
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -365,7 +366,7 @@ public class AddAnomalyEquipementActivity extends BaseActivity implements AddAno
             try {
                 photoFile = createImageFile();
             } catch (IOException e) {
-                Crashlytics.logException(e);
+                FirebaseCrashlytics.getInstance().log(e.getMessage());
             }
             // Continue only if the File was successfully created
             if (photoFile != null) {
@@ -564,7 +565,7 @@ public class AddAnomalyEquipementActivity extends BaseActivity implements AddAno
                 Bitmap thumbnail = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
                 addPictureToPlaceHolder(thumbnail);
             } catch (IOException e) {
-                Crashlytics.logException(e);
+                FirebaseCrashlytics.getInstance().log(e.getMessage());
                 Log.e(TAG, e.getMessage(), e);
             }
         }

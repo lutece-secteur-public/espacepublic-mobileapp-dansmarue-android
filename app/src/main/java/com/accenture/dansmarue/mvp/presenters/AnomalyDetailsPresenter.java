@@ -24,7 +24,8 @@ import com.accenture.dansmarue.services.models.UnfollowRequest;
 import com.accenture.dansmarue.utils.CategoryHelper;
 import com.accenture.dansmarue.utils.Constants;
 import com.accenture.dansmarue.utils.PrefManager;
-import com.crashlytics.android.Crashlytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
+
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -335,7 +336,7 @@ public class AnomalyDetailsPresenter extends BasePresenter implements SingleObse
             }
 
         } catch (IOException e) {
-            Crashlytics.logException(e);
+            FirebaseCrashlytics.getInstance().log(e.getMessage());
             Log.e(TAG, e.getMessage(), e);
         }
     }

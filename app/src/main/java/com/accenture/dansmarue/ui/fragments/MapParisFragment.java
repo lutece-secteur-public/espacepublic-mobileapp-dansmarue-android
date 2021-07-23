@@ -58,7 +58,7 @@ import com.accenture.dansmarue.utils.Constants;
 import com.accenture.dansmarue.utils.MiscTools;
 import com.accenture.dansmarue.utils.NetworkUtils;
 import com.accenture.dansmarue.utils.PrefManager;
-import com.crashlytics.android.Crashlytics;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -86,6 +86,7 @@ import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
@@ -201,6 +202,7 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
        imgViewFavoriteAddress.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
+               searchNumberIncident = null;
                Intent intent = new Intent(getActivity(), FavoriteAddressActivity.class);
                startActivityForResult(intent, REQUEST_FAVORITE_ADDRESS);
            }
@@ -214,6 +216,7 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
         googleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
+                searchNumberIncident = null;
                 if (myPrecisionMode == true) activity.onClickPrecisePosition();
                 longPress = true;
                 searchBarMode = false;
@@ -276,7 +279,7 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getChildFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
 
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.values()));
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.LAT_LNG,Place.Field.NAME));
 //        Be more specific : limit result to a rectangle Meudon > Bobigny
         autocompleteFragment.setLocationBias(RectangularBounds.newInstance(parisBounds));
         autocompleteFragment.setHint(getString(R.string.google_searchbar_wording));
@@ -290,6 +293,7 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
+                searchNumberIncident = null;
                 if (null != place) {
                     searchBarMode = true;
                     favoriteAddressSelect="";
@@ -428,6 +432,7 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
      */
     public void precisePositionModeFunction(boolean precisePositionMode) {
 
+        searchNumberIncident = null;
         myPrecisionMode = precisePositionMode;
 
         if (permissionCheck == PackageManager.PERMISSION_GRANTED && (NetworkUtils.isGpsEnable(getContext()) || NetworkUtils.isConnected(getContext()))) {
@@ -620,7 +625,7 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
                             activity.onUpdateLocation(myCurrentLocationPosition, currentAdress);
                         }
                     } catch (IOException e) {
-                        Crashlytics.logException(e);
+                        FirebaseCrashlytics.getInstance().log(e.getMessage());
                         Log.e(TAG, e.getMessage(), e);
                         Log.i(TAG, "locationChanged: " + " Waiting 4 Geocoder");
 //                        Toast.makeText(getContext(),"En attente du service de géocoding inversé.\nMerci de votre patience",Toast.LENGTH_SHORT).show();
@@ -923,7 +928,7 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
     }
 
     public void updatePosMarker() {
-        if (!myPrecisionMode && googleMap != null)
+        if (!myPrecisionMode && googleMap != null && myCurrentLocationPosition != null)
             myPosMarker = googleMap.addMarker(new MarkerOptions().position(myCurrentLocationPosition).icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_pink)));
     }
 
@@ -1023,13 +1028,13 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
         View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_find_by_number,null, false);
 
         final EditText input = (EditText) viewInflated.findViewById(R.id.input_number);
-        if (searchNumberIncident != null) {
-            input.setText(searchNumberIncident);
-        }
 
         final TextView errorMessageText = viewInflated.findViewById(R.id.dialog_message_error);
         if(errorMessage != null) {
+            input.setText(searchNumberIncident);
             errorMessageText.setText(errorMessage);
+        } else {
+            searchNumberIncident = null;
         }
 
         Button buttonPublish = ( Button ) viewInflated.findViewById(R.id.button_search);
@@ -1037,7 +1042,7 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
             @Override
             public void onClick(View v) {
                 if (input.getText().toString().toUpperCase().matches("[BSGA][2][0-9]{3}[A-L][0-9]+")) {
-                    searchNumberIncident = input.getText().toString();
+                    searchNumberIncident = input.getText().toString().toUpperCase();
                     presenter.findByNumber(searchNumberIncident);
                 } else {
                     errorMessageText.setText(R.string.incorect_number);
@@ -1052,6 +1057,7 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
         close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                searchNumberIncident = null;
                 dialogFindByNumber.dismiss();
             }
         });
@@ -1100,9 +1106,12 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
            } else if (errorMessage != null) {
                showDialogFindByNumber(errorMessage);
            } else {
-               searchNumberIncident = null;
                updateLocation(posIncident);
            }
+    }
+
+    public String getFindByNumberValue() {
+        return searchNumberIncident;
     }
 
     public interface OnMapParisFragmentInteractionListener {

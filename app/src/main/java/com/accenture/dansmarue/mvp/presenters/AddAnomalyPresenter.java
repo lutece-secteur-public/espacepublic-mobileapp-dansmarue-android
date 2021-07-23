@@ -22,8 +22,9 @@ import com.accenture.dansmarue.utils.Constants;
 import com.accenture.dansmarue.utils.DateUtils;
 import com.accenture.dansmarue.utils.NetworkUtils;
 import com.accenture.dansmarue.utils.PrefManager;
-import com.crashlytics.android.Crashlytics;
+
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -352,7 +353,7 @@ public class AddAnomalyPresenter extends BasePresenter<AddAnomalyView> implement
             out.write(jsonIncident);
             out.close();
         } catch (IOException e) {
-            Crashlytics.logException(e);
+            FirebaseCrashlytics.getInstance().log(e.getMessage());
             Log.e(TAG, e.getMessage(), e);
         }
     }
@@ -410,7 +411,7 @@ public class AddAnomalyPresenter extends BasePresenter<AddAnomalyView> implement
             fos.close();
             view.showPicture(application.getFileStreamPath(fileName).getAbsolutePath());
         } catch (IOException e) {
-            Crashlytics.logException(e);
+            FirebaseCrashlytics.getInstance().log(e.getMessage());
             Log.e(TAG, e.getMessage(), e);
         }
     }
