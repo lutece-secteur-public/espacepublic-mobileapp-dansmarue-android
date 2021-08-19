@@ -126,7 +126,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/activity_horizontal_margin"
                     android:text="@string/anomaly_position_be_more_specific"
-                    android:textColor="@color/pink" />
+                    android:textColor="@color/framboise" />
             </LinearLayout>
 
             <!-- Could You Be More Specific ? -->
@@ -152,7 +152,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/activity_horizontal_margin"
                     android:text="@string/anomaly_add_one"
-                    android:textColor="@color/pink" />
+                    android:textColor="@color/framboise" />
             </LinearLayout>
 
             <!-- AnomaList -->

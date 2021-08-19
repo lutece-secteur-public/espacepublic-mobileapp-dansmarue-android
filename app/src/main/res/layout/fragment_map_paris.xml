@@ -89,7 +89,7 @@
         android:orientation="horizontal"
         android:weightSum="10"
         android:layout_marginTop="35dp"
-        android:background="@color/pink">
+        android:background="@color/framboise">
         <!-- By default, the fragment has no border or background. To provide a consistent visual appearance, nest the fragment within another layout element such as a CardView. -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardview_place_autocomplete_fragment"

@@ -296,7 +296,7 @@ public class ProfileFragment extends BaseFragment implements ProfileView {
 
         adapter.notifyDataSetChanged();
 
-        menuDraft.setTextColor(getResources().getColor(R.color.pink));
+        menuDraft.setTextColor(getResources().getColor(R.color.framboise));
         menuUnresolved.setTextColor(getResources().getColor(R.color.grey_tranparent));
         menuResolved.setTextColor(getResources().getColor(R.color.grey_tranparent));
     }
@@ -308,7 +308,7 @@ public class ProfileFragment extends BaseFragment implements ProfileView {
         adapter.addSection(Constants.TAG_SECTION_DRAFTS, draftSection);
         adapter.notifyDataSetChanged();
 
-        menuDraft.setTextColor(getResources().getColor(R.color.pink));
+        menuDraft.setTextColor(getResources().getColor(R.color.framboise));
         menuUnresolved.setTextColor(getResources().getColor(R.color.grey_tranparent));
         menuResolved.setTextColor(getResources().getColor(R.color.grey_tranparent));
     }
@@ -321,7 +321,7 @@ public class ProfileFragment extends BaseFragment implements ProfileView {
         adapter.notifyDataSetChanged();
 
         menuDraft.setTextColor(getResources().getColor(R.color.grey_tranparent));
-        menuUnresolved.setTextColor(getResources().getColor(R.color.pink));
+        menuUnresolved.setTextColor(getResources().getColor(R.color.framboise));
         menuResolved.setTextColor(getResources().getColor(R.color.grey_tranparent));
     }
 
@@ -334,7 +334,7 @@ public class ProfileFragment extends BaseFragment implements ProfileView {
 
         menuDraft.setTextColor(getResources().getColor(R.color.grey_tranparent));
         menuUnresolved.setTextColor(getResources().getColor(R.color.grey_tranparent));
-        menuResolved.setTextColor(getResources().getColor(R.color.pink));
+        menuResolved.setTextColor(getResources().getColor(R.color.framboise));
     }
 
     @OnClick({R.id.menu_anos_drafts, R.id.menu_anos_unresolved, R.id.menu_anos_resolved})

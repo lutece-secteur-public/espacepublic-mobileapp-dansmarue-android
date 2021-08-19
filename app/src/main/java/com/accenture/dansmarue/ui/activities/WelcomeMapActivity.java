@@ -48,6 +48,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import org.apache.commons.collections4.CollectionUtils;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -251,8 +252,8 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
     private void initBottomSheet() {
         behavior = BottomSheetBehavior.from(bottomSheet);
 
-        addAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.pink)));
-        followAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.pink)));
+        addAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.framboise)));
+        followAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.framboise)));
         greetingsAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.greetings_green)));
 
         behavior.setPeekHeight((int) ((198) * Resources.getSystem().getDisplayMetrics().density));
@@ -323,12 +324,12 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
     private void expandListOfActions() {
         showFAB = false;
 
-        layoutSelectedAdress.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.pink));
+        layoutSelectedAdress.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.framboise));
         selectedAdress.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
-        buttonSelectedAdress.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.pink));
+        buttonSelectedAdress.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.framboise));
         buttonSelectedAdress.setImageResource(R.drawable.ic_close);
 
-        layoutSelectedIncident.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.pink));
+        layoutSelectedIncident.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.framboise));
         selectedIncidentAdress.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.light_grey));
         selectedIncidentTitle.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
 
@@ -371,14 +372,14 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
         displayIconFavoriteAddress(selectedAddressWithCodePostal);
 
         addAnomalyFloatingButton.setImageResource(R.drawable.ic_add_anomaly_fab);
-        addAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.pink)));
+        addAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.framboise)));
 
         if (fabFollowed) {
             followAnomalyFloatingButton.setImageResource(R.drawable.ic_followed);
-            followAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.pink)));
+            followAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.framboise)));
         } else {
             followAnomalyFloatingButton.setImageResource(R.drawable.ic_follow);
-            followAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.pink)));
+            followAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.framboise)));
         }
 
         behavior.setPeekHeight((int) ((198) * Resources.getSystem().getDisplayMetrics().density));
@@ -391,13 +392,13 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
         // Depends on bottom sheet position
 
         if (behavior.getPeekHeight() == (int) ((198) * Resources.getSystem().getDisplayMetrics().density)) {
-            layoutSelectedAdress.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.pink));
+            layoutSelectedAdress.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.framboise));
             selectedAdress.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
-            buttonSelectedAdress.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.pink));
+            buttonSelectedAdress.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.framboise));
             addAnomalyFloatingButton.setImageResource(R.drawable.ic_add_pink_24px);
             addAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.white)));
 
-            layoutSelectedIncident.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.pink));
+            layoutSelectedIncident.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.framboise));
             selectedIncidentAdress.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.light_grey));
             selectedIncidentTitle.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
             behavior.setPeekHeight((int) ((354) * Resources.getSystem().getDisplayMetrics().density));
@@ -424,15 +425,15 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
             selectedAdress.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
             buttonSelectedAdress.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
             addAnomalyFloatingButton.setImageResource(R.drawable.ic_add_anomaly_fab);
-            addAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.pink)));
+            addAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.framboise)));
 
 
             if (fabFollowed) {
                 followAnomalyFloatingButton.setImageResource(R.drawable.ic_followed);
-                followAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.pink)));
+                followAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.framboise)));
             } else {
                 followAnomalyFloatingButton.setImageResource(R.drawable.ic_follow);
-                followAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.pink)));
+                followAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.framboise)));
             }
 
             layoutSelectedIncident.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
@@ -475,7 +476,7 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
             selectedAdress.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
             buttonSelectedAdress.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
             addAnomalyFloatingButton.setImageResource(R.drawable.ic_add_anomaly_fab);
-            addAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.pink)));
+            addAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.framboise)));
 
             behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             behavior.setPeekHeight((int) ((198) * Resources.getSystem().getDisplayMetrics().density));
@@ -593,9 +594,18 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
         layoutSelectedAdress.setVisibility(View.VISIBLE);
         addAnomalyFloatingButton.setVisibility(View.VISIBLE);
 
+        boolean containsCity = false;
+        List<String> listCity = Arrays.asList(getString(R.string.city_name).toUpperCase().split(","));
+        for (String city : listCity) {
+            if(myAddr.toUpperCase().contains(city)) {
+                containsCity = true;
+                break;
+            }
+        }
+
         if ("".equals(myAddr)) {
             selectedAdress.setText(location.latitude + ", " + location.longitude);
-        } else if (!myAddr.contains( getString(R.string.city_name))) {
+        } else if (!containsCity) {
             selectedAdress.setText("");
         } else {
             selectedAdress.setText(MiscTools.whichPostalCode(myAddr));

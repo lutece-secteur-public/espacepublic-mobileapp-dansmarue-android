@@ -767,7 +767,7 @@ public class AddAnomalyEquipementActivity extends BaseActivity implements AddAno
             });
 
 
-            LinearLayout cnx2account = (LinearLayout) greetingsDialog.findViewById(R.id.cnx2account);
+
             TextView cnx2mail = (TextView) greetingsDialog.findViewById(R.id.cnx2mail);
 
             if (greetingsDialog.getWindow() != null) {
@@ -782,13 +782,6 @@ public class AddAnomalyEquipementActivity extends BaseActivity implements AddAno
                 greetingsDialog.getWindow().setAttributes(lp);
                 greetingsDialog.show();
             }
-
-            cnx2account.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    loginParisianAccount();
-                }
-            });
 
             cnx2mail.setOnClickListener(new View.OnClickListener() {
                 @Override

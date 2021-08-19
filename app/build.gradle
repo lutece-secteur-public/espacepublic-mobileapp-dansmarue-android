@@ -19,10 +19,10 @@ apply plugin: 'jacoco'
 
 
 
-ext.versionMajor = 2
-ext.versionMinor = 7
-ext.versionPatch = 1
-ext.versionCode = 34
+ext.versionMajor = 1
+ext.versionMinor = 0
+ext.versionPatch = 0
+ext.versionCode = 1
 ext.minimumSdkVersion = 19
 
 android {
@@ -36,7 +36,7 @@ android {
     def releaseNotes = 'git log --pretty=format:"%s" --since "yesterday"'.execute([], project.rootDir).text.trim()
 
     defaultConfig {
-        applicationId "your dmr applicationId"
+        applicationId "fr.pc.android.bienvu"
         minSdkVersion 19
         // DMR testée en 9.0 max
         targetSdkVersion 29
@@ -66,25 +66,25 @@ android {
             buildConfigField "String", "API_URL_EQUIPEMENT", '"http://api-back-office/rest/"'
             buildConfigField "String", "AUTHENT_API_URL", '"https://authen-api/json"'
             buildConfigField "String", "AUTHENT_HEADER", '"mcpAuth"'
-            applicationId "your dmr applicationId"
-            resValue "string", "app_name", "Dans Ma Rue (Dev)"
+            applicationId "fr.pc.android.bienvu"
+            resValue "string", "app_name", "Bien VU (Dev)"
             manifestPlaceholders = [
                     appIcon : "@mipmap/ic_launcher",
-                    appLabel: "Dans Ma Rue (Dev)"
+                    appLabel: "Bien VU (Dev)"
             ]
         }
 
         prec {
-             buildConfigField "String", "SIRA_API_URL", '"http://api-back-office/rest/"'
+            buildConfigField "String", "SIRA_API_URL", '"http://api-back-office/rest/"'
             buildConfigField "String", "SIRA_API_URL_MOCK", '"http://api-back-office-mock/rest/"'
             buildConfigField "String", "API_URL_EQUIPEMENT", '"http://api-back-office/rest/"'
             buildConfigField "String", "AUTHENT_API_URL", '"https://authen-api/json"'
             buildConfigField "String", "AUTHENT_HEADER", '"mcpAuth"'
-            applicationId "your dmr applicationId"
-            resValue "string", "app_name", "Dans Ma Rue (Prec)"
+            applicationId "fr.pc.android.bienvu"
+            resValue "string", "app_name", "Bien VU (Prec)"
             manifestPlaceholders = [
                     appIcon : "@mipmap/ic_launcher",
-                    appLabel: "Dans Ma Rue (Prec)"
+                    appLabel: "Bien VU (Prec)"
             ]
         }
 
@@ -99,11 +99,11 @@ android {
             buildConfigField "String", "API_URL_EQUIPEMENT", '"http://api-back-office/rest/"'
             buildConfigField "String", "AUTHENT_API_URL", '"https://authen-api/json"'
             buildConfigField "String", "AUTHENT_HEADER", '"mcpAuth"'
-            applicationId "your dmr applicationId"
-            resValue "string", "app_name", "Dans Ma Rue (Rec)"
+            applicationId "fr.pc.android.bienvu"
+            resValue "string", "app_name", "Bien VU (Rec)"
             manifestPlaceholders = [
                     appIcon : "@mipmap/ic_launcher",
-                    appLabel: "Dans Ma Rue (Rec)"
+                    appLabel: "Bien VU (Rec)"
             ]
         }
 
@@ -113,11 +113,11 @@ android {
             buildConfigField "String", "API_URL_EQUIPEMENT", '"http://api-back-office/rest/"'
             buildConfigField "String", "AUTHENT_API_URL", '"https://authen-api/json"'
             buildConfigField "String", "AUTHENT_HEADER", '"mcpAuth"'
-            applicationId "your dmr applicationId"
-            resValue "string", "app_name", "Dans Ma Rue"
+            applicationId "fr.pc.android.bienvu"
+            resValue "string", "app_name", "Bien VU"
             manifestPlaceholders = [
                     appIcon : "@mipmap/ic_launcher",
-                    appLabel: "Dans Ma Rue"
+                    appLabel: "Bien VU"
             ]
 
         }

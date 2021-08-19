@@ -5,7 +5,7 @@
     android:id="@+id/rl_add_ano_details"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bordeaux"
+    android:background="@color/framboise"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
     tools:context="com.accenture.dansmarue.ui.activities.AnomalyDetailsActivity">
@@ -14,7 +14,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/pink"
+        android:background="@color/framboise"
         android:minHeight="?attr/actionBarSize"
         app:titleTextColor="@color/white" />
 

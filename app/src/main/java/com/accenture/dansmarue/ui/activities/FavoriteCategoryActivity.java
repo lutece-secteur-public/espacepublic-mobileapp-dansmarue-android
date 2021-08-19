@@ -112,7 +112,7 @@ public class FavoriteCategoryActivity extends BaseActivity implements RecyclerIt
             adapter.setEditMode(true);
 
             buttonSupprimer.setEnabled(true);
-            buttonSupprimer.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.pink));
+            buttonSupprimer.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.framboise));
 
             adapter.notifyDataSetChanged();
 

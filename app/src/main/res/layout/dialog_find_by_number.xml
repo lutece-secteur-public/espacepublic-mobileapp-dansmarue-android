@@ -40,7 +40,7 @@
                 android:layout_margin="16dp"
                 android:text=""
                 android:textAlignment="center"
-                android:textColor="@color/pink" />
+                android:textColor="@color/framboise" />
 
             <TextView
                 android:id="@+id/dialog_message_with_title"
@@ -66,7 +66,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_margin="@dimen/activity_horizontal_margin"
-                android:background="@color/pink"
+                android:background="@color/framboise"
                 android:clickable="false"
                 android:text="@string/change_equipement_libelle"
                 android:textAllCaps="false"

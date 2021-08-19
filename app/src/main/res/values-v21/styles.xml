@@ -1,9 +1,9 @@
 <resources>
 
     <style name="ThemeForToolBar" parent="AppTheme">
-        <item name="colorPrimary">@color/pink</item>
-        <item name="colorPrimaryDark">@color/bordeaux</item>
-        <item name="android:navigationBarColor">@color/pink</item>
+        <item name="colorPrimary">@color/framboise</item>
+        <item name="colorPrimaryDark">@color/framboise</item>
+        <item name="android:navigationBarColor">@color/framboise</item>
     </style>
 
     <style name="LoginTheme" parent="TransparentStatus">

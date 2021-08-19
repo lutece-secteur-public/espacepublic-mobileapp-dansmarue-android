@@ -376,8 +376,8 @@ public class AddAnomalyActivity extends BaseAnomalyActivity implements AddAnomal
                 .setCountry("Fr")
                 .setTypeFilter(TypeFilter.ADDRESS)
                 .setLocationRestriction( RectangularBounds.newInstance(
-                        new LatLng(48.811310, 2.217569),
-                        new LatLng(48.905509, 2.413468))) //Restriction limitation paris
+                        new LatLng(48.896794, 2.308851),
+                        new LatLng(48.986503, 2.413853)))
                 .build(this);
 
         startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
@@ -393,7 +393,16 @@ public class AddAnomalyActivity extends BaseAnomalyActivity implements AddAnomal
 
                     Log.i(TAG, "onActivityResult: " + place.getAddress().toString());
 
-                    if (!place.getAddress().toString().contains(getString(R.string.city_name))) {
+                    boolean containsCity = false;
+                    List<String> listCity = Arrays.asList(getString(R.string.city_name).toUpperCase().split(","));
+                    for (String city : listCity) {
+                        if(place.getAddress().toString().toUpperCase().contains(city)) {
+                            containsCity = true;
+                            break;
+                        }
+                    }
+
+                    if (!containsCity) {
                         new AlertDialog.Builder(AddAnomalyActivity.this)
                                 .setMessage(R.string.not_in_paris)
                                 .setCancelable(true)
@@ -724,7 +733,7 @@ public class AddAnomalyActivity extends BaseAnomalyActivity implements AddAnomal
     private void enableCreateIncident() {
         if (checkMandatoryFields()) {
             publishButton.setClickable(true);
-            publishButton.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.pink));
+            publishButton.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.framboise));
         } else {
             publishButton.setClickable(false);
             publishButton.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.grey_icon));
@@ -881,7 +890,7 @@ public class AddAnomalyActivity extends BaseAnomalyActivity implements AddAnomal
                 }
             });
 
-            LinearLayout cnx2account = (LinearLayout) greetingsDialog.findViewById(R.id.cnx2account);
+
             TextView cnx2mail = (TextView) greetingsDialog.findViewById(R.id.cnx2mail);
 
             if (greetingsDialog.getWindow() != null) {
@@ -896,13 +905,6 @@ public class AddAnomalyActivity extends BaseAnomalyActivity implements AddAnomal
                 greetingsDialog.getWindow().setAttributes(lp);
                 greetingsDialog.show();
             }
-
-            cnx2account.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    loginParisianAccount();
-                }
-            });
 
             cnx2mail.setOnClickListener(new View.OnClickListener() {
                 @Override

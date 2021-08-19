@@ -150,8 +150,8 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
      * Restriction Paris
      */
     private LatLngBounds parisBounds = new LatLngBounds(
-            new LatLng(48.811310, 2.217569),
-            new LatLng(48.905509, 2.469839));
+            new LatLng(48.896794, 2.308851),
+            new LatLng(48.986503, 2.413853));
 
     private int permissionCheck;
 
@@ -256,7 +256,7 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
      */
     private void updateMapToCentralParis() {
         if (null != googleMap) {
-            LatLng centralParis = new LatLng(48.864716, 2.349014);
+            LatLng centralParis = new LatLng(48.935378, 2.359882);
 
 //        By Default, we center the map on Notre Dame
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(centralParis, 12));
@@ -598,7 +598,7 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
                             Log.i(TAG, "Map Paris Refactor Adress " + MiscTools.reformatArrondissement(currentAdress));
 
                             //not in Paris
-                            if (locationChanged && city != null && (!city.toUpperCase().toUpperCase().contains(getString(R.string.city_name).toUpperCase()))) {
+                            if (locationChanged && city != null && (! Arrays.asList(getString(R.string.city_name).toUpperCase().split(",")).contains(city.toUpperCase()))) {
                                 invalidLocation();
                                 return;
                             }

@@ -14,6 +14,7 @@
     <!-- Slider button color-->
     <!-- Bottom Bar : Icon and Text Color with Status Checked True-->
     <color name="pink">#df225a</color>
+    <color name="green">#7db831</color>
 
     <!--Slider Status Bar-->
     <color name="blue_slider">#FF303F9F</color>
@@ -28,6 +29,7 @@
 
     <!-- Add Anomaly : Color Top Bar - 2 REMOVE -->
     <color name="bordeaux">#8f0931</color>
+    <color name="framboise">#fa1b38</color>
 
     <color name="grey_background">#F2F2F2</color>
     <color name="black">#000000</color>

@@ -2,7 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bordeaux"
+    android:background="@color/framboise"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
@@ -10,7 +10,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/pink"
+        android:background="@color/framboise"
         android:minHeight="?attr/actionBarSize"
         app:titleTextColor="@color/white" />
 
@@ -445,7 +445,7 @@
                             android:layout_marginStart="@dimen/activity_horizontal_margin"
                             android:layout_marginTop="3dp"
                             android:text="@string/text_priority_low"
-                            android:textColor="@color/pink"
+                            android:textColor="@color/framboise"
                             android:textSize="12sp" />
 
                         <TextView

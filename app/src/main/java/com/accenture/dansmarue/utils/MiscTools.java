@@ -9,9 +9,11 @@ import android.util.Base64;
 import android.util.Log;
 
 
+import com.accenture.dansmarue.R;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.List;
@@ -177,15 +179,15 @@ public class MiscTools {
      * Select the most coherent address in the list.
      * @param addresses
      *          List of address
-     * @param cityName
-     *          The city name
+     * @param cityList
+     *          List of valid city name
      * @param searchBarMode
      *          true if use AutoComplete Address component
      * @param searchBarAddress
      *         Address type in search bar
      * @return the selected address
      */
-    public static Address selectAddress(List<Address> addresses , String cityName, boolean searchBarMode, String searchBarAddress) {
+    public static Address selectAddress(List<Address> addresses , String cityList, boolean searchBarMode, String searchBarAddress) {
 
         final String invalidRoadName = "Unnamed Road";
 
@@ -196,7 +198,7 @@ public class MiscTools {
 
          boolean validAddress =  addresses.get(index).getThoroughfare() != null &&
                     ! addresses.get(index).getAddressLine(0).toUpperCase().contains(invalidRoadName.toUpperCase()) &&
-                    addresses.get(index).getLocality().toUpperCase().contains(cityName.toUpperCase());
+            Arrays.asList(cityList.toUpperCase().split(",")).contains( addresses.get(index).getLocality().toUpperCase());
 
          if(validAddress && searchBarMode && searchBarAddress != null) {
              validAddress = searchBarAddress.toUpperCase().contains( addresses.get(index).getThoroughfare().toUpperCase());

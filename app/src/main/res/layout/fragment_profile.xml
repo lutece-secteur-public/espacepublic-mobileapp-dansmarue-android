@@ -11,7 +11,7 @@
         android:id="@+id/mabtoolbar"
         android:layout_width="match_parent"
         android:layout_height="64dp"
-        android:background="@color/pink"
+        android:background="@color/framboise"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -56,7 +56,7 @@
             android:layout_weight="1"
             android:text="@string/anomaly_draft"
             android:textAlignment="center"
-            android:textColor="@color/pink"
+            android:textColor="@color/framboise"
             android:textSize="16sp" />
 
         <TextView

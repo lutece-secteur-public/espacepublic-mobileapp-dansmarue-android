@@ -614,7 +614,7 @@ public class AnomalyDetailsActivity extends BaseAnomalyActivity implements Anoma
         //TODO quelle message afficher
         Toast.makeText(this, "Erreur lors de la prise en copmpte de la déclaration", Toast.LENGTH_LONG).show();
         if(isLayoutAgent) {
-            resolveBtn.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.pink));
+            resolveBtn.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.framboise));
             resolveBtn.setEnabled(true);
         }
     }

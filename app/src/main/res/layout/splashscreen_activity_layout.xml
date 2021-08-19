@@ -16,21 +16,6 @@
         android:scaleType="centerInside"
         app:srcCompat="@drawable/splash_logo_dmr" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="100dp"
-        app:srcCompat="@drawable/splash_nef" />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="10dp"
-        app:srcCompat="@drawable/splash_logo_budget" />
 
     <com.mapbox.mapboxsdk.maps.MapView
         android:id="@+id/mapboxView"
