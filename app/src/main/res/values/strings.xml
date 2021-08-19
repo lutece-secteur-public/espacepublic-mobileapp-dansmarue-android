@@ -72,7 +72,7 @@
     <string name="greetings_keepintouch">RESTEZ EN CONTACT</string>
     <string name="greetings_connect_part1">Connectez-vous à</string>
     <string name="greetings_connect_part2" translatable="false">MON PARIS</string>
-    <string name="greetings_connect_line_above">ou renseignez uniquement</string>
+    <string name="greetings_connect_line_above">Renseignez uniquement</string>
     <string name="greetings_email">votre adresse mail</string>
     <string name="greetings_email_line_above">pour suivre la prise en charge de votre\ncontribution.</string>
     <string name="greetings_patienter">Merci de patienter pendant la transmission des informations.</string>
