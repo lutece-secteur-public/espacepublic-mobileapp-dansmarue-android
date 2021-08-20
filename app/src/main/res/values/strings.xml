@@ -126,7 +126,6 @@
     <!--Menu preferences-->
     <string name="pref_activity_title">Paramètres</string>
     <string-array name="pref_items_menu">
-        <item>Profil</item>
         <item>Préférences</item>
         <item>Conditions générales d\'utilisation</item>
         <item>A propos</item>

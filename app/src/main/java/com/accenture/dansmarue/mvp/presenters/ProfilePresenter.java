@@ -122,11 +122,7 @@ public class ProfilePresenter extends BasePresenter<ProfileView> implements Sing
      * Init user name.
      */
     public void initUser() {
-        if (prefManager.isConnected()) {
-            view.updateUserName(prefManager.getFirstName(), prefManager.getLastName());
-        } else {
-            view.updateUserName("", "");
-        }
+        view.updateUserName("", "");
     }
 
     public void oldPositionMenu() {
@@ -139,14 +135,6 @@ public class ProfilePresenter extends BasePresenter<ProfileView> implements Sing
         switch (idMenu) {
             case R.id.menu_anos_drafts:
                 view.showMenuDrafts();
-                break;
-            case R.id.menu_anos_unresolved:
-                view.loadIncidents(Incident.STATE_OPEN);
-                view.showMenuUnresolved();
-                break;
-            case R.id.menu_anos_resolved:
-                view.loadIncidents(Incident.STATE_RESOLVED);
-                view.showMenuResolved();
                 break;
             default:
                 view.showMenuDrafts();

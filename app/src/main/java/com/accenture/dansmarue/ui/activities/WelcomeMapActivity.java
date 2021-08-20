@@ -210,11 +210,7 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
                         fragmentTransaction.commitAllowingStateLoss();
                         break;
                     case R.id.bottom_menu_profile:
-                        if (prefManager.isConnected()) {
                             presenter.profileClicked();
-                        } else {
-                            startActivityForResult(new Intent(WelcomeMapActivity.this, LoginActivity.class), LOGIN_REQUEST_CODE);
-                        }
                         break;
                 }
                 return true;

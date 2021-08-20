@@ -67,8 +67,8 @@ public class PresenterModule {
 
     @Provides
     @ActivityScope
-    SplashScreenPresenter provideSplashScreenPresenter(final Application application, final PrefManager prefManager, final SiraApiService service, final SiraApiServiceMock serviceMock, final ApiServiceEquipement apiServiceEquipement) {
-        return new SplashScreenPresenter(application, (SplashScreenView) this.view, prefManager, service, serviceMock, apiServiceEquipement);
+    SplashScreenPresenter provideSplashScreenPresenter(final Application application, final PrefManager prefManager, final SiraApiService service, final SiraApiServiceMock serviceMock) {
+        return new SplashScreenPresenter(application, (SplashScreenView) this.view, prefManager, service, serviceMock);
     }
 
     @Provides

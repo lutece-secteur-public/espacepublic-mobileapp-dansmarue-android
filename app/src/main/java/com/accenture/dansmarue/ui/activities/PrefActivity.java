@@ -62,18 +62,8 @@ public class PrefActivity extends BaseActivity {
 
                 switch (position) {
 
-                    //TODO conditions profile à changer
-                    //  profile
-                    case 0:
-                        if (prefManager.isConnected()) {
-                            startActivity(new Intent(PrefActivity.this, PrefProfilActivity.class));
-                        } else {
-                            startActivityForResult(new Intent(PrefActivity.this, LoginActivity.class), LOGIN_REQUEST_CODE);
-                        }
-                        break;
-
                     //  préfs
-                    case 1:
+                    case 0:
                         Intent intent = new Intent();
                         intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                         Uri uri = Uri.fromParts("package", getPackageName(), null);
@@ -83,12 +73,12 @@ public class PrefActivity extends BaseActivity {
                         break;
 
                     //  CGU
-                    case 2:
+                    case 1:
                         startActivity(new Intent(PrefActivity.this, PrefCGUActivity.class));
                         break;
 
                     //  About
-                    case 3:
+                    case 2:
                         startActivity(new Intent(PrefActivity.this, PrefAboutActivity.class));
                         break;
 

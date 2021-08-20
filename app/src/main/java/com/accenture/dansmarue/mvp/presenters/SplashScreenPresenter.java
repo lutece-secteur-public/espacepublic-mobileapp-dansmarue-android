@@ -63,21 +63,21 @@ public class SplashScreenPresenter extends BasePresenter<SplashScreenView> imple
     private final SplashScreenView view;
     private final SiraApiService service;
     private final SiraApiServiceMock serviceMock;
-    private final ApiServiceEquipement apiServiceEquipement;
+    //private final ApiServiceEquipement apiServiceEquipement;
     private final Application application;
 
-    private final int NB_WS_TO_CALL = 3;
+    private final int NB_WS_TO_CALL = 1;
     private int cptWs = 0;
     private int cptWsError = 0;
 
     @Inject
-    public SplashScreenPresenter(final Application application, final SplashScreenView view, final PrefManager prefManager, final SiraApiService service, final SiraApiServiceMock serviceMock, final ApiServiceEquipement apiServiceEquipement) {
+    public SplashScreenPresenter(final Application application, final SplashScreenView view, final PrefManager prefManager, final SiraApiService service, final SiraApiServiceMock serviceMock) {
         this.application = application;
         this.view = view;
         this.prefManager = prefManager;
         this.service = service;
         this.serviceMock = serviceMock;
-        this.apiServiceEquipement = apiServiceEquipement;
+
     }
 
     @Override
@@ -117,127 +117,6 @@ public class SplashScreenPresenter extends BasePresenter<SplashScreenView> imple
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this);
 
-        CategoryRequest requestEquipementCat = new CategoryRequest("0");
-        apiServiceEquipement.getCategoriesEquipement(requestEquipementCat)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new RequestAnomaliesEquipementObserver());
-
-        EquipementRequest equipementRequest = new EquipementRequest("0");
-        apiServiceEquipement.getEquipements(equipementRequest)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new RequestEquipementListObserver());
-
-    }
-
-    private class RequestEquipementListObserver implements SingleObserver<EquipementResponse> {
-
-        @Override
-        public void onSubscribe(Disposable d) {
-        }
-
-        @Override
-        public void onSuccess(EquipementResponse value) {
-            if (null != value) {
-
-                Log.i(TAG, "onSuccess: " + value);
-                try {
-                    //save the new version in a json file on the device
-                    FileOutputStream fos = application.getApplicationContext().openFileOutput(Constants.FILE_LIST_EQUIPEMENTS, Context.MODE_PRIVATE);
-
-                    Writer out = new OutputStreamWriter(fos);
-                    String strObj = new GsonBuilder().create().toJson(value.getAnswer());
-                    out.write(strObj);
-                    out.close();
-                } catch (IOException e) {
-                    FirebaseCrashlytics.getInstance().log(e.getMessage());
-                    Log.e(TAG, e.getMessage(), e);
-                }
-
-                Log.i(TAG, "liste id types equipement : " + value.getAnswer().getEquipements().get("0").getChildrenIds());
-                List<String> liste_id_equipements = value.getAnswer().getEquipements().get("0").getChildrenIds();
-
-                // Liste des équipements municipaux avec ID - nom - msgErreur
-                List<TypeEquipement> maListeDeTypesDequipements = new ArrayList<>();
-                for (String typeIde : liste_id_equipements) {
-                    Log.i(TAG, "Equipement > id : " + typeIde
-                            + " - nom : " + value.getAnswer().getEquipements().get(typeIde).getName()
-                            + " - msg no equipement : " + value.getAnswer().getEquipements().get(typeIde).getMsg_alert_no_equipement()
-                            + " - msg photo : " + value.getAnswer().getEquipements().get(typeIde).getMsg_alert_photo()
-                            + " - msg searchbar : " + value.getAnswer().getEquipements().get(typeIde).getPlaceholder_searchbar()
-                            + " - icon : " + value.getAnswer().getEquipements().get(typeIde).getIcon()
-                            + " - image : " + value.getAnswer().getEquipements().get(typeIde).getImage()
-                    );
-
-                    TypeEquipement typeEquipement = new TypeEquipement();
-                    typeEquipement.setIdTypEquipement(typeIde);
-                    typeEquipement.setNomTypeEquipement(value.getAnswer().getEquipements().get(typeIde).getName());
-                    typeEquipement.setIconTypeEquipement(value.getAnswer().getEquipements().get(typeIde).getIcon());
-                    typeEquipement.setImageTypeEquipement(value.getAnswer().getEquipements().get(typeIde).getImage());
-                    typeEquipement.setMsg_alert_no_equipement(value.getAnswer().getEquipements().get(typeIde).getMsg_alert_no_equipement());
-                    typeEquipement.setMsg_alert_photo(value.getAnswer().getEquipements().get(typeIde).getMsg_alert_photo());
-                    typeEquipement.setPlaceholder_searchbar(value.getAnswer().getEquipements().get(typeIde).getPlaceholder_searchbar());
-                    typeEquipement.setLibelleEcranMobile(value.getAnswer().getEquipements().get(typeIde).getLibelleEcranMobile());
-
-                    List<Equipement> maListe = new ArrayList<>();
-                    for (String allIds : value.getAnswer().getEquipements().keySet()) {
-                        if (null != value.getAnswer().getEquipements().get(allIds).getParentId() && value.getAnswer().getEquipements().get(allIds).getParentId().equals(typeIde)) {
-                            Log.i(TAG, "nom piscine : " + value.getAnswer().getEquipements().get(allIds).getName());
-
-                            Equipement e = new Equipement();
-                            e.setName(value.getAnswer().getEquipements().get(allIds).getName());
-                            e.setAdresse(value.getAnswer().getEquipements().get(allIds).getAdresse());
-                            e.setId(allIds);
-                            e.setLatitude(value.getAnswer().getEquipements().get(allIds).getLatitude());
-                            e.setLongitude(value.getAnswer().getEquipements().get(allIds).getLongitude());
-                            e.setIconEquipement(value.getAnswer().getEquipements().get(typeIde).getIcon());
-                            // Check if TypeIde OK
-                            e.setParentId(typeIde);
-                            e.setType_equipement_id(typeIde);
-
-                            maListe.add(e);
-                        }
-                    }
-                    typeEquipement.setListEquipementByType(maListe);
-                    maListeDeTypesDequipements.add(typeEquipement);
-                }
-
-                // Sauvegarde des types d'équipements en Shared Prefs
-                if ( ! maListeDeTypesDequipements.isEmpty()) {
-                    prefManager.setTypesEquipement(maListeDeTypesDequipements);
-                } else {
-                    prefManager.setTypesEquipement(null);
-                }
-
-                // Setup equipementByDefault null => ano outdoor
-                prefManager.setEquipementTypeByDefault(null);
-
-                // In SharedPrefs, Map between
-                Map<String, String> equipementIdMapTypeEquipementId = new HashMap<>();
-                for (TypeEquipement type : maListeDeTypesDequipements) {
-                    Log.i(TAG, "mon Type: " + type.getNomTypeEquipement());
-                    for (Equipement e : type.getListEquipementByType()) {
-                        Log.i(TAG, "nom du type : " + type.getNomTypeEquipement() + " + id type : " + type.getIdTypEquipement() + "equipement " + e.getName() + " et id : " + e.getId());
-                        equipementIdMapTypeEquipementId.put(e.getId(), type.getIdTypEquipement());
-                    }
-                }
-                prefManager.setEquipementIdMapTypeEquipementId(equipementIdMapTypeEquipementId);
-
-                countWSandLaunch();
-
-            } else {
-                countWsError();
-            }
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            Log.e(TAG, "onError", e);
-            countWSandLaunch();
-            prefManager.setTypesEquipement(null);
-        }
     }
 
     private class RequestCheckVersionObserver implements SingleObserver<CheckVersionResponse> {
@@ -282,46 +161,6 @@ public class SplashScreenPresenter extends BasePresenter<SplashScreenView> imple
         public void onError(Throwable e) {
             Log.e(TAG, "onError", e);
             checkAndLoadCategories();
-        }
-    }
-
-
-    private class RequestAnomaliesEquipementObserver implements SingleObserver<CategoryEquipementResponse> {
-
-        @Override
-        public void onSubscribe(Disposable d) {
-        }
-
-        @Override
-        public void onSuccess(CategoryEquipementResponse value) {
-            if (null != value) {
-                Log.i(TAG, "onSuccess: " + value);
-                try {
-                    //save the new version in a json file on the device
-                    FileOutputStream fos = application.getApplicationContext().openFileOutput(Constants.FILE_LIST_ANOS_PAR_EQUIPEMENT, Context.MODE_PRIVATE);
-                    Writer out = new OutputStreamWriter(fos);
-                    String strObj = new GsonBuilder().create().toJson(value.getAnswer());
-                    Log.i(TAG, "Liste des catégories équipements : " + strObj);
-                    out.write(strObj);
-                    out.close();
-
-                    prefManager.setCatsInDoor(null);
-
-                } catch (IOException e) {
-                    FirebaseCrashlytics.getInstance().log(e.getMessage());
-                    Log.e(TAG, e.getMessage(), e);
-                }
-                countWSandLaunch();
-            } else {
-                countWsError();
-            }
-        }
-
-
-        @Override
-        public void onError(Throwable e) {
-            Log.e(TAG, "onError", e);
-            countWSandLaunch();
         }
     }
 

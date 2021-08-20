@@ -36,7 +36,7 @@ public class CategoryResponse extends SiraResponse {
 
     @Override
     public String toString() {
-        return "CategoryEquipementResponse{" +
+        return "CategoryResponse{" +
                 "request='" + request + '\'' +
                 ", answer=" + answer +
                 '}';
