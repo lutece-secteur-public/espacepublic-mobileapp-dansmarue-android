@@ -108,8 +108,8 @@ public class AnomalyDetailsActivity extends BaseAnomalyActivity implements Anoma
     @BindView(R.id.anomaly_layout_followers)
     protected LinearLayout layoutFollowers;
 
-    @BindView(R.id.fab_details_ano)
-    protected FloatingActionButton fabDetailsAno;
+    //@BindView(R.id.fab_details_ano)
+    //protected FloatingActionButton fabDetailsAno;
     @BindView(R.id.resolve)
     protected Button resolveBtn;
 
@@ -322,8 +322,8 @@ public class AnomalyDetailsActivity extends BaseAnomalyActivity implements Anoma
     }
 
 
-    @OnClick(R.id.fab_details_ano)
-    public void fabClicked() {
+    //@OnClick(R.id.fab_details_ano)
+    /**public void fabClicked() {
         //Should always be true
         if (incident != null) {
 
@@ -340,7 +340,7 @@ public class AnomalyDetailsActivity extends BaseAnomalyActivity implements Anoma
             }
         }
 
-    }
+    }**/
 
 
     /**
@@ -348,7 +348,7 @@ public class AnomalyDetailsActivity extends BaseAnomalyActivity implements Anoma
      */
     public void displayFollow() {
         incident.setIncidentFollowedByUser(true);
-        fabDetailsAno.setImageResource(R.drawable.ic_followed);
+        //fabDetailsAno.setImageResource(R.drawable.ic_followed);
         Snackbar.make(findViewById(R.id.rl_add_ano_details), R.string.follow_anomaly, Snackbar.LENGTH_LONG).show();
         nbFollowersDisplay++;
         nbFollowers.setText(nbFollowersDisplay + " ");
@@ -366,7 +366,7 @@ public class AnomalyDetailsActivity extends BaseAnomalyActivity implements Anoma
      */
     public void displayUnfollow() {
         incident.setIncidentFollowedByUser(false);
-        fabDetailsAno.setImageResource(R.drawable.ic_follow);
+        //fabDetailsAno.setImageResource(R.drawable.ic_follow);
         Snackbar.make(findViewById(R.id.rl_add_ano_details), R.string.unfollow_anomaly, Snackbar.LENGTH_LONG).show();
         nbFollowersDisplay--;
         nbFollowers.setText(nbFollowersDisplay + " ");
@@ -439,13 +439,13 @@ public class AnomalyDetailsActivity extends BaseAnomalyActivity implements Anoma
                 txtOverPicture.setText(R.string.anomaly_resolved_toast);
                 txtOverPicture.setVisibility(View.VISIBLE);
 
-                if (incident.isFromRamen()) {
+                /**if (incident.isFromRamen()) {
                     fabDetailsAno.setImageResource(R.drawable.ic_greetings_grey);
                     fabDetailsAno.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.greetings_grey)));
                 } else {
                     fabDetailsAno.setImageResource(R.drawable.ic_greetings_white);
                     fabDetailsAno.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.greetings_green)));
-                }
+                }**/
 
                 //isAgentLayout and isResolve
                 if(isLayoutAgent) {
@@ -461,7 +461,7 @@ public class AnomalyDetailsActivity extends BaseAnomalyActivity implements Anoma
                 txtOverPicture.setText(R.string.anomaly_in_progress);
                 txtOverPicture.setVisibility(View.VISIBLE);
 
-                if (incident.isFromRamen()) {
+                /**if (incident.isFromRamen()) {
                     fabDetailsAno.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.grey_icon)));
                 } else if (incident.isIncidentFollowedByUser()) {
                     fabDetailsAno.setImageResource(R.drawable.ic_followed);
@@ -469,9 +469,9 @@ public class AnomalyDetailsActivity extends BaseAnomalyActivity implements Anoma
                 } else {
                     fabDetailsAno.setImageResource(R.drawable.ic_follow);
                     fabDetailsAnoFollowed = false;
-                }
+                }**/
 
-                fabDetailsAno.setClickable(!incident.isFromRamen());
+                //fabDetailsAno.setClickable(!incident.isFromRamen());
                  if (!incident.isFromRamen() && incident.isResolvable() && !isLayoutAgent ) {
                     photoServiceFaitLayout.setVisibility(View.VISIBLE);
                     resolveBtn.setVisibility(View.VISIBLE);
@@ -526,8 +526,8 @@ public class AnomalyDetailsActivity extends BaseAnomalyActivity implements Anoma
     private void congratulate() {
         if (!congratulated) {
 
-            fabDetailsAno.setImageResource(R.drawable.ic_greetings_grey);
-            fabDetailsAno.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.greetings_grey)));
+            //fabDetailsAno.setImageResource(R.drawable.ic_greetings_grey);
+            //fabDetailsAno.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.greetings_grey)));
 
             Snackbar.make(findViewById(R.id.anomaly_line2), R.string.greetings_ok, Snackbar.LENGTH_LONG)
                     .addCallback(new Snackbar.Callback() {
@@ -544,8 +544,8 @@ public class AnomalyDetailsActivity extends BaseAnomalyActivity implements Anoma
                     .setAction(R.string.greetings_undo, new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            fabDetailsAno.setImageResource(R.drawable.ic_greetings_white);
-                            fabDetailsAno.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.greetings_green)));
+                           // fabDetailsAno.setImageResource(R.drawable.ic_greetings_white);
+                           // fabDetailsAno.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.greetings_green)));
                         }
                     })
                     .show();
@@ -592,7 +592,7 @@ public class AnomalyDetailsActivity extends BaseAnomalyActivity implements Anoma
 
         nbGreetingsDisplay++;
         nbGreetings.setText(nbGreetingsDisplay+" ");
-        fabDetailsAno.setVisibility(View.INVISIBLE);
+        //fabDetailsAno.setVisibility(View.INVISIBLE);
 
     }
 
@@ -600,8 +600,8 @@ public class AnomalyDetailsActivity extends BaseAnomalyActivity implements Anoma
     public void displayGreetingsKo() {
         Snackbar.make(findViewById(R.id.navigation), R.string.dmr_error, Snackbar.LENGTH_LONG).show();
         congratulated = false;
-        fabDetailsAno.setImageResource(R.drawable.ic_greetings_green);
-        fabDetailsAno.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.white)));
+        //fabDetailsAno.setImageResource(R.drawable.ic_greetings_green);
+        //fabDetailsAno.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.white)));
     }
 
     @Override

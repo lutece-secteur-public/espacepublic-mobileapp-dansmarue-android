@@ -75,8 +75,8 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
 
     @BindView(R.id.wbsa_fab)
     protected FloatingActionButton addAnomalyFloatingButton;
-    @BindView(R.id.follow_fab)
-    protected FloatingActionButton followAnomalyFloatingButton;
+    //@BindView(R.id.follow_fab)
+    //protected FloatingActionButton followAnomalyFloatingButton;
     @BindView(R.id.greetings_fab)
     protected FloatingActionButton greetingsAnomalyFloatingButton;
     @BindView(R.id.wbsa_coordinator)
@@ -249,7 +249,7 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
         behavior = BottomSheetBehavior.from(bottomSheet);
 
         addAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.framboise)));
-        followAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.framboise)));
+        //followAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.framboise)));
         greetingsAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.greetings_green)));
 
         behavior.setPeekHeight((int) ((198) * Resources.getSystem().getDisplayMetrics().density));
@@ -264,8 +264,8 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
                         if (showFAB) {
                             if (addAnomalyFloatingButton.getVisibility() == View.VISIBLE)
                                 addAnomalyFloatingButton.startAnimation(shrinkAnimation);
-                            if (followAnomalyFloatingButton.getVisibility() == View.VISIBLE)
-                                followAnomalyFloatingButton.startAnimation(shrinkAnimation);
+                            //if (followAnomalyFloatingButton.getVisibility() == View.VISIBLE)
+                            //    followAnomalyFloatingButton.startAnimation(shrinkAnimation);
                             if (greetingsAnomalyFloatingButton.getVisibility() == View.VISIBLE)
                                 greetingsAnomalyFloatingButton.startAnimation(shrinkAnimation);
                         }
@@ -333,7 +333,7 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
         layoutSelectedIncident.setVisibility(View.GONE);
 
         addAnomalyFloatingButton.setVisibility(View.GONE);
-        followAnomalyFloatingButton.setVisibility(View.GONE);
+        //followAnomalyFloatingButton.setVisibility(View.GONE);
         greetingsAnomalyFloatingButton.setVisibility(View.GONE);
 
     }
@@ -351,7 +351,7 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
 
         layoutPrecisePosition.setVisibility(View.VISIBLE);
         layoutAddAnomaly.setVisibility(View.GONE);
-        followAnomalyFloatingButton.setVisibility(View.GONE);
+        //followAnomalyFloatingButton.setVisibility(View.GONE);
         greetingsAnomalyFloatingButton.setVisibility(View.GONE);
         addAnomalyFloatingButton.setVisibility(View.VISIBLE);
         addAnomalyFloatingButton.startAnimation(growAnimation);
@@ -370,13 +370,13 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
         addAnomalyFloatingButton.setImageResource(R.drawable.ic_add_anomaly_fab);
         addAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.framboise)));
 
-        if (fabFollowed) {
+       /** if (fabFollowed) {
             followAnomalyFloatingButton.setImageResource(R.drawable.ic_followed);
             followAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.framboise)));
         } else {
             followAnomalyFloatingButton.setImageResource(R.drawable.ic_follow);
             followAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.framboise)));
-        }
+        }**/
 
         behavior.setPeekHeight((int) ((198) * Resources.getSystem().getDisplayMetrics().density));
 
@@ -399,13 +399,13 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
             selectedIncidentTitle.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
             behavior.setPeekHeight((int) ((354) * Resources.getSystem().getDisplayMetrics().density));
 
-            if (fabFollowed) {
+            /**if (fabFollowed) {
                 followAnomalyFloatingButton.setImageResource(R.drawable.ic_followed_pink);
                 followAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.white)));
             } else {
                 followAnomalyFloatingButton.setImageResource(R.drawable.ic_follow_pink);
                 followAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.white)));
-            }
+            }**/
 
             if (congratulated) {
                 greetingsAnomalyFloatingButton.setImageResource(R.drawable.ic_greetings_grey);
@@ -424,13 +424,13 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
             addAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.framboise)));
 
 
-            if (fabFollowed) {
+            /**if (fabFollowed) {
                 followAnomalyFloatingButton.setImageResource(R.drawable.ic_followed);
                 followAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.framboise)));
             } else {
                 followAnomalyFloatingButton.setImageResource(R.drawable.ic_follow);
                 followAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.framboise)));
-            }
+            }**/
 
             layoutSelectedIncident.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
             selectedIncidentAdress.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.grey_tranparent));
@@ -585,7 +585,7 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
     public void onUpdateLocation(LatLng location, String myAddr) {
         layoutSelectedIncident.setVisibility(View.GONE);
         greetingsAnomalyFloatingButton.setVisibility(View.GONE);
-        followAnomalyFloatingButton.setVisibility(View.GONE);
+        //followAnomalyFloatingButton.setVisibility(View.GONE);
 
         layoutSelectedAdress.setVisibility(View.VISIBLE);
         addAnomalyFloatingButton.setVisibility(View.VISIBLE);
@@ -604,7 +604,7 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
         } else if (!containsCity) {
             selectedAdress.setText("");
         } else {
-            selectedAdress.setText(MiscTools.whichPostalCode(myAddr));
+            selectedAdress.setText(MiscTools.reformatArrondissement(myAddr));
             selectedAddressWithCodePostal = myAddr;
             displayIconFavoriteAddress(myAddr);
         }
@@ -671,15 +671,15 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
 
             if (summarizedIncident.isFromRamen()) {
                 greetingsAnomalyFloatingButton.setVisibility(View.GONE);
-                followAnomalyFloatingButton.setVisibility(View.VISIBLE);
-                followAnomalyFloatingButton.setImageResource(R.drawable.ic_follow);
-                followAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.greetings_grey)));
+                //followAnomalyFloatingButton.setVisibility(View.VISIBLE);
+                //followAnomalyFloatingButton.setImageResource(R.drawable.ic_follow);
+                //followAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.greetings_grey)));
 
             } else {
 
                 if (summarizedIncident.isResolu()) {
 
-                    followAnomalyFloatingButton.setVisibility(View.GONE);
+                    //followAnomalyFloatingButton.setVisibility(View.GONE);
                     greetingsAnomalyFloatingButton.setVisibility(View.VISIBLE);
 
                     if (congratulated) {
@@ -693,13 +693,13 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
                 } else {
 
                     greetingsAnomalyFloatingButton.setVisibility(View.GONE);
-                    followAnomalyFloatingButton.setVisibility(View.VISIBLE);
+                    //followAnomalyFloatingButton.setVisibility(View.VISIBLE);
 
                     if (summarizedIncident.isIncidentFollowedByUser()) {
-                        followAnomalyFloatingButton.setImageResource(R.drawable.ic_followed);
+                        //followAnomalyFloatingButton.setImageResource(R.drawable.ic_followed);
                         fabFollowed = true;
                     } else {
-                        followAnomalyFloatingButton.setImageResource(R.drawable.ic_follow);
+                        //followAnomalyFloatingButton.setImageResource(R.drawable.ic_follow);
                         fabFollowed = false;
 
                     }
@@ -725,7 +725,7 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
      * Fab Buttons
      */
 
-    @OnClick(R.id.follow_fab)
+   /** @OnClick(R.id.follow_fab)
     public void followClicked() {
         //Should always be true
         if (summarizedIncident != null) {
@@ -737,7 +737,7 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
                 }
             }
         }
-    }
+    }**/
 
     @OnClick(R.id.greetings_fab)
     public void congratulate() {
@@ -786,7 +786,7 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
     public void displayFollow() {
 
         mapParisFragment.refreshDatas();
-        followAnomalyFloatingButton.setImageResource(R.drawable.ic_followed);
+        //followAnomalyFloatingButton.setImageResource(R.drawable.ic_followed);
         Snackbar.make(findViewById(R.id.navigation), R.string.follow_anomaly, Snackbar.LENGTH_LONG).show();
         summarizedIncident.setIncidentFollowedByUser(true);
     }
@@ -797,7 +797,7 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
 
     public void displayUnfollow() {
         mapParisFragment.refreshDatas();
-        followAnomalyFloatingButton.setImageResource(R.drawable.ic_follow);
+        //followAnomalyFloatingButton.setImageResource(R.drawable.ic_follow);
         Snackbar.make(findViewById(R.id.navigation), R.string.unfollow_anomaly, Snackbar.LENGTH_LONG).show();
         summarizedIncident.setIncidentFollowedByUser(false);
     }

@@ -85,7 +85,7 @@
                 android:layout_marginStart="10dp"
                 android:textColor="@color/white" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
+            <!--<com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab_details_ano"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -95,14 +95,14 @@
                 android:layout_marginEnd="11dp"
                 android:clickable="true"
                 app:fabSize="normal"
-                app:srcCompat="@drawable/ic_follow" />
+                />-->
 
             <LinearLayout
                 android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@+id/anomaly_address"
-                android:layout_below="@+id/fab_details_ano"
+                android:layout_below="@+id/anomaly_address"
                 android:orientation="horizontal">
 
                 <TextView

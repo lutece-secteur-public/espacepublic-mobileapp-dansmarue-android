@@ -299,7 +299,7 @@ public class AddAnomalyActivity extends BaseAnomalyActivity implements AddAnomal
         fragmentTransaction.commitNowAllowingStateLoss();
 
         if (!adress.equals("")) {
-            bottom_sheet_my_adress_add_anomaly.setText(MiscTools.whichPostalCode(adress));
+            bottom_sheet_my_adress_add_anomaly.setText(MiscTools.reformatArrondissement(adress));
             isValidAddress = true;
         } else {
             bottom_sheet_my_adress_add_anomaly.setText(location.latitude + ", " + location.longitude);

@@ -64,7 +64,8 @@ public class MiscTools {
         return address;
     }
 
-    public static String reformatArrondissement(String address) {
+    //reformatArrondissement Paris
+    /**public static String reformatArrondissement(String address) {
         try {
             Pattern p = Pattern.compile("75[0-9][0-9][0-9]");
             Matcher m = p.matcher(address);
@@ -84,8 +85,13 @@ public class MiscTools {
         }
 
         return address;
-    }
+    }**/
 
+    //Reformat Arrondissement Plaine Commune
+    public static String reformatArrondissement(String address) {
+
+        return address.substring(0, address.indexOf(", France"));
+    }
 
     public static Bitmap rotateBitmapOrientation(String photoFilePath) {
         // Create and configure BitmapFactory
