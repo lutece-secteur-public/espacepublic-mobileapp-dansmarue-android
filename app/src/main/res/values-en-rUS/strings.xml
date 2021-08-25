@@ -13,8 +13,8 @@
     <string name="anomaly_position_be_more_specific">Precise the anomaly position</string>
     <string name="anomaly_resolved_toast">This anomaly has been closed.</string>
     <string name="anomaly_wip">In progress</string>
-    <string name="authorisation_camera">Allow DansMaRue access to the camera</string>
-    <string name="authorisation_gallery">Allow DansMaRue access to my library</string>
+    <string name="authorisation_camera">Allow bienVU access to the camera</string>
+    <string name="authorisation_gallery">Allow bienVU access to my library</string>
     <string name="authorisation_geoloc">Allow the geolocation</string>
     <string name="authorisation_mail">Receive notifications by mail</string>
     <string name="bottom_map_txt">Map</string>
@@ -128,8 +128,8 @@
     <string name="complement_address">Complement (optional) :</string>
     <string name="complement_address_spinner">Complement :</string>
     <string name="information">Information</string>
-    <string name="dmr_offline">The DansMaRue application is currently under maintenance. Please try again later</string>
-    <string name="dmr_offline_publish">The DansMaRue application is currently under maintenance. A draft has been saved in your space. Please try again later.</string>
+    <string name="dmr_offline">The bienVU application is currently under maintenance. Please try again later</string>
+    <string name="dmr_offline_publish">The bienVU application is currently under maintenance. A draft has been saved in your space. Please try again later.</string>
     <string name="find_by_number_text">Find incident\\n\\nEnter the incident number.</string>
     <string name="incorect_number">Incorect number</string>
     <string name="take_picture">Take a picture</string>

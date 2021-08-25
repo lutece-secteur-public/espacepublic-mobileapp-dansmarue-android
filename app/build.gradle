@@ -21,7 +21,7 @@ apply plugin: 'jacoco'
 
 ext.versionMajor = 1
 ext.versionMinor = 0
-ext.versionPatch = 0
+ext.versionPatch = 1
 ext.versionCode = 1
 ext.minimumSdkVersion = 19
 
