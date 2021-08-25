@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="slide1_title">BIENVENUE !</string>
-    <string name="slide1_subtitle">DansMaRue vous permet de participer à l\'amélioration de votre cadre de vie en échangeant des informations avec les services de la Ville de Paris.</string>
+    <string name="slide1_subtitle">bienVU vous permet de participer à l\'amélioration de votre cadre de vie en échangeant des informations avec les services de la ville.</string>
 
     <string name="slide2_title">ENVOYEZ LES BONNES INFORMATIONS !</string>
     <string name="slide2_subtitle_1"> Bien choisir le bon sujet (graffiti, objet abandonné, défaut sur la route, stationnement gênant…) dans la nomenclature</string>
@@ -14,8 +14,8 @@
     <string name="slider_button_txt">Commencer</string>
 
     <string name="information">Information</string>
-    <string name="dmr_offline">L\'application DansMaRue est actuellement en maintenance.\n\nMerci d\'essayer ultérieurement.</string>
-    <string name="dmr_offline_publish">L\'application DansMaRue est actuellement en maintenance.\n\nUn brouillon a été sauvegardé dans votre espace.\n\nMerci d\'essayer ultérieurement.</string>
+    <string name="dmr_offline">L\'application bienVU est actuellement en maintenance.\n\nMerci d\'essayer ultérieurement.</string>
+    <string name="dmr_offline_publish">L\'application bienVU est actuellement en maintenance.\n\nUn brouillon a été sauvegardé dans votre espace.\n\nMerci d\'essayer ultérieurement.</string>
 
 
     <!-- Bottom Bar Wordin -->
@@ -165,8 +165,8 @@
     <!--Menu pref / autorisations-->
     <string name="authorisation_mail">Recevoir les notifications par mail</string>
     <string name="authorisation_geoloc">Autoriser la géolocalisation</string>
-    <string name="authorisation_camera">Autoriser DansMaRue à accéder à ma caméra</string>
-    <string name="authorisation_gallery">Autoriser DansMaRue à accéder à ma bibliothèque</string>
+    <string name="authorisation_camera">Autoriser bienVU à accéder à ma caméra</string>
+    <string name="authorisation_gallery">Autoriser bienVU à accéder à ma bibliothèque</string>
     <string name="section_resolved">Clôturées</string>
     <string name="failed_load">Erreur lors du chargement. Appuyer pour réessayer</string>
     <string name="section_drafts">Brouillons</string>
