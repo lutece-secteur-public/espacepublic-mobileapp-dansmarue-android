@@ -97,8 +97,8 @@ public class AnomalyDetailsActivity extends BaseAnomalyActivity implements Anoma
     @BindView(R.id.anomaly_commentaire_agent)
     @Nullable
     protected TextView anomalyCommentaireAgentTerrain;
-    @BindView(R.id.anomaly_nb_followers)
-    protected TextView nbFollowers;
+    //@BindView(R.id.anomaly_nb_followers)
+    //protected TextView nbFollowers;
     @BindView(R.id.anomaly_nb_greetings)
     protected TextView nbGreetings;
     @BindView(R.id.anomaly_time)
@@ -351,7 +351,7 @@ public class AnomalyDetailsActivity extends BaseAnomalyActivity implements Anoma
         //fabDetailsAno.setImageResource(R.drawable.ic_followed);
         Snackbar.make(findViewById(R.id.rl_add_ano_details), R.string.follow_anomaly, Snackbar.LENGTH_LONG).show();
         nbFollowersDisplay++;
-        nbFollowers.setText(nbFollowersDisplay + " ");
+        //nbFollowers.setText(nbFollowersDisplay + " ");
     }
 
     /**
@@ -369,7 +369,7 @@ public class AnomalyDetailsActivity extends BaseAnomalyActivity implements Anoma
         //fabDetailsAno.setImageResource(R.drawable.ic_follow);
         Snackbar.make(findViewById(R.id.rl_add_ano_details), R.string.unfollow_anomaly, Snackbar.LENGTH_LONG).show();
         nbFollowersDisplay--;
-        nbFollowers.setText(nbFollowersDisplay + " ");
+        //nbFollowers.setText(nbFollowersDisplay + " ");
     }
 
     /**
@@ -496,7 +496,7 @@ public class AnomalyDetailsActivity extends BaseAnomalyActivity implements Anoma
         }
 
         nbFollowersDisplay = incident.getFollowers();
-        nbFollowers.setText(nbFollowersDisplay + " ");
+        //nbFollowers.setText(nbFollowersDisplay + " ");
 
         nbGreetingsDisplay = incident.getCongratulations();
         nbGreetings.setText(nbGreetingsDisplay + " ");

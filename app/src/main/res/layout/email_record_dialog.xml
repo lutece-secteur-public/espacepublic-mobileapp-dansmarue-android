@@ -35,7 +35,7 @@
             android:drawablePadding="10dp"
             android:inputType="textEmailAddress"
             android:textColor="@color/black"
-            android:textColorHint="@color/pink" />
+            android:textColorHint="@color/framboise" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -55,7 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="30dp"
             android:text="@string/save_mail_popup_cancel"
-            android:textColor="@color/pink"
+            android:textColor="@color/framboise"
             android:textStyle="bold" />
 
         <TextView
@@ -63,7 +63,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/save_mail_popup_confirm"
-            android:textColor="@color/pink"
+            android:textColor="@color/framboise"
             android:textStyle="bold" />
 
     </LinearLayout>

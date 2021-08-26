@@ -90,7 +90,11 @@ public class MiscTools {
     //Reformat Arrondissement Plaine Commune
     public static String reformatArrondissement(String address) {
 
-        return address.substring(0, address.indexOf(", France"));
+        if ( address.indexOf(", France") > 0 ) {
+            return address.substring(0, address.indexOf(", France"));
+        } else {
+            return address;
+        }
     }
 
     public static Bitmap rotateBitmapOrientation(String photoFilePath) {
