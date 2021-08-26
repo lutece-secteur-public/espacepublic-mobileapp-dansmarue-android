@@ -50,7 +50,7 @@ public class FavorisCategoryAdapter extends RecyclerView.Adapter<ViewHolder> {
                 }
             }
         });
-        holder.textView.setText(item.getAlias());
+        holder.textView.setText(item.getName());
         if(editMode) {
             holder.iconMove.setVisibility(View.VISIBLE);
         } else {
