@@ -68,7 +68,7 @@
 
     <!--Greetings -->
     <string name="greetings_thanks">Merci !</string>
-    <string name="greetings_thanks_line_above">Les services de la Ville de Paris\nvous remercient pour\nvotre contribution.</string>
+    <string name="greetings_thanks_line_above">Les services de la Plaine Commune\nvous remercient pour\nvotre contribution.</string>
     <string name="greetings_keepintouch">RESTEZ EN CONTACT</string>
     <string name="greetings_connect_part1">Connectez-vous à</string>
     <string name="greetings_connect_part2" translatable="false">MON PARIS</string>
