@@ -78,12 +78,6 @@ public class MapParisPresenter extends BasePresenter<MapParisView> implements Si
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this);
-
-        //GetDosierRamen
-        service.getDossiersRamenByPosition(newLocation)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe( new GetDossiersRamenByPositionObserver());
     }
 
     @Override
@@ -203,31 +197,5 @@ public class MapParisPresenter extends BasePresenter<MapParisView> implements Si
         return view;
     }
 
-
-    private class GetDossiersRamenByPositionObserver implements SingleObserver<ResponseBody> {
-
-        @Override
-        public void onSubscribe(Disposable d) {
-        }
-
-        @Override
-        public void onSuccess(ResponseBody value) {
-
-            if (null != value) {
-                try {
-                    DossierRamen[] dossiers =  new GsonBuilder().create().fromJson("["+value.string()+"]",DossierRamen[].class);
-                    List<Incident> incidents = DossierRamen.convertToIncident(dossiers);
-                    displayIncidents(incidents);
-                } catch (IOException e) {
-                    Log.e(TAG, e.getMessage(), e);
-                }
-            }
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            Log.e(TAG, e.getMessage(), e);
-        }
-    }
 
 }

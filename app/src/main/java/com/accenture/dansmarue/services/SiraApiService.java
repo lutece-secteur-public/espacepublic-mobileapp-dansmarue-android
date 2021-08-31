@@ -83,10 +83,6 @@ public interface SiraApiService {
     @POST("signalement/api")
     Single<GetIncidentsByPositionResponse> getIncidentsByPosition(@Field("jsonStream") GetIncidentsByPositionRequest request);
 
-    @POST
-    ("signalement/getDossiersCourrantsByGeomWithLimit")
-    Single<ResponseBody> getDossiersRamenByPosition(@Body Position position);
-
 //    @POST("sira/signalement/api")
 
 
