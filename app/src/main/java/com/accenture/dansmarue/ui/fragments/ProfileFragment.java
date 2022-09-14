@@ -3,6 +3,10 @@ package com.accenture.dansmarue.ui.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -10,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.accenture.dansmarue.R;
@@ -59,14 +64,18 @@ public class ProfileFragment extends BaseFragment implements ProfileView {
     private ProfileSection resolvedSection;
     private ProfileSection unresolvedSection;
 
+    private View rootView;
+
+    @BindView(R.id.toolbar)
+    protected Toolbar toolbar;
+
     @BindView(R.id.menu_anos_drafts)
     protected TextView menuDraft;
     @BindView(R.id.menu_anos_unresolved)
     protected TextView menuUnresolved;
     @BindView(R.id.menu_anos_resolved)
     protected TextView menuResolved;
-    @BindView(R.id.user_mail_txt)
-    protected TextView userMailTxt;
+
 
 
     public ProfileFragment() {
@@ -96,6 +105,7 @@ public class ProfileFragment extends BaseFragment implements ProfileView {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
         activity = (ProfileFragment.OnProfileFragmentInteractionListener) getActivity();
     }
 
@@ -109,15 +119,24 @@ public class ProfileFragment extends BaseFragment implements ProfileView {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
+        rootView = inflater.inflate(R.layout.fragment_profile, container, false);
 
         ButterKnife.bind(this, rootView);
 
+        return rootView;
+
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
         adapter = new SectionedRecyclerViewAdapter();
 
-        draftSection = new ProfileSection(getContext(), getString(R.string.section_drafts));
-        unresolvedSection = new ProfileSection(getContext(), getString(R.string.section_unresolved));
-        resolvedSection = new ProfileSection(getContext(), getString(R.string.section_resolved));
+        draftSection = new ProfileSection(getContext(), getString(R.string.section_drafts),false,presenter);
+        unresolvedSection = new ProfileSection(getContext(), getString(R.string.section_unresolved),false,presenter);
+        resolvedSection = new ProfileSection(getContext(), getString(R.string.section_resolved),true,presenter);
 
         adapter.addSection(Constants.TAG_SECTION_DRAFTS, draftSection);
         adapter.addSection(Constants.TAG_SECTION_UNRESOLVED, unresolvedSection);
@@ -128,59 +147,37 @@ public class ProfileFragment extends BaseFragment implements ProfileView {
         recyclerView.setAdapter(adapter);
 
         initRecyclerActions();
-        return rootView;
-
-    }
-
-
-    @Override
-    public void onStart() {
-        super.onStart();
 
         loadDraft();
         showMenuDrafts();
     }
 
-    @OnClick(R.id.menu_setup)
-    public void onMenuSetupClicked() {
-        presenter.onPreferenceClicked();
-    }
 
     @Override
     public void onResume() {
         super.onResume();
         loadDraft();
         Log.i(TAG, "onResume: ");
-        presenter.initUser();
 
         presenter.oldPositionMenu();
 
     }
 
+    @OnClick(R.id.img_back_arrow)
+    public void onClickBackArrow() {
+
+        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+
+        MySpaceFragment mySpaceFragment = MySpaceFragment.newInstance();
+
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.frameLayout, mySpaceFragment, "MySpaceFragment")
+                .addToBackStack(null)
+                .commit();
+
+    }
+
     private void initRecyclerActions() {
-        recyclerView.addOnItemTouchListener(
-                new RecyclerItemClickListener(getContext(), new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        try {
-                            ProfileSection section = (ProfileSection) adapter.getSectionForPosition(position);
-                            if (section.getState() == Section.State.FAILED) {
-                                //loadIncidents();
-                            } else {
-                                int posInSection = adapter.getPositionInSection(position);
-                                //the item  with pos = -1 is the header component of the section
-                                if (posInSection > -1) {
-                                    boolean isDraft;
-                                    isDraft = draftSection == section;
-                                    presenter.onItemClicked(isDraft, section.getItem(posInSection));
-                                }
-                            }
-                        }catch(IndexOutOfBoundsException e) {
-                           Log.e(TAG, "initRecyclerActions: " + e.getMessage()+ " position : " + position);
-                        }
-                    }
-                })
-        );
 
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             @Override
@@ -251,10 +248,6 @@ public class ProfileFragment extends BaseFragment implements ProfileView {
         presenter.loadDrafts();
     }
 
-    @Override
-    public void updateUserName(String firstName, String lastName) {
-        userMailTxt.setText(firstName + " " + lastName);
-    }
 
     @Override
     public void showDrafts(final List<Incident> drafts) {
@@ -339,7 +332,6 @@ public class ProfileFragment extends BaseFragment implements ProfileView {
 
     @OnClick({R.id.menu_anos_drafts, R.id.menu_anos_unresolved, R.id.menu_anos_resolved})
     public void onMenuClicked(final View view) {
-
         presenter.onMenuClicked(view.getId());
     }
 

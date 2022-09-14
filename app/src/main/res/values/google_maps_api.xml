@@ -1,6 +1,7 @@
 <resources>
 
+    <!-- Cle dans le fichier local.properties -->
     <!--Compte VDP-->
-   <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">google_maps_key</string>
+   <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false"></string>
 
 </resources>

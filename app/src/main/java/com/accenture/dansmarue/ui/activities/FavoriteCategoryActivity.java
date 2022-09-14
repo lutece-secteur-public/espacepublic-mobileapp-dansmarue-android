@@ -64,7 +64,9 @@ public class FavoriteCategoryActivity extends BaseActivity implements RecyclerIt
         favoriteItemsList.clear();
         PrefManager prefManager = new PrefManager(getApplicationContext());
         for ( Category item : prefManager.getFavorisItems().values()) {
-            favoriteItemsList.add(item);
+            if (prefManager.getIsAgent() || (!prefManager.getIsAgent() && !item.isAgent())) {
+                favoriteItemsList.add(item);
+            }
         }
         // refreshing recycler view
         adapter.notifyDataSetChanged();

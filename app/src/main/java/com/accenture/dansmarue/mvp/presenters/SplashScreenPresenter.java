@@ -18,6 +18,8 @@ import com.accenture.dansmarue.services.models.CategoryRequest;
 import com.accenture.dansmarue.services.models.CategoryResponse;
 import com.accenture.dansmarue.services.models.CheckVersionRequest;
 import com.accenture.dansmarue.services.models.CheckVersionResponse;
+import com.accenture.dansmarue.services.models.MySpaceHelpResponse;
+import com.accenture.dansmarue.services.models.MySpaceNewsResponse;
 import com.accenture.dansmarue.services.models.SiraSimpleResponse;
 import com.accenture.dansmarue.services.models.equipements.CategoryEquipementResponse;
 import com.accenture.dansmarue.services.models.equipements.EquipementRequest;
@@ -25,7 +27,6 @@ import com.accenture.dansmarue.services.models.equipements.EquipementResponse;
 import com.accenture.dansmarue.utils.CategoryHelper;
 import com.accenture.dansmarue.utils.Constants;
 import com.accenture.dansmarue.utils.MiscTools;
-import com.accenture.dansmarue.utils.NetworkUtils;
 import com.accenture.dansmarue.utils.PrefManager;
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
@@ -129,6 +130,18 @@ public class SplashScreenPresenter extends BasePresenter<SplashScreenView> imple
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new RequestEquipementListObserver());
 
+    }
+
+    /**
+     * Call the service to retrieve news and help in back office
+     */
+    public void loadNewsAndHelp() {
+
+        service.getMySpaceNews(prefManager.getMySpaceNewsVersion()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RequestNewsListObserver());
+
+        service.getMySpaceHelp(prefManager.getMySpaceHelpVersion()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new RequestHelpListObserver());
     }
 
     private class RequestEquipementListObserver implements SingleObserver<EquipementResponse> {
@@ -264,17 +277,21 @@ public class SplashScreenPresenter extends BasePresenter<SplashScreenView> imple
                             }
                         } else {
                             checkAndLoadCategories();
+                            loadNewsAndHelp();
                         }
                     } else {
                         checkAndLoadCategories();
+                        loadNewsAndHelp();
                     }
                 } else {
                     checkAndLoadCategories();
+                    loadNewsAndHelp();
                 }
 
             }catch (Exception e) {
                 Log.e(TAG, "Compare Version  error", e);
                 checkAndLoadCategories();
+                loadNewsAndHelp();
             }
         }
 
@@ -282,6 +299,7 @@ public class SplashScreenPresenter extends BasePresenter<SplashScreenView> imple
         public void onError(Throwable e) {
             Log.e(TAG, "onError", e);
             checkAndLoadCategories();
+            loadNewsAndHelp();
         }
     }
 
@@ -322,6 +340,49 @@ public class SplashScreenPresenter extends BasePresenter<SplashScreenView> imple
         public void onError(Throwable e) {
             Log.e(TAG, "onError", e);
             countWSandLaunch();
+        }
+    }
+
+    private class RequestNewsListObserver implements  SingleObserver<MySpaceNewsResponse> {
+
+        @Override
+        public void onSubscribe(Disposable d) {
+
+        }
+
+        @Override
+        public void onSuccess(MySpaceNewsResponse mySpaceNewsResponse) {
+           if (null != mySpaceNewsResponse && null != mySpaceNewsResponse.getAnswer() && ! mySpaceNewsResponse.getAnswer().getNews().isEmpty()) {
+              prefManager.setMyspaceNews(mySpaceNewsResponse.getAnswer().getNews());
+              prefManager.setMySpaceNewsVersion(mySpaceNewsResponse.getAnswer().getVersion());
+           }
+        }
+
+        @Override
+        public void onError(Throwable e) {
+
+        }
+    }
+
+
+    private class RequestHelpListObserver implements  SingleObserver<MySpaceHelpResponse> {
+
+        @Override
+        public void onSubscribe(Disposable d) {
+
+        }
+
+        @Override
+        public void onSuccess(MySpaceHelpResponse mySpaceHelpResponse) {
+            if (null != mySpaceHelpResponse && null != mySpaceHelpResponse.getAnswer() && ! mySpaceHelpResponse.getAnswer().getAides().isEmpty()) {
+                prefManager.setMyspaceHelp(mySpaceHelpResponse.getAnswer().getAides());
+                prefManager.setMySpaceHelpVersion(mySpaceHelpResponse.getAnswer().getVersion());
+            }
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Log.e(TAG, "onError", e);
         }
     }
 

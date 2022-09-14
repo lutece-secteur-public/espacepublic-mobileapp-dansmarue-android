@@ -27,6 +27,8 @@ public class Incident {
     public static final String STATE_NOT_RESOLVABLE = "ONR";  //Anomalie dans un statut non résolvalble
     public static final String STATE_TIERS = "T";  //Anomalie chez un tiers
 
+    public static final int SIATE_ID_ECHEC_ENVOI_WS = 20;
+
     @Expose
     private String address;
     @Expose
@@ -46,6 +48,7 @@ public class Incident {
     @Expose
     private int priorityId;
     private String state;
+    private int stateId;
     private String confirms;
     private String lat;
     private String lng;
@@ -98,6 +101,7 @@ public class Incident {
                 ", invalidations=" + invalidations +
                 ", priorityId=" + priorityId +
                 ", state='" + state + '\'' +
+                ", stateId='" + stateId + '\'' +
                 ", confirms='" + confirms + '\'' +
                 ", lat='" + lat + '\'' +
                 ", lng='" + lng + '\'' +
@@ -235,6 +239,14 @@ public class Incident {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public int getStateId() {
+        return stateId;
+    }
+
+    public void setStateId(int stateId) {
+        this.stateId = stateId;
     }
 
     public String getDescriptive() {

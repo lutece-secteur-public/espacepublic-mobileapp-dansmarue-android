@@ -369,7 +369,12 @@ public class AddAnomalyActivity extends BaseAnomalyActivity implements AddAnomal
     public void findPlace(View view) {
 
         if (!Places.isInitialized()) {
-            Places.initialize(getApplicationContext(), getString(R.string.google_maps_key));
+            try {
+                Bundle metaData = getPackageManager().getApplicationInfo(getApplicationContext().getPackageName(), PackageManager.GET_META_DATA).metaData;
+                Places.initialize(getApplicationContext(), metaData.getString("com.google.android.geo.API_KEY"));
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
         }
 
         Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, Arrays.asList(Place.Field.ADDRESS,Place.Field.LAT_LNG))
@@ -751,7 +756,7 @@ public class AddAnomalyActivity extends BaseAnomalyActivity implements AddAnomal
             if ( addresses != null && !addresses.isEmpty()) {
                 final Address addressSelect = MiscTools.selectAddress(addresses, getString(R.string.city_name), searchBarMode, searchBarAddress);
 
-                final String address = addressSelect.getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+                final String address =  MiscTools.formatAddress(addressSelect); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
                 Log.i(TAG, "adress " + address);
                 final String city = addressSelect.getLocality();
                 Log.i(TAG, "city " + city);
@@ -836,7 +841,7 @@ public class AddAnomalyActivity extends BaseAnomalyActivity implements AddAnomal
     @OnClick(R.id.button_publish)
     public void onPublish() {
 
-        if (!isValidAddressWithNumber) {
+        if (!isValidAddressWithNumber && NetworkUtils.isConnected(getApplicationContext())) {
             showDialogError();
         }
         else {

@@ -7,8 +7,12 @@ buildscript {
     dependencies {
         classpath 'org.greenrobot:greendao-gradle-plugin:3.2.1'
         classpath 'com.facebook.testing.screenshot:plugin:0.10.0'
-        classpath 'com.android.tools.build:gradle:4.1.2'
+        classpath 'com.android.tools.build:gradle:4.1.3'
     }
+}
+
+plugins {
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
@@ -20,14 +24,14 @@ apply plugin: 'jacoco'
 
 
 ext.versionMajor = 2
-ext.versionMinor = 7
-ext.versionPatch = 1
-ext.versionCode = 34
+ext.versionMinor = 9
+ext.versionPatch = 4
+ext.versionCode = 36
 ext.minimumSdkVersion = 19
 
 android {
-    // Android 8.1
-    compileSdkVersion 29
+    // Android 11
+    compileSdkVersion 30
     // Build Tools, Revision 27.0.3 (December 2017)
     buildToolsVersion '29.0.2'
 
@@ -38,8 +42,8 @@ android {
     defaultConfig {
         applicationId "your dmr applicationId"
         minSdkVersion 19
-        // DMR testée en 9.0 max
-        targetSdkVersion 29
+        //target ANdroid 11
+        targetSdkVersion 30
         versionCode generateVersionCode()
         versionName generateVersionName()
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -58,7 +62,7 @@ android {
         javaMaxHeapSize "4g"
     }
 
-	productFlavors {
+    productFlavors {
 
         dev {
             buildConfigField "String", "SIRA_API_URL", '"http://api-back-office/rest/"'
@@ -90,9 +94,7 @@ android {
 
         rec {
 
-//            o	R57 : https://teleservices.rec.apps.paris.fr/ramen/rest/
-//            o	R59 : https://teleservices.rec.apps.paris.fr/signalement/rest/
-//            o	R60 : https://teleservices.rec.apps.paris.fr/equipement/rest/
+
 
             buildConfigField "String", "SIRA_API_URL", '"http://api-back-office/rest/"'
             buildConfigField "String", "SIRA_API_URL_MOCK", '"http://api-back-office-mock/rest/"'
@@ -213,10 +215,10 @@ dependencies {
 
     //noinspection AndroidLintGradleCompatible
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
     //noinspection GradleCompatible
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'com.google.android.material:material:1.2.1'
+    implementation 'com.google.android.material:material:1.4.0'
 
     implementation 'io.github.inflationx:calligraphy3:3.1.1'
     implementation 'io.github.inflationx:viewpump:2.0.3'
@@ -229,22 +231,22 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
     implementation 'io.reactivex.rxjava2:rxjava:2.0.3'
     implementation 'com.jakewharton:butterknife:10.2.1'
-    implementation 'androidx.mediarouter:mediarouter:1.1.0'
-    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.mediarouter:mediarouter:1.2.5'
+    implementation 'androidx.appcompat:appcompat:1.3.1'
 
-    implementation ('com.google.android.libraries.places:places:2.4.0'){
+    implementation ('com.google.android.libraries.places:places:2.5.0'){
         exclude module: "glide"
     }
 
-    implementation 'com.google.firebase:firebase-crashlytics:17.2.2'
-    implementation 'com.google.firebase:firebase-analytics:17.6.0'
+    implementation 'com.google.firebase:firebase-crashlytics:18.2.3'
+    implementation 'com.google.firebase:firebase-analytics:19.0.2'
 
 
     //implementation ('com.google.android.libraries.places:places-compat:1.1.0') {
     //    exclude module: "glide"
     //}
 
-    implementation 'com.google.firebase:firebase-messaging:20.3.0'
+    implementation 'com.google.firebase:firebase-messaging:22.0.0'
     implementation("com.firebase:firebase-jobdispatcher-with-gcm-dep:0.6.0") {
         exclude module: "play-services-gcm"
     }

@@ -118,17 +118,6 @@ public class ProfilePresenter extends BasePresenter<ProfileView> implements Sing
 
     }
 
-    /**
-     * Init user name.
-     */
-    public void initUser() {
-        if (prefManager.isConnected()) {
-            view.updateUserName(prefManager.getFirstName(), prefManager.getLastName());
-        } else {
-            view.updateUserName("", "");
-        }
-    }
-
     public void oldPositionMenu() {
         onMenuClicked(prefManager.getLastMenu());
     }

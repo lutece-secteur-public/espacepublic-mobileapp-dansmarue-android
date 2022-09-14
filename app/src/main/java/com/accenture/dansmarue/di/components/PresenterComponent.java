@@ -15,6 +15,7 @@ import com.accenture.dansmarue.ui.activities.WelcomeMapActivity;
 import com.accenture.dansmarue.ui.activities.WelcomeMapEquipementActivity;
 import com.accenture.dansmarue.ui.fragments.MapParisEquipementFragment;
 import com.accenture.dansmarue.ui.fragments.MapParisFragment;
+import com.accenture.dansmarue.ui.fragments.MySpaceFragment;
 import com.accenture.dansmarue.ui.fragments.ProfileFragment;
 
 import dagger.Component;
@@ -105,4 +106,11 @@ public interface PresenterComponent {
      * @param fragment view to inject dependecies to
      */
     void inject(ProfileFragment fragment);
+
+    /**
+     * Inject dependencies to the view
+     *
+     * @param fragment view to inject dependecies to
+     */
+    void inject(MySpaceFragment fragment);
 }

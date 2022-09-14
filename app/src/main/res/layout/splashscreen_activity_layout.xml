@@ -30,7 +30,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_marginBottom="10dp"
-        app:srcCompat="@drawable/splash_logo_budget" />
+        app:srcCompat="@drawable/ic_icone_bp" />
 
     <com.mapbox.mapboxsdk.maps.MapView
         android:id="@+id/mapboxView"

@@ -193,6 +193,18 @@
 
         </LinearLayout>
 
+        <ImageButton
+            android:id="@+id/avoid_duplicate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center"
+            android:layout_marginTop="-70dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="visible"
+            android:background="@null"
+            app:srcCompat="@drawable/ic_showano" />
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/wbsa_fab"
             android:layout_width="56dp"

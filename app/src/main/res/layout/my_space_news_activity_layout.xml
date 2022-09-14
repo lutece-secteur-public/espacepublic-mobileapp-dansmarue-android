@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:context="com.accenture.dansmarue.ui.activities.PrefActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/pink"
+        android:minHeight="?attr/actionBarSize"
+        app:titleTextColor="@color/white" />
+
+    <LinearLayout
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/toolbar"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/pref_actualites_activity_title"
+            android:textColor="@color/grey_icon"
+            android:background="@color/white"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:textSize="16sp"/>
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/list_news"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/title"
+        android:clipToPadding="false"
+        android:background="@color/white"
+        android:divider="@color/greetings_grey" />
+
+
+</RelativeLayout>

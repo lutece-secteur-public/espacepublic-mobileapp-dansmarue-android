@@ -2,12 +2,19 @@ package com.accenture.dansmarue.ui.adapters;
 
 import android.content.Context;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.accenture.dansmarue.BuildConfig;
 import com.accenture.dansmarue.R;
 import com.accenture.dansmarue.mvp.models.Incident;
+import com.accenture.dansmarue.mvp.presenters.ProfilePresenter;
+import com.accenture.dansmarue.ui.activities.InternalWebViewActivity;
+import com.accenture.dansmarue.ui.activities.LoginActivity;
 import com.accenture.dansmarue.utils.MiscTools;
 import com.bumptech.glide.Glide;
 
@@ -24,12 +31,16 @@ public class ProfileSection extends Section {
     private List<Incident> data;
     private Context context;
     private String title;
+    private boolean displayResponsableQuartier;
+    private ProfilePresenter presenter;
 
-    public ProfileSection(final Context context, final String title) {
+    public ProfileSection(final Context context, final String title, final boolean displayResponsableQuartier, final ProfilePresenter presenter) {
         super(R.layout.section_profile_header, R.layout.recycler_view_item, R.layout.section_profile_loading, R.layout.section_profile_failed);
         this.data = new ArrayList<>();
         this.context = context;
         this.title = title;
+        this.displayResponsableQuartier = displayResponsableQuartier;
+        this.presenter = presenter;
     }
 
 
@@ -74,6 +85,28 @@ public class ProfileSection extends Section {
             itemHolder.date.setVisibility(View.VISIBLE);
             itemHolder.date.setText(incident.getFormatedDate());
             itemHolder.number.setText(incident.getReference());
+
+            itemHolder.llAno.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    presenter.onItemClicked( context.getString(R.string.section_drafts).equals(title) , incident );
+                }
+            });
+
+            if(displayResponsableQuartier) {
+                itemHolder.imgResponsableQuartier.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String complementURL = "&id_dmr="+incident.getReference()+"&Y="+incident.getLat()+"&X="+incident.getLng();
+                        Intent intent = new Intent(context, InternalWebViewActivity.class);
+                        intent.putExtra(InternalWebViewActivity.WEBSITE_ADDRESS, BuildConfig.URL_SOLEN+complementURL);
+                        intent.putExtra(InternalWebViewActivity.EXECUTE_EXTRA_JS, true);
+                        context.startActivity(intent);
+
+                    }
+                });
+            }
+
             // Traitement des icones différents si anos outdoor ou équipement
             if (null != incident.getEquipementId()) {
 
@@ -151,6 +184,8 @@ public class ProfileSection extends Section {
         private ImageView iconTypeAno;
         private TextView date;
         private TextView number;
+        private ImageView imgResponsableQuartier;
+        private LinearLayout llAno;
 
 
         public ViewHolder(View itemView) {
@@ -162,6 +197,12 @@ public class ProfileSection extends Section {
             icon = (ImageView) itemView.findViewById(R.id.icon);
             iconTypeAno = (ImageView) itemView.findViewById(R.id.icon_type_ano);
             number = (TextView) itemView.findViewById(R.id.number);
+            imgResponsableQuartier = (ImageView) itemView.findViewById(R.id.img_responsable_quartier);
+            if (displayResponsableQuartier) {
+                imgResponsableQuartier.setVisibility(View.VISIBLE);
+            }
+
+            llAno = (LinearLayout) itemView.findViewById(R.id.id_ll_ano);
         }
     }
 

@@ -92,7 +92,7 @@
     <string name="login_screen_password">Mot de passe</string>
 
     <string name="login_screen_forgot_password">Mot de passe oublié ?</string>
-    <string name="login_screen_signup">S\'inscrire</string>
+    <string name="login_screen_signup">Créer mon compte</string>
 
     <string name="login_screen_button">Connexion</string>
 
@@ -131,16 +131,26 @@
         <item>Conditions générales d\'utilisation</item>
         <item>A propos</item>
     </string-array>
+    <string name="button_connecter">Se connecter</string>
     <string name="button_deco">SE DECONNECTER</string>
 
     <!--Menu preferences > profil-->
-
-    <string name="pref_profil_activity_title">Profil</string>
+    <string name="title_mon_espace">Mon espace</string>
+    <string name="pref_profil_activity_title">Mon profil</string>
     <string name="pref_profil_lastname">Nom</string>
     <string name="pref_profil_firstname">Prénom</string>
     <string name="pref_profil_email">Mail de contact</string>
     <string name="pref_profil_btn_access_full_profile">Voir mon profil complet</string>
     <string name="url_full_profile" translatable="false"></string>
+    <string name="pref_mes_anomalies_activity_title">Mes anomalies</string>
+    <string name="pref_img_responsable_quartier">Responsable de quartier</string>
+
+    <!-- Mon espace Actualités  -->
+    <string name="pref_actualites_activity_title">Actualités</string>
+
+    <!-- Mon espace Aide et conseils d'utilisation  -->
+    <string name="pref_aide_activity_title">Aide et conseils d\'utilisation</string>
+
 
     <!--Menu preferences preferences-->
     <string name="pref_pref_activity_title">Préférences</string>
@@ -148,7 +158,7 @@
     <!--Menu pref / CGU-->
     <string name="pref_cgu_activity_title">Conditions générales d\'utilisation</string>
 
-    <string name="cgu_part_one"><![CDATA[<p>L\'application DansMaRue Paris fonctionne uniquement à Paris. Elle utilise certaines fonctionnalités de votre smartphone  (GPS et connexion 3G/4G) qui nécessitent une bonne connexion.</p><p>Afin d\'assurer la remontée rapide, précise, fiable d\'une anomalie sur l\'espace public et faciliter sa prise en charge par les services municipaux et leurs partenaires, il est demandé à l\'utilisateur de : </p><ul> <li> de choisir dans une nomenclature fermée la nature de l\'anomalie </li><li>de préciser l\'adresse exacte en corrigeant éventuellement la géolocalisation proposée automatiquement en indiquant dès que possible un numéro et une rue <br> <a href="http://phraseanet-videos.apps.paris.fr/permalink/v1/5/4807/preview/02bis_DMR_mobile_4geoloc.mp4?token=P1uNYcDeYdvASXSMu4q8BSezJRnHR4DsVT5cIglWXsxjUL2lByN4RlKNFScGY2N0">Cliquez ici pour voir une vidéo et comprendre les modalités de géolocalisation offertes par l\'application \n</a> </li><li> de joindre une ou plusieurs photo(s) de l\'anomalie <li> d\'ajouter une description complémentaire utile et courte (155 caractères maximum)</li></ul>]]></string>
+    <string name="cgu_part_one"><![CDATA[<p>L\'application DansMaRue Paris fonctionne uniquement à Paris. Elle utilise certaines fonctionnalités de votre smartphone  (GPS et connexion 3G/4G/5G) qui nécessitent une bonne connexion.</p><p>Afin d\'assurer la remontée rapide, précise, fiable d\'une anomalie sur l\'espace public et faciliter sa prise en charge par les services municipaux et leurs partenaires, il est demandé à l\'utilisateur de : </p><ul> <li> de choisir dans une nomenclature fermée la nature de l\'anomalie </li><li>de préciser l\'adresse exacte en corrigeant éventuellement la géolocalisation proposée automatiquement en indiquant dès que possible un numéro et une rue <br> <a href="http://phraseanet-videos.apps.paris.fr/permalink/v1/5/4807/preview/02bis_DMR_mobile_4geoloc.mp4?token=P1uNYcDeYdvASXSMu4q8BSezJRnHR4DsVT5cIglWXsxjUL2lByN4RlKNFScGY2N0">Cliquez ici pour voir une vidéo et comprendre les modalités de géolocalisation offertes par l\'application \n</a> </li><li> de joindre une ou plusieurs photo(s) de l\'anomalie <li> d\'ajouter une description complémentaire utile et courte (250 caractères maximum)</li></ul>]]></string>
     <string name="cgu_part_two">Le dispositif DansMaRue  (application mobile et formulaire web) a pour objectif de faciliter la communication entre les Parisien-nes, la Ville Paris et ses partenaires et prestataires.</string>
     <string name="cgu_part_three">Les informations transmises par les utilisateurs via le dispositif doivent être considérées comme des documents de travail qui aideront la Ville de Paris et ses partenaires et prestataires à organiser leur activité. Ils déterminent au cas par cas les actions à mettre en place.</string>
     <string name="cgu_part_four">La Ville de Paris et ses partenaires et prestataires s\'engagent, dans un délai d’un mois, à prendre les mesures appropriées et à informer tout contributeur qui aura laissé ses coordonnées.</string>
@@ -160,7 +170,7 @@
 
     <!--Menu pref / About-->
     <string name="pref_about_activity_title">A propos</string>
-    <string name="about_part_one">L\'application DansMaRue PARIS est un service de la Ville de Paris qui fonctionne uniquement à Paris. Elle utilise certaines fonctionnalités de votre smartphone  (GPS et connexion 3G/4G) qui nécessitent une bonne connexion. Si vous rencontrez des difficultés techniques liées à l’usage de l’application, n\'hésitez pas à nous en informer via l\'adresse mail DansMaRue_App@paris.fr</string>
+    <string name="about_part_one">L\'application DansMaRue PARIS est un service de la Ville de Paris qui fonctionne uniquement à Paris. Elle utilise certaines fonctionnalités de votre smartphone  (GPS et connexion 3G/4G/5G) qui nécessitent une bonne connexion. Si vous rencontrez des difficultés techniques liées à l’usage de l’application, n\'hésitez pas à nous en informer via l\'adresse mail DansMaRue_App@paris.fr</string>
     <string name="about_part_two">Les informations ne sont pas traitées de manière instantanée. Les situations présentant un caractère dangereux et nécessitant la mise en œuvre de mesures de protection rapides doivent continuer à faire l\'objet d’une déclaration auprès des services d\'urgence.</string>
 
     <!--Menu pref / autorisations-->
