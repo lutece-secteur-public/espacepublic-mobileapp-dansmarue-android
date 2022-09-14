@@ -18,6 +18,8 @@ import com.accenture.dansmarue.services.models.GetIncidentsByUserResponse;
 import com.accenture.dansmarue.services.models.IdentityRequest;
 import com.accenture.dansmarue.services.models.IdentityResponse;
 import com.accenture.dansmarue.services.models.IncidentResolvedRequest;
+import com.accenture.dansmarue.services.models.MySpaceHelpResponse;
+import com.accenture.dansmarue.services.models.MySpaceNewsResponse;
 import com.accenture.dansmarue.services.models.ProcessWorkflowRequest;
 import com.accenture.dansmarue.services.models.SaveIncidentRequest;
 import com.accenture.dansmarue.services.models.SaveIncidentResponse;
@@ -207,5 +209,26 @@ public interface SiraApiService {
      */
     @GET("signalement/getAnomalieByNumber/{number}")
     Single<GetIncidentsByPositionResponse> getAnomalieByNumber(@Path("number") String incidentNumber);
+
+    /**
+     * Load news configure in BO.
+     *
+     * @param versionActualite
+     *           Actual version load in app mobile
+     * @return All the news
+     */
+    @GET("signalement/getActualite/{versionActualite}")
+    Single<MySpaceNewsResponse> getMySpaceNews(@Path("versionActualite") int versionActualite);
+
+
+    /**
+     * Load Help configure in BO.
+     *
+     * @param versionAide
+     *           Actual version load in app mobile
+     * @return All the helps
+     */
+    @GET("signalement/getAide/{versionAide}")
+    Single<MySpaceHelpResponse> getMySpaceHelp(@Path("versionAide") int versionAide);
 
 }

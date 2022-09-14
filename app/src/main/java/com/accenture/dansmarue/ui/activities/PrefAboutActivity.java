@@ -26,7 +26,7 @@ public class PrefAboutActivity extends BaseActivity {
         // Make sure the toolbar exists in the activity and is not null
         if (null != toolbar) {
             setSupportActionBar(toolbar);
-            getSupportActionBar().setTitle(R.string.pref_about_activity_title);
+            getSupportActionBar().setTitle(R.string.title_mon_espace);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24px);
         }

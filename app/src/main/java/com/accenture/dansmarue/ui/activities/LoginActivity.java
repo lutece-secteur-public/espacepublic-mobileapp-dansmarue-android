@@ -90,20 +90,16 @@ public class LoginActivity extends BaseActivity implements LoginView {
 
     @OnClick(R.id.login_screen_txt_sign_up)
     public void signUp() {
-        Uri webpage = Uri.parse(getString(R.string.url_signup_paris));
-        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivity(intent);
-        }
+        Intent intent = new Intent(LoginActivity.this, InternalWebViewActivity.class);
+        intent.putExtra(InternalWebViewActivity.WEBSITE_ADDRESS, getString(R.string.url_signup_paris));
+        startActivity(intent);
     }
 
     @OnClick(R.id.login_screen_txt_forgot_pwd)
     public void forgotPassword() {
-        Uri webpage = Uri.parse(getString(R.string.url_forgot_pwd));
-        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivity(intent);
-        }
+        Intent intent = new Intent(LoginActivity.this, InternalWebViewActivity.class);
+        intent.putExtra(InternalWebViewActivity.WEBSITE_ADDRESS, getString(R.string.url_forgot_pwd));
+        startActivity(intent);
     }
 
     @OnClick(R.id.button_connexion)

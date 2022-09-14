@@ -48,7 +48,7 @@
         android:background="@color/grey_background"
         android:gravity="bottom"
         app:counterEnabled="true"
-        app:counterMaxLength="155"
+        app:counterMaxLength="250"
         app:hintEnabled="false">
 
         <EditText
@@ -59,7 +59,7 @@
             android:backgroundTintMode="screen"
             android:hint="@string/description_subtitle"
             android:inputType="textCapSentences|textMultiLine"
-            android:maxLength="155"
+            android:maxLength="250"
             android:textColorHint="@color/grey_tranparent" />
     </com.google.android.material.textfield.TextInputLayout>
 

@@ -241,7 +241,8 @@ public class SplashScreenActivity extends BaseActivity implements SplashScreenVi
                     public void onClick(DialogInterface dialog, int id) {
                         // User cancelled the dialog
                         dialog.dismiss();
-                        finish();
+                        //finish();
+                        presenter.checkVersion();
                     }
                 });
 

@@ -489,7 +489,7 @@ public class AnomalyDetailsActivity extends BaseAnomalyActivity implements Anoma
 
             if (isLayoutAgent) {
                 anomalyCommentaireAgentTerrain.setText(incident.getCommentaireAgent());
-                if (Incident.STATE_TIERS.equals(incident.getState())){
+                if (Incident.STATE_TIERS.equals(incident.getState()) || Incident.SIATE_ID_ECHEC_ENVOI_WS == incident.getStateId()){
                     requalificationLayout.setVisibility(View.GONE);
                 }
             }

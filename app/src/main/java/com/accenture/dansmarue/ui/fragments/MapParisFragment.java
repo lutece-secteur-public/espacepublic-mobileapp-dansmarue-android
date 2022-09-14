@@ -269,7 +269,12 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
     private void initAutoCompleteSearchBar() {
 
         if (!Places.isInitialized()) {
-            Places.initialize(getContext(), getString(R.string.google_maps_key));
+            try {
+                Bundle metaData = getContext().getPackageManager().getApplicationInfo(getContext().getPackageName(), PackageManager.GET_META_DATA).metaData;
+                Places.initialize(getContext(), metaData.getString("com.google.android.geo.API_KEY"));
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
         }
 
         // Create a new Places client instance.
@@ -581,7 +586,7 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
 
                             final Address addressSelect = MiscTools.selectAddress(addresses, getString(R.string.city_name), searchBarMode,searchBarText.getText().toString());
 
-                            final String address = addressSelect.getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+                            final String address = MiscTools.formatAddress(addressSelect); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
                             Log.i(TAG, "adress " + address);
                             final String city = addressSelect.getLocality();
                             Log.i(TAG, "city " + city);
@@ -887,9 +892,10 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
                             locationChanged(myCurrentLocationPosition);
                         }
 
-                        if (null != googleMap && null != locationButton)
+                        if (null != googleMap && null != locationButton) {
                             myProperFloatActionButton.setVisibility(View.VISIBLE);
                             findByNumberButton.setVisibility(View.VISIBLE);
+                        }
 
 
                     } else if (networkInfo != null && networkInfo.getDetailedState() == NetworkInfo.DetailedState.DISCONNECTED) {
@@ -899,9 +905,10 @@ public class MapParisFragment extends BaseFragment implements MapParisView, OnMa
                         isNetworkOkReceiver = false;
                         cardview_place_autocomplete_fragment.setVisibility(View.GONE);
                         if (null != googleMap) {
-                            if (null != locationButton && null != googleMap.getMyLocation() && NetworkUtils.isGpsEnable(getContext()) == false)
+                            if (null != locationButton && null != googleMap.getMyLocation() && NetworkUtils.isGpsEnable(getContext()) == false) {
                                 myProperFloatActionButton.setVisibility(View.GONE);
                                 findByNumberButton.setVisibility(View.GONE);
+                            }
                         }
                     }
 

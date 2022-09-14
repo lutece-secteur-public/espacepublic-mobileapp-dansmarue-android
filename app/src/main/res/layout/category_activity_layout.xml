@@ -58,10 +58,36 @@
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="vertical">
+
+        <SearchView
+            android:id="@+id/search_bar_category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorWhite"
+            android:layout_margin="5dp"
+            android:queryHint="Recherche"
+            android:iconifiedByDefault="false">
+             <requestFocus />
+        </SearchView>
+
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
         android:orientation="vertical">
 
+        <ListView
+            android:id="@+id/listview_category"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="10dp"
+            android:background="@color/white"
+            android:visibility="gone"/>
 
         <ListView
             android:id="@+id/categories"

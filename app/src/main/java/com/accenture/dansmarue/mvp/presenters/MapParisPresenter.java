@@ -69,10 +69,12 @@ public class MapParisPresenter extends BasePresenter<MapParisView> implements Si
 
         view.clearAnomaly();
         view.updateAnomalyList(null,true);
-
         GetIncidentsByPositionRequest request = new GetIncidentsByPositionRequest();
         request.setPosition(newLocation);
         request.setGuid(prefManager.getGuid());
+        if(view.getFindByNumberValue() != null && !"".equals(view.getFindByNumberValue().trim())) {
+            request.setSearchByNumber(view.getFindByNumberValue());
+        }
         //Get incidents DMR
         service.getIncidentsByPosition(request)
                 .subscribeOn(Schedulers.io())
@@ -161,7 +163,7 @@ public class MapParisPresenter extends BasePresenter<MapParisView> implements Si
                                 .snippet(incident.toJson())
                                 .icon(BitmapDescriptorFactory.fromResource(incident.getIconIncidentSignalement()));
 
-                        if ( view.getFindByNumberValue() != null && incident.getReference().equals( view.getFindByNumberValue())) {
+                        if ( view.getFindByNumberValue() != null && view.getFindByNumberValue().equals(incident.getReference())) {
                             //if it's a search by number display only the reporting search  DMR-2146
                             markers.add(markerOpt);
                         } else if ( view.getFindByNumberValue() == null || view.getFindByNumberValue().trim().length() == 0) {

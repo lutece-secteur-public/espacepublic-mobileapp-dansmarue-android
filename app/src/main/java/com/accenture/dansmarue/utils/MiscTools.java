@@ -9,6 +9,7 @@ import android.util.Base64;
 import android.util.Log;
 
 
+import com.google.android.gms.common.util.Strings;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import java.io.IOException;
@@ -82,6 +83,20 @@ public class MiscTools {
         }
 
         return address;
+    }
+
+    public static String formatAddress (Address address) {
+
+        if (Strings.isEmptyOrWhitespace(address.getThoroughfare()) || Strings.isEmptyOrWhitespace(address.getPostalCode())
+                || Strings.isEmptyOrWhitespace(address.getLocality()) || Strings.isEmptyOrWhitespace(address.getCountryName())) {
+            return address.getAddressLine(0);
+        }
+
+        if (Strings.isEmptyOrWhitespace(address.getFeatureName())) {
+            return address.getThoroughfare()+", "+address.getPostalCode()+ " "+address.getLocality()+", "+address.getCountryName();
+        }
+
+        return address.getFeatureName()+" "+ address.getThoroughfare()+", "+address.getPostalCode()+ " "+address.getLocality()+", "+address.getCountryName();
     }
 
 

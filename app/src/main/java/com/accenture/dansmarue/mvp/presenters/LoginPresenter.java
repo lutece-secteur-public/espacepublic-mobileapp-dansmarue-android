@@ -111,7 +111,8 @@ public class LoginPresenter extends BasePresenter<LoginView> {
                                                                 prefManager.setLastName(value.getAnswer().getUser().getName());
                                                                 prefManager.setEmail(value.getAnswer().getUser().getMail());
                                                                 prefManager.setIsAgent(value.getAnswer().getUser().isAgent());
-                                                                //prefManager.setIsAgent(true);
+                                                                prefManager.setMonParisLogin(myLogin);
+                                                                prefManager.setMonParisPwd(myPwd);
                                                                 view.loginSuccess();
                                                             }
                                                         }

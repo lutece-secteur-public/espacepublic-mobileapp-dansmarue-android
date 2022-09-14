@@ -1,13 +1,17 @@
 package com.accenture.dansmarue.ui.activities;
 
 import android.content.Intent;
-import android.net.Uri;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 
 import com.accenture.dansmarue.R;
 import com.accenture.dansmarue.di.components.DaggerPresenterComponent;
@@ -16,6 +20,7 @@ import com.accenture.dansmarue.mvp.models.Category;
 import com.accenture.dansmarue.mvp.presenters.CategoryPresenter;
 import com.accenture.dansmarue.mvp.views.CategoryView;
 import com.accenture.dansmarue.ui.adapters.CategoryAdapter;
+import com.accenture.dansmarue.ui.adapters.CategorySearchAdapter;
 import com.accenture.dansmarue.utils.CategoryHelper;
 import com.accenture.dansmarue.utils.Constants;
 import com.accenture.dansmarue.utils.PrefManager;
@@ -28,7 +33,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class CategoryActivity extends BaseActivity implements AdapterView.OnItemClickListener, CategoryView {
+public class CategoryActivity extends BaseActivity implements SearchView.OnQueryTextListener,AdapterView.OnItemClickListener, CategoryView {
 
     private static final String TAG = CategoryActivity.class.getName();
 
@@ -36,13 +41,19 @@ public class CategoryActivity extends BaseActivity implements AdapterView.OnItem
 
     @Inject
     protected CategoryPresenter presenter;
+
+    @BindView(R.id.search_bar_category)
+    protected SearchView searchBarCategory;
     @BindView(R.id.categories)
     protected ListView listView;
+    @BindView(R.id.listview_category)
+    protected ListView listViewSearchCategory;
 
     @BindView(R.id.text_title_category)
     protected TextView titleCategory;
 
     private CategoryAdapter adapter;
+    private CategorySearchAdapter categorySearchAdapter;
     private String idPreviousParent;
     private Category lastParentItemSelected;
 
@@ -56,6 +67,56 @@ public class CategoryActivity extends BaseActivity implements AdapterView.OnItem
         idPreviousParent = null;
         lastParentItemSelected = null;
 
+        initSearchBarCategory();
+
+    }
+
+    private void initSearchBarCategory() {
+
+        categorySearchAdapter = new CategorySearchAdapter(this,presenter.loadCategoriesForSearchBar());
+        listViewSearchCategory.setAdapter(categorySearchAdapter);
+
+        listViewSearchCategory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                presenter.onCategorySelected( ((Category)categorySearchAdapter.getItem(i)).getId());
+            }
+        });
+
+        searchBarCategory.setOnQueryTextListener(this);
+
+        // Catch event on [x] button inside search view
+        int searchCloseButtonId = searchBarCategory.getContext().getResources()
+                .getIdentifier("android:id/search_close_btn", null, null);
+        ImageView closeButton = (ImageView) searchBarCategory.findViewById(searchCloseButtonId);
+        // Set on click listener
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchBarCategory.setQuery("",false);
+                listViewSearchCategory.setVisibility(View.GONE);
+                listView.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        if (newText!= null && newText.trim().length() > 2) {
+            String text = newText;
+            listViewSearchCategory.setVisibility(View.VISIBLE);
+            listView.setVisibility(View.GONE);
+            categorySearchAdapter.filter(text);
+        } else {
+            listViewSearchCategory.setVisibility(View.GONE);
+            listView.setVisibility(View.VISIBLE);
+        }
+        return false;
     }
 
     @Override
@@ -174,4 +235,5 @@ public class CategoryActivity extends BaseActivity implements AdapterView.OnItem
             onChildSelected(favoriteCategory);
         }
     }
+
 }

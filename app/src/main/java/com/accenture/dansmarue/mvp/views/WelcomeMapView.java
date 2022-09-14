@@ -8,7 +8,7 @@ import com.accenture.dansmarue.mvp.models.Incident;
 
 public interface WelcomeMapView extends BaseView {
 
-    void showProfile();
+    void showMySpace();
 
     void showIncidentDetails(final Incident incident);
 

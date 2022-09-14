@@ -2,6 +2,8 @@ package com.accenture.dansmarue.ui.adapters;
 
 import android.content.Context;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,7 +52,14 @@ public class FavorisCategoryAdapter extends RecyclerView.Adapter<ViewHolder> {
                 }
             }
         });
-        holder.textView.setText(item.getAlias());
+
+        holder.textView.setText(item.getName());
+        if (item.isAgent()) {
+            holder.textView.setTypeface(null, Typeface.BOLD);
+        } else {
+            holder.textView.setTypeface(null, Typeface.NORMAL);
+        }
+
         if(editMode) {
             holder.iconMove.setVisibility(View.VISIBLE);
         } else {

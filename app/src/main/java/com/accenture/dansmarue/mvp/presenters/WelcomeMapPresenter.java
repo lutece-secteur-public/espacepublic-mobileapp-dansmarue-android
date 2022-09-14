@@ -39,7 +39,7 @@ public class WelcomeMapPresenter extends BasePresenter<WelcomeMapView> implement
     }
 
     public void profileClicked() {
-        view.showProfile();
+        view.showMySpace();
     }
 
     /**

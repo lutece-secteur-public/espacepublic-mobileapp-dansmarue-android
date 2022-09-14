@@ -6,6 +6,8 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+
+import com.accenture.dansmarue.ui.fragments.MySpaceFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
@@ -61,7 +63,7 @@ import butterknife.OnClick;
  * WelcomeMapActivity
  * Activity for main view
  */
-public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, MapParisFragment.OnMapParisFragmentInteractionListener, ProfileFragment.OnProfileFragmentInteractionListener {
+public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, MapParisFragment.OnMapParisFragmentInteractionListener, MySpaceFragment.OnProfileFragmentInteractionListener, ProfileFragment.OnProfileFragmentInteractionListener {
 
     private static final String TAG = WelcomeMapActivity.class.getCanonicalName();
 
@@ -72,6 +74,8 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
 
     private MapParisFragment mapParisFragment;
 
+    @BindView(R.id.avoid_duplicate)
+    protected  ImageButton avoidDuplicateButton;
     @BindView(R.id.wbsa_fab)
     protected FloatingActionButton addAnomalyFloatingButton;
     @BindView(R.id.follow_fab)
@@ -122,6 +126,7 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
     private boolean preciseMode = false;
 
     private ProfileFragment profileFragment;
+    private MySpaceFragment mySpaceFragment;
 
     private Incident summarizedIncident;
 
@@ -209,11 +214,7 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
                         fragmentTransaction.commitAllowingStateLoss();
                         break;
                     case R.id.bottom_menu_profile:
-                        if (prefManager.isConnected()) {
-                            presenter.profileClicked();
-                        } else {
-                            startActivityForResult(new Intent(WelcomeMapActivity.this, LoginActivity.class), LOGIN_REQUEST_CODE);
-                        }
+                        presenter.profileClicked();
                         break;
                 }
                 return true;
@@ -335,6 +336,7 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
         layoutSelectedAdress.setVisibility(View.VISIBLE);
         layoutSelectedIncident.setVisibility(View.GONE);
 
+        avoidDuplicateButton.setVisibility(View.GONE);
         addAnomalyFloatingButton.setVisibility(View.GONE);
         followAnomalyFloatingButton.setVisibility(View.GONE);
         greetingsAnomalyFloatingButton.setVisibility(View.GONE);
@@ -356,6 +358,7 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
         layoutAddAnomaly.setVisibility(View.GONE);
         followAnomalyFloatingButton.setVisibility(View.GONE);
         greetingsAnomalyFloatingButton.setVisibility(View.GONE);
+        avoidDuplicateButton.setVisibility(View.VISIBLE);
         addAnomalyFloatingButton.setVisibility(View.VISIBLE);
         addAnomalyFloatingButton.startAnimation(growAnimation);
 
@@ -536,14 +539,14 @@ public class WelcomeMapActivity extends BaseActivity implements WelcomeMapView, 
     }
 
     @Override
-    public void showProfile() {
+    public void showMySpace() {
         coordinatorLayout.setVisibility(View.GONE);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
-        if (profileFragment == null) {
-            profileFragment = ProfileFragment.newInstance();
+        if (mySpaceFragment == null) {
+            mySpaceFragment = mySpaceFragment.newInstance();
         }
-        fragmentTransaction.replace(R.id.frameLayout, profileFragment);
+        fragmentTransaction.replace(R.id.frameLayout, mySpaceFragment);
         fragmentTransaction.commitAllowingStateLoss();
     }
 

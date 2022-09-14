@@ -10,8 +10,6 @@ import java.util.List;
 
 public interface ProfileView extends BaseView {
 
-    void updateUserName(final String firstName, final String lastName);
-
     void showDrafts(final List<Incident> drafts);
 
     void showSolvedIncidents(final List<Incident> incidents);

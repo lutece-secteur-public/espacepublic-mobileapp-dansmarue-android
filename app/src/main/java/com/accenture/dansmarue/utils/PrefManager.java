@@ -8,7 +8,10 @@ import androidx.annotation.NonNull;
 import com.accenture.dansmarue.mvp.models.Category;
 import com.accenture.dansmarue.mvp.models.FavoriteAddress;
 import com.accenture.dansmarue.mvp.models.equipementsMunicipaux.TypeEquipement;
-import com.google.firebase.iid.FirebaseInstanceId;
+import com.accenture.dansmarue.services.models.MySpaceHelpResponse;
+import com.accenture.dansmarue.services.models.MySpaceNewsResponse;
+import com.accenture.dansmarue.services.notifications.MyFirebaseMessagingService;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -43,16 +46,25 @@ public class PrefManager {
     private static final String FIRST_NAME = "firstname";
     private static final String LAST_NAME = "lastname";
     private static final String IS_AGENT = "isAgent";
+    private static final String MON_PARIS_LOGIN = "monParisLogin";
+    private static final String MON_PARIS_PWD = "monParisPwd";
 
     private static final String LAST_MENU = "lastmenu";
 
     private static final String FAVORIS_ITEMS = "favorisitem";
     private static final String FAVORIS_ADDRESS = "favorisaddress";
 
+    private static final String MYSPACE_NEWS = "mySpaceNews";
+    private static final String MYSPACE_HELP = "mySpaceHelp";
+
 
     private static final String CATEGORIES_VERSION = "categoriesVersion";
     private static final String DEFAULT_CATEGORIES_VERSION = "0";
     private String udid;
+
+
+    private static final String MYSPACE_NEWS_VERSION = "mySpaceNewsVersion";
+    private static final String MYSPACE_HELP_VERSION = "mySpaceHelpVersion";
 
     public PrefManager(Context context) {
         this._context = context;
@@ -245,6 +257,8 @@ public class PrefManager {
         editor.remove(GUID);
         editor.remove(FIRST_NAME);
         editor.remove(LAST_NAME);
+        editor.remove(MON_PARIS_LOGIN);
+        editor.remove(MON_PARIS_PWD);
         editor.apply();
     }
 
@@ -272,7 +286,7 @@ public class PrefManager {
      * @return actual firebase user token for the user
      */
     public String getUserToken() {
-        return FirebaseInstanceId.getInstance().getToken();
+        return MyFirebaseMessagingService.getToken(_context);
     }
 
 
@@ -364,6 +378,102 @@ public class PrefManager {
             mapFavoriteAddress = new HashMap<>();
         }
         return mapFavoriteAddress;
+    }
+
+    public void setMyspaceNews(List<MySpaceNewsResponse.Answer.News> news) {
+
+        Map<Integer, MySpaceNewsResponse.Answer.News> mapNews = new LinkedHashMap<>();
+
+        for(MySpaceNewsResponse.Answer.News aNews : news ) {
+            mapNews.put(aNews.getIdNews(), aNews);
+        }
+
+        SharedPreferences.Editor editor = pref.edit();
+        Gson gson = new Gson();
+        String str = gson.toJson(mapNews);
+        editor.putString(MYSPACE_NEWS, str);
+        editor.apply();
+
+    }
+
+    public Map<Integer, MySpaceNewsResponse.Answer.News> getMySpaceNews() {
+
+        String str = pref.getString(MYSPACE_NEWS,null);
+        Gson gson = new Gson();
+        Map<Integer, MySpaceNewsResponse.Answer.News> mapNews = gson.fromJson(str,new TypeToken<Map<Integer, MySpaceNewsResponse.Answer.News>>(){}.getType());
+        if (mapNews == null) {
+            mapNews = new HashMap<>();
+        }
+
+        return mapNews;
+    }
+
+    public void setMySpaceNewsVersion(final int version) {
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putInt(MYSPACE_NEWS_VERSION, version);
+        editor.apply();
+    }
+
+    public int getMySpaceNewsVersion() {
+        return pref.getInt(MYSPACE_NEWS_VERSION, 0);
+    }
+
+    public void setMyspaceHelp(List<MySpaceHelpResponse.Answer.Help> help) {
+
+        Map<Integer, MySpaceHelpResponse.Answer.Help> mapHelp = new LinkedHashMap<>();
+
+        for(MySpaceHelpResponse.Answer.Help aHelp : help ) {
+            mapHelp.put(aHelp.getId(), aHelp);
+        }
+
+        SharedPreferences.Editor editor = pref.edit();
+        Gson gson = new Gson();
+        String str = gson.toJson(mapHelp);
+        editor.putString(MYSPACE_HELP, str);
+        editor.apply();
+
+    }
+
+    public Map<Integer, MySpaceHelpResponse.Answer.Help> getMySpaceHelp() {
+
+        String str = pref.getString(MYSPACE_HELP,null);
+        Gson gson = new Gson();
+        Map<Integer, MySpaceHelpResponse.Answer.Help> mapHelp = gson.fromJson(str,new TypeToken<Map<Integer, MySpaceHelpResponse.Answer.Help>>(){}.getType());
+        if (mapHelp == null) {
+            mapHelp = new HashMap<>();
+        }
+
+        return mapHelp;
+    }
+
+    public void setMySpaceHelpVersion(final int version) {
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putInt(MYSPACE_HELP_VERSION, version);
+        editor.apply();
+    }
+
+    public int getMySpaceHelpVersion() {
+        return pref.getInt(MYSPACE_HELP_VERSION, 0);
+    }
+
+    public void setMonParisLogin(@NonNull final String monParisLogin) {
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString(MON_PARIS_LOGIN, monParisLogin);
+        editor.apply();
+    }
+
+    public String getMonParisLogin() {
+        return pref.getString(MON_PARIS_LOGIN, "");
+    }
+
+    public void setMonParisPwd(@NonNull final String monParisPwd) {
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString(MON_PARIS_PWD, monParisPwd);
+        editor.apply();
+    }
+
+    public String getMonParisPwd() {
+        return pref.getString(MON_PARIS_PWD, "");
     }
 
 }

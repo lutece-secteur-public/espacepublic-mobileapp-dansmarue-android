@@ -10,6 +10,12 @@
 
     <LinearLayout
         android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/id_ll_ano"
+        android:layout_width="0dp"
+        android:layout_weight="5"
         android:layout_height="100dp"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="10dp"
@@ -44,7 +50,8 @@
         </RelativeLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="4"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="10dp"
@@ -102,5 +109,19 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/img_responsable_quartier"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_gravity="center_vertical"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_responsable_quartier"
+        android:contentDescription="@string/pref_img_responsable_quartier"
+        android:visibility="gone"
+       />
+    </LinearLayout>
+
+
 </androidx.cardview.widget.CardView>
 
