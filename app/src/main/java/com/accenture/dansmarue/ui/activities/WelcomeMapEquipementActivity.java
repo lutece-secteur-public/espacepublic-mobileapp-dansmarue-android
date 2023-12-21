@@ -6,19 +6,6 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +15,14 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.accenture.dansmarue.R;
 import com.accenture.dansmarue.app.DansMaRueApplication;
@@ -45,6 +40,10 @@ import com.accenture.dansmarue.utils.MiscTools;
 import com.accenture.dansmarue.utils.PrefManager;
 import com.accenture.dansmarue.utils.RecyclerItemClickListener;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.GsonBuilder;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -179,15 +178,19 @@ public class WelcomeMapEquipementActivity extends BaseActivity implements Welcom
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.bottom_menu_map:
+                        findViewById(R.id.bottom_menu_map).setContentDescription(getString(R.string.bottom_map_active_txt));
+                        findViewById(R.id.bottom_menu_profile).setContentDescription(getString(R.string.bottom_profile_desc_txt));
                         coordinatorLayout.setVisibility(View.VISIBLE);
                         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                         fragmentTransaction.replace(R.id.frameLayout, mapParisEquipementFragment);
                         fragmentTransaction.commitAllowingStateLoss();
                         break;
                     case R.id.bottom_menu_profile:
+                        findViewById(R.id.bottom_menu_map).setContentDescription(getString(R.string.bottom_map_desc_txt));
+                        findViewById(R.id.bottom_menu_profile).setContentDescription(getString(R.string.bottom_profile_active_txt));
                         if (prefManager.isConnected()) {
                             presenter.profileClicked();
-                        }else {
+                        } else {
                             startActivityForResult(new Intent(WelcomeMapEquipementActivity.this, LoginActivity.class), LOGIN_REQUEST_CODE);
                         }
                         break;
@@ -230,7 +233,7 @@ public class WelcomeMapEquipementActivity extends BaseActivity implements Welcom
         followAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.pink)));
         greetingsAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.greetings_green)));
 
-        behavior.setPeekHeight((int) ((198) * Resources.getSystem().getDisplayMetrics().density));
+        behavior.setPeekHeight(Math.round((198) * Resources.getSystem().getDisplayMetrics().density));
 
         behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
@@ -366,7 +369,7 @@ public class WelcomeMapEquipementActivity extends BaseActivity implements Welcom
             followAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.pink)));
         }
 
-        behavior.setPeekHeight((int) ((198) * Resources.getSystem().getDisplayMetrics().density));
+        behavior.setPeekHeight(Math.round((198) * Resources.getSystem().getDisplayMetrics().density));
 
 //        if (preciseMode) {
 //            preciseMode = false;
@@ -380,8 +383,8 @@ public class WelcomeMapEquipementActivity extends BaseActivity implements Welcom
     public void onClickMyAdress() {
 
         // Depends on bottom sheet position
-
-        if (behavior.getPeekHeight() == (int) ((198) * Resources.getSystem().getDisplayMetrics().density)) {
+        float density = (198) * Resources.getSystem().getDisplayMetrics().density;
+        if (Math.abs(behavior.getPeekHeight() - density) < Constants.EPSILON) {
 
             if (!oneEquipementIsSelected) {
                 layoutSelectedAdress.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.pink));
@@ -400,7 +403,7 @@ public class WelcomeMapEquipementActivity extends BaseActivity implements Welcom
             addAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.white)));
 
 
-            behavior.setPeekHeight((int) ((354) * Resources.getSystem().getDisplayMetrics().density));
+            behavior.setPeekHeight(Math.round((354) * Resources.getSystem().getDisplayMetrics().density));
 
             if (fabFollowed) {
                 followAnomalyFloatingButton.setImageResource(R.drawable.ic_followed_pink);
@@ -462,14 +465,14 @@ public class WelcomeMapEquipementActivity extends BaseActivity implements Welcom
             }
 
             behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-            behavior.setPeekHeight((int) ((198) * Resources.getSystem().getDisplayMetrics().density));
+            behavior.setPeekHeight(Math.round((198) * Resources.getSystem().getDisplayMetrics().density));
         }
     }
 
     @OnClick({R.id.image_bottom_sheet_my_incident, R.id.image_bottom_sheet_my_adress})
     public void onClickCross() {
         behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        behavior.setPeekHeight((int) ((198) * Resources.getSystem().getDisplayMetrics().density));
+        behavior.setPeekHeight(Math.round((198) * Resources.getSystem().getDisplayMetrics().density));
 
     }
 
@@ -483,7 +486,8 @@ public class WelcomeMapEquipementActivity extends BaseActivity implements Welcom
             if (null != mapParisEquipementFragment.getCurrentEquipement() && oneEquipementIsSelected) {
 
                 // Descendre la bottom sheet avant l'ajout d'ano suivant si la bottom-sheet est à mi-hauteur ou on top
-                if (behavior.getPeekHeight() == (int) ((354) * Resources.getSystem().getDisplayMetrics().density)) {
+                float density = (354) * Resources.getSystem().getDisplayMetrics().density;
+                if (Math.abs(behavior.getPeekHeight() - density) < Constants.EPSILON) {
                     Log.i(TAG, "mi-hauteur");
                     onClickMyAdress();
                 } else {
@@ -503,10 +507,9 @@ public class WelcomeMapEquipementActivity extends BaseActivity implements Welcom
 
                 startActivityForResult(new Intent()
                         .setClass(WelcomeMapEquipementActivity.this, AddAnomalyEquipementActivity.class)
-                        .putExtra(Constants.CURRENT_EQUIPEMENT, eJson),9281);
+                        .putExtra(Constants.CURRENT_EQUIPEMENT, eJson), 9281);
 
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-
 
 
             } else {
@@ -557,21 +560,11 @@ public class WelcomeMapEquipementActivity extends BaseActivity implements Welcom
     @Override
     public void showProfile() {
         coordinatorLayout.setVisibility(View.GONE);
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-
-        if (profileFragment == null) {
-            profileFragment = ProfileFragment.newInstance();
-        }
-        fragmentTransaction.replace(R.id.frameLayout, profileFragment);
-        fragmentTransaction.commitAllowingStateLoss();
+        startActivity(new Intent(this, AnomaliesActivity.class));
     }
 
     @Override
     public void showIncidentDetails(Incident incident) {
-
-//        Weird behavior of bottomSheet
-//        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-//        behavior.setPeekHeight((int) ((198) * Resources.getSystem().getDisplayMetrics().density));
 
         final Intent intent = new Intent(WelcomeMapEquipementActivity.this, AnomalyEquipementDetailsActivity.class);
         intent.putExtra(Constants.EXTRA_INCIDENT_ID, incident.getId());
@@ -696,7 +689,8 @@ public class WelcomeMapEquipementActivity extends BaseActivity implements Welcom
     }
 
     private void changeGreetingsColorButton() {
-        if (behavior.getPeekHeight() == (int) ((198) * Resources.getSystem().getDisplayMetrics().density)) {
+        float density = (198) * Resources.getSystem().getDisplayMetrics().density;
+        if (Math.abs(behavior.getPeekHeight() - density) < Constants.EPSILON) {
             greetingsAnomalyFloatingButton.setImageResource(R.drawable.ic_greetings_white);
             greetingsAnomalyFloatingButton.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getApplicationContext(), R.color.greetings_green)));
         } else {

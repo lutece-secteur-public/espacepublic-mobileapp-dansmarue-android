@@ -16,8 +16,7 @@ public class IncidentComparator implements Comparator<Incident> {
 
     }
 
-
-    public static IncidentComparator getInstance() {
+    public static synchronized IncidentComparator getInstance() {
         if (instance == null) {
             instance = new IncidentComparator();
         }

@@ -13,21 +13,24 @@
 
     <!-- Slider button color-->
     <!-- Bottom Bar : Icon and Text Color with Status Checked True-->
-    <color name="pink">#df225a</color>
+    <color name="pink">#B1002D</color>
+
+    <color name="orangeInProgress">#C60</color>
 
     <!--Slider Status Bar-->
     <color name="blue_slider">#FF303F9F</color>
 
     <!-- Welcome Top Bar color / Be more specific -->
-    <color name="grey_tranparent">#c3919395</color>
+    <color name="grey_tranparent">#666</color>
 
     <!-- Bottom Bar : Icon and Text Color with Status Checked False-->
-    <color name='grey_icon'>#999898</color>
+    <color name='grey_icon'>#6D6F72</color>
 
     <!-- Bottom sheet : color perso - 2 REMOVE -->
 
     <!-- Add Anomaly : Color Top Bar - 2 REMOVE -->
-    <color name="bordeaux">#8f0931</color>
+    <color name="bordeaux">#B1002D</color>
+<!--    <color name="bordeaux">#8f0931</color>-->
 
     <color name="grey_background">#F2F2F2</color>
     <color name="black">#000000</color>

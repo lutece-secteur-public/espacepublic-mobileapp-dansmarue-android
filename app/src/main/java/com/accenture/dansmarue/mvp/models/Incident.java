@@ -1,6 +1,11 @@
 package com.accenture.dansmarue.mvp.models;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 import com.accenture.dansmarue.utils.Constants;
 import com.accenture.dansmarue.utils.DateUtils;
 import com.google.gson.GsonBuilder;
@@ -12,13 +17,12 @@ import org.apache.commons.collections4.CollectionUtils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by PK on 28/03/2017.
  * Incident Bean
  */
-public class Incident {
+public class Incident implements Parcelable {
 
 
     public static final String RAMEN_SOURCE = "Ramen";
@@ -35,6 +39,7 @@ public class Incident {
     private String descriptive = "";
     @Expose
     private String commentaireAgent = "";
+    private String precisionsTerrain = "";
     @Expose
     private String categoryId;
     private String date;
@@ -48,6 +53,7 @@ public class Incident {
     @Expose
     private int priorityId;
     private String state;
+    private String stateName;
     private int stateId;
     private String confirms;
     private String lat;
@@ -80,6 +86,59 @@ public class Incident {
 
     private int iconIncidentSignalement;
 
+    public Incident() {
+    }
+
+    public Incident(Parcel in) {
+        address = in.readString();
+        descriptive = in.readString();
+        commentaireAgent = in.readString();
+        precisionsTerrain = in.readString();
+        categoryId = in.readString();
+        date = in.readString();
+        id = in.readLong();
+        reference = in.readString();
+        token = in.readString();
+        invalidations = in.readInt();
+        priorityId = in.readInt();
+        state = in.readString();
+        stateName = in.readString();
+        stateId = in.readInt();
+        confirms = in.readString();
+        lat = in.readString();
+        lng = in.readString();
+        iconId = in.readInt();
+        alias = in.readString();
+        guid = in.readString();
+        isIncidentFollowedByUser = in.readByte() != 0;
+        isResolvable = in.readByte() != 0;
+        isValidAddressWithNumber = in.readByte() != 0;
+        isAnonyme = in.readByte() != 0;
+        reporterGuid = in.readString();
+        source = in.readString();
+        congratulations = in.readInt();
+        followers = in.readInt();
+        origin = in.readString();
+        hour = in.readString();
+        equipementId = in.readString();
+        iconIncident = in.readString();
+        iconParentId = in.readString();
+        typeEquipementName = in.readString();
+        iconIncidentSignalement = in.readInt();
+    }
+
+    public static final Creator<Incident> CREATOR = new Creator<Incident>() {
+        @Override
+        public Incident createFromParcel(Parcel in) {
+            return new Incident(in);
+        }
+
+        @Override
+        public Incident[] newArray(int size) {
+            return new Incident[size];
+        }
+    };
+
     public int getIconIncidentSignalement() {
         return iconIncidentSignalement;
     }
@@ -94,6 +153,7 @@ public class Incident {
                 "address='" + address + '\'' +
                 ", descriptive='" + descriptive + '\'' +
                 ", commentaire agent='" + commentaireAgent + '\'' +
+                ", precisions terrain='" + precisionsTerrain + '\'' +
                 ", categoryId='" + categoryId + '\'' +
                 ", date='" + date + '\'' +
                 ", id=" + id +
@@ -101,6 +161,7 @@ public class Incident {
                 ", invalidations=" + invalidations +
                 ", priorityId=" + priorityId +
                 ", state='" + state + '\'' +
+                ", stateName='" + stateName + '\'' +
                 ", stateId='" + stateId + '\'' +
                 ", confirms='" + confirms + '\'' +
                 ", lat='" + lat + '\'' +
@@ -142,7 +203,6 @@ public class Incident {
     public String getEquipementId() {
         return equipementId;
     }
-
 
 
     public void setEquipementId(String equipementId) {
@@ -249,6 +309,14 @@ public class Incident {
         this.stateId = stateId;
     }
 
+    public String getStateName() {
+        return stateName;
+    }
+
+    public void setStateName(String stateName) {
+        this.stateName = stateName;
+    }
+
     public String getDescriptive() {
         return descriptive;
     }
@@ -340,8 +408,8 @@ public class Incident {
         if (CollectionUtils.isNotEmpty(getAllPictures())) {
             int idPhotoCur = 0;
             String firstUrlPicture = fixUrlPictures(getAllPictures().get(0));
-            for(String urlPicture : getAllPictures()){
-                String idPhoto =  urlPicture.substring(urlPicture.lastIndexOf("=")+1);
+            for (String urlPicture : getAllPictures()) {
+                String idPhoto = urlPicture.substring(urlPicture.lastIndexOf("=") + 1);
                 try {
                     if (Integer.parseInt(idPhoto) > idPhotoCur) {
                         firstUrlPicture = urlPicture;
@@ -423,7 +491,9 @@ public class Incident {
         return Constants.ORIGIN_ANDROID;
     }
 
-    public boolean isAnonyme() { return isAnonyme; }
+    public boolean isAnonyme() {
+        return isAnonyme;
+    }
 
     /**
      * FIXME !!!!!!!!!!
@@ -486,17 +556,110 @@ public class Incident {
         isValidAddressWithNumber = validAddressWithNumber;
     }
 
+    public String getPrecisionsTerrain() {
+        return precisionsTerrain;
+    }
+
+    public void setPrecisionsTerrain(String precisionsTerrain) {
+        this.precisionsTerrain = precisionsTerrain;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeString(address);
+        dest.writeString(descriptive);
+        dest.writeString(commentaireAgent);
+        dest.writeString(precisionsTerrain);
+        dest.writeString(categoryId);
+        dest.writeString(date);
+        dest.writeLong(id);
+        dest.writeString(reference);
+        dest.writeString(token);
+        dest.writeInt(invalidations);
+        dest.writeInt(priorityId);
+        dest.writeString(state);
+        dest.writeString(stateName);
+        dest.writeInt(stateId);
+        dest.writeString(confirms);
+        dest.writeString(lat);
+        dest.writeString(lng);
+        dest.writeInt(iconId);
+        dest.writeString(alias);
+        dest.writeString(guid);
+        dest.writeByte((byte) (isIncidentFollowedByUser ? 1 : 0));
+        dest.writeByte((byte) (isResolvable ? 1 : 0));
+        dest.writeByte((byte) (isValidAddressWithNumber ? 1 : 0));
+        dest.writeByte((byte) (isAnonyme ? 1 : 0));
+        dest.writeString(reporterGuid);
+        dest.writeString(source);
+        dest.writeInt(congratulations);
+        dest.writeInt(followers);
+        dest.writeString(origin);
+        dest.writeString(hour);
+        dest.writeString(equipementId);
+        dest.writeString(iconIncident);
+        dest.writeString(iconParentId);
+        dest.writeString(typeEquipementName);
+        dest.writeInt(iconIncidentSignalement);
+    }
+
     /**
      * Inner class to hold pictures URL
      */
-    public class Pictures {
+    public static class Pictures implements Parcelable {
         //picture 1 url
+        @Expose
+        @SerializedName("close")
         private List<String> close;
         //picture 2 url
+        @Expose
+        @SerializedName("far")
         private List<String> far;
-
+        @Expose
+        @SerializedName("done")
         private List<String> done;
 
+        public Pictures() {
+        }
+
+        public Pictures(Parcel in) {
+            close = in.createStringArrayList();
+            far = in.createStringArrayList();
+            done = in.createStringArrayList();
+            incidentPicture = in.readString();
+            genericPictureId = in.readInt();
+        }
+
+        public static final Creator<Pictures> CREATOR = new Creator<Pictures>() {
+            @Override
+            public Pictures createFromParcel(Parcel in) {
+                return new Pictures(in);
+            }
+
+            @Override
+            public Pictures[] newArray(int size) {
+                return new Pictures[size];
+            }
+        };
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeStringList(close);
+            dest.writeStringList(far);
+            dest.writeStringList(done);
+            dest.writeString(incidentPicture);
+            dest.writeInt(genericPictureId);
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
         public List<String> getDone() {
             if (done == null) {
                 done = new ArrayList<>();
@@ -595,9 +758,39 @@ public class Incident {
         this.encombrants = encombrants;
     }
 
-    public class Encombrants {
+    public static class Encombrants implements Parcelable {
+        @Expose
         private String name;
+        @Expose
         private int quantity;
+
+        public Encombrants(Parcel in) {
+            name = in.readString();
+            quantity = in.readInt();
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(name);
+            dest.writeInt(quantity);
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        public static final Creator<Encombrants> CREATOR = new Creator<Encombrants>() {
+            @Override
+            public Encombrants createFromParcel(Parcel in) {
+                return new Encombrants(in);
+            }
+
+            @Override
+            public Encombrants[] newArray(int size) {
+                return new Encombrants[size];
+            }
+        };
 
         public String getName() {
             return name;

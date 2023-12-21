@@ -57,6 +57,7 @@ import com.google.gson.GsonBuilder;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -474,11 +475,12 @@ public class AddAnomalyEquipementActivity extends BaseActivity implements AddAno
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 80, bytes);
         File resizedFile = new File(mCurrentPhotoPath);
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(resizedFile);
+
+
+        try (FileOutputStream fos = new FileOutputStream(resizedFile)){
             fos.write(bytes.toByteArray());
-            fos.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

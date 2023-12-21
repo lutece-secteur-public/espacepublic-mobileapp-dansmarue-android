@@ -1,14 +1,10 @@
 package com.accenture.dansmarue.ui.fragments;
 
 import android.content.Context;
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-
 import android.provider.Settings;
-
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,23 +12,19 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-
-import androidx.fragment.app.FragmentTransaction;
-
 import com.accenture.dansmarue.R;
 import com.accenture.dansmarue.app.DansMaRueApplication;
 import com.accenture.dansmarue.di.components.DaggerPresenterComponent;
 import com.accenture.dansmarue.di.modules.PresenterModule;
 import com.accenture.dansmarue.mvp.views.MySpaceView;
+import com.accenture.dansmarue.ui.activities.AnomaliesActivity;
+import com.accenture.dansmarue.ui.activities.InternalWebViewActivity;
 import com.accenture.dansmarue.ui.activities.LoginActivity;
 import com.accenture.dansmarue.ui.activities.MySpaceHelpActivity;
 import com.accenture.dansmarue.ui.activities.MySpaceNewsActivity;
 import com.accenture.dansmarue.ui.activities.PrefAboutActivity;
-import com.accenture.dansmarue.ui.activities.PrefActivity;
-import com.accenture.dansmarue.ui.activities.PrefCGUActivity;
 import com.accenture.dansmarue.ui.activities.PrefProfilActivity;
 import com.accenture.dansmarue.utils.PrefManager;
-
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -87,24 +79,11 @@ public class MySpaceFragment extends BaseFragment implements MySpaceView {
         //activity = null;
     }
 
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.fragment_profile2, container, false);
-
-        ButterKnife.bind(this, rootView);
-
-        return rootView;
-
-    }
-
-    @Override
-    public void onStart() {
-
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         prefManager = new PrefManager(getContext());
-        if(prefManager.isConnected()) {
+        if (prefManager.isConnected()) {
             itemMonProfil.setVisibility(View.VISIBLE);
             layoutSeConnecter.setVisibility(View.GONE);
             buttonDisconnect.setVisibility(View.VISIBLE);
@@ -115,9 +94,24 @@ public class MySpaceFragment extends BaseFragment implements MySpaceView {
         }
     }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        final View rootView = inflater.inflate(R.layout.fragment_profile2, container, false);
+        ButterKnife.bind(this, rootView);
+        return rootView;
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
     @OnClick(R.id.btn_mon_paris)
     public void onClickMonParisSignIn() {
         startActivity(new Intent(getActivity(), LoginActivity.class));
+
     }
 
     @OnClick(R.id.item_se_connecter)
@@ -132,21 +126,11 @@ public class MySpaceFragment extends BaseFragment implements MySpaceView {
 
     @OnClick(R.id.item_mes_anomalies)
     public void goToMesAnomalies() {
-
-        if(prefManager.isConnected()) {
-            getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
-
-            ProfileFragment profileFragment = ProfileFragment.newInstance();
-
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.frameLayout, profileFragment, "profileFragment")
-                    .addToBackStack(null)
-                    .commit();
+        if (prefManager.isConnected()) {
+            startActivity(new Intent(getActivity(), AnomaliesActivity.class));
         } else {
             onClickMonParisSignIn();
         }
-      
-
     }
 
 
@@ -172,7 +156,18 @@ public class MySpaceFragment extends BaseFragment implements MySpaceView {
 
     @OnClick(R.id.item_cgu)
     public void goToCgu() {
-        startActivity(new Intent(getActivity(), PrefCGUActivity.class));
+        String urlCGU = "https://teleservices.paris.fr/formsddct/jsp/site/Portal.jsp?page=forms&view=stepView&id_form=82&init=true";
+        Intent intent = new Intent(getActivity(), InternalWebViewActivity.class);
+        intent.putExtra(InternalWebViewActivity.WEBSITE_ADDRESS, urlCGU);
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.item_pcvp)
+    public void goToPolitiqueConfidentialite() {
+        String urlPcvp = "https://www.paris.fr/pages/mentions-legales-235#confidentialite-et-protection-des-donnees";
+        Intent intent = new Intent(getActivity(), InternalWebViewActivity.class);
+        intent.putExtra(InternalWebViewActivity.WEBSITE_ADDRESS, urlPcvp);
+        startActivity(intent);
     }
 
     @OnClick(R.id.item_about)
@@ -183,8 +178,7 @@ public class MySpaceFragment extends BaseFragment implements MySpaceView {
 
     @OnClick(R.id.btn_deco)
     public void onClickSignOut() {
-        prefManager.disconnect();
-        this.onStart();
+        onClickMonParisSignIn();
     }
 
 

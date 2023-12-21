@@ -41,12 +41,12 @@
                 android:id="@+id/txt_over_picture"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/anomaly_details_picture"
-                android:layout_alignRight="@+id/anomaly_details_picture"
+                android:layout_alignStart="@+id/anomaly_details_picture"
                 android:layout_alignTop="@+id/anomaly_details_picture"
+                android:layout_alignEnd="@+id/anomaly_details_picture"
                 android:layout_marginLeft="40dp"
-                android:layout_marginRight="40dp"
                 android:layout_marginTop="20dp"
+                android:layout_marginRight="40dp"
                 android:background="@drawable/round_corner_green"
                 android:gravity="center"
                 android:textColor="#FFFFFF"
@@ -60,8 +60,9 @@
                 android:layout_marginStart="20dp"
                 android:paddingTop="160dp"
                 android:text="@string/lower_than"
+                android:contentDescription="@string/button_previous_label"
                 android:textColor="@color/grey_icon"
-                android:textSize="50dp"
+                android:textSize="50sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -72,18 +73,10 @@
                 android:layout_marginEnd="20dp"
                 android:paddingTop="160dp"
                 android:text="@string/greater_than"
+                android:contentDescription="@string/button_next_label"
                 android:textColor="@color/grey_icon"
-                android:textSize="50dp"
+                android:textSize="50sp"
                 android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/anomaly_address"
-                android:layout_width="280dp"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/anomaly_details_picture"
-                android:layout_marginBottom="16dp"
-                android:layout_marginStart="10dp"
-                android:textColor="@color/white" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab_details_ano"
@@ -91,9 +84,13 @@
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/anomaly_details_picture"
                 android:layout_alignParentEnd="true"
-                android:layout_marginBottom="-32dp"
                 android:layout_marginEnd="11dp"
+                android:layout_marginBottom="-32dp"
+                android:backgroundTint="@color/pink"
                 android:clickable="true"
+                android:contentDescription="@string/follow_anomaly_action"
+                android:focusable="true"
+                android:importantForAccessibility="yes"
                 app:fabSize="normal"
                 app:srcCompat="@drawable/ic_follow" />
 
@@ -101,9 +98,16 @@
                 android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignStart="@+id/anomaly_address"
                 android:layout_below="@+id/fab_details_ano"
-                android:orientation="horizontal">
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/anomaly_address"
+                    android:layout_width="280dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginBottom="16dp"
+                    android:textColor="@color/grey_icon" />
 
                 <TextView
                     android:id="@+id/anomaly_time"
@@ -118,9 +122,9 @@
                 android:id="@+id/anomaly_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignEnd="@+id/fab_details_ano"
-                android:layout_alignStart="@+id/linearLayout"
                 android:layout_below="@+id/linearLayout"
+                android:layout_alignStart="@+id/linearLayout"
+                android:layout_alignEnd="@+id/fab_details_ano"
                 android:layout_marginTop="5dp"
                 android:textColor="@color/grey_icon" />
 
@@ -128,9 +132,9 @@
                 android:id="@+id/anomaly_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignEnd="@+id/fab_details_ano"
-                android:layout_alignStart="@+id/linearLayout"
                 android:layout_below="@+id/linearLayout"
+                android:layout_alignStart="@+id/linearLayout"
+                android:layout_alignEnd="@+id/fab_details_ano"
                 android:layout_marginTop="20dp"
                 android:textSize="28sp"
                 android:textStyle="bold" />
@@ -139,9 +143,9 @@
                 android:id="@+id/anomaly_details"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignEnd="@+id/anomaly_category"
-                android:layout_alignStart="@+id/anomaly_category"
                 android:layout_below="@+id/anomaly_category"
+                android:layout_alignStart="@+id/anomaly_category"
+                android:layout_alignEnd="@+id/anomaly_category"
                 android:layout_marginTop="15dp"
                 android:textSize="16sp" />
 
@@ -157,9 +161,9 @@
                 android:id="@+id/anomaly_layout_followers"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignEnd="@+id/fab_details_ano"
-                android:layout_alignStart="@+id/linearLayout"
                 android:layout_below="@+id/view"
+                android:layout_alignStart="@+id/linearLayout"
+                android:layout_alignEnd="@+id/fab_details_ano"
                 android:layout_marginTop="15dp"
                 android:baselineAligned="false"
                 android:orientation="horizontal">
@@ -185,7 +189,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
-                    android:gravity="right"
+                    android:gravity="end"
                     android:orientation="horizontal">
 
                     <TextView
@@ -209,7 +213,6 @@
                 android:layout_marginTop="15dp"
                 android:background="@color/grey_background" />
 
-
             <!-- Photo -->
             <LinearLayout
                 android:id="@+id/photo_service_fait_layout"
@@ -217,8 +220,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/anomaly_line2"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="2dp"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:background="@color/white"
                 android:orientation="vertical"
                 android:padding="@dimen/activity_horizontal_margin"
@@ -234,8 +237,6 @@
                         android:id="@+id/image_choose_picture"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:layout_alignParentBottom="true"
-                        android:layout_alignParentStart="true"
                         android:layout_marginBottom="28dp"
                         android:background="@color/white"
                         android:contentDescription="@string/text_photo"
@@ -276,9 +277,7 @@
 
                     <RelativeLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-
-                        >
+                        android:layout_height="wrap_content">
 
                         <RelativeLayout
                             android:id="@+id/myImageChoiceLayout"
@@ -293,7 +292,6 @@
                                 android:id="@+id/myImageChoice"
                                 android:layout_width="96dp"
                                 android:layout_height="96dp"
-                                android:layout_weight="0.10"
                                 android:contentDescription="@string/desc_image1"
                                 android:scaleType="centerCrop"
                                 android:visibility="gone"
@@ -322,16 +320,11 @@
                             android:id="@+id/add_anomaly_photo"
                             android:layout_width="96dp"
                             android:layout_height="96dp"
-                            android:layout_weight="0.10"
                             android:background="@color/grey_background"
-                            android:contentDescription="@string/desc_add_picture"
+                            android:contentDescription="@string/desc_add_picture_requalification"
                             app:srcCompat="@drawable/ic_camera" />
-
-
                     </RelativeLayout>
-
                 </LinearLayout>
-
             </LinearLayout>
 
             <Button
@@ -346,12 +339,6 @@
                 android:textColor="@color/white"
                 android:visibility="gone" />
 
-
-
         </RelativeLayout>
-
-
     </ScrollView>
-
-
 </RelativeLayout>

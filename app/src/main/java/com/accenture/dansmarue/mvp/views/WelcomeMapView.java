@@ -25,4 +25,6 @@ public interface WelcomeMapView extends BaseView {
     void displayGreetingsOk();
 
     void displayGreetingsKo();
+
+    void displaySaveInfosApresTournee();
 }

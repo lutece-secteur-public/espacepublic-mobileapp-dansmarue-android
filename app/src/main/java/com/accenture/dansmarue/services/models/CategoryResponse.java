@@ -1,5 +1,6 @@
 package com.accenture.dansmarue.services.models;
 
+import com.accenture.dansmarue.di.modules.ApplicationModule;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.Map;
 /**
  * Created by PK on 27/03/2017.
  * * Response from the WS {@link com.accenture.dansmarue.services.SiraApiService#getCategories(CategoryRequest)}.
- * The response is auto generate from JSON via GSONConverter (see {@link retrofit2.Retrofit configuration in {@link com.accenture.dansmarue.di.modules.ApplicationModule}}
+ * The response is auto generate from JSON via GSONConverter (see {@link retrofit2.Retrofit configuration in {@link ApplicationModule }}
  */
 public class CategoryResponse extends SiraResponse {
 

@@ -9,4 +9,7 @@ public interface LoginView extends BaseView {
     void loginFailed();
 
     void loginSuccess();
+
+    void afterLogout();
+
 }

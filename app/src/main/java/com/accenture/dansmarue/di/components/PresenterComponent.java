@@ -4,6 +4,7 @@ import com.accenture.dansmarue.di.modules.PresenterModule;
 import com.accenture.dansmarue.di.scopes.ActivityScope;
 import com.accenture.dansmarue.ui.activities.AddAnomalyActivity;
 import com.accenture.dansmarue.ui.activities.AddAnomalyEquipementActivity;
+import com.accenture.dansmarue.ui.activities.AnomaliesActivity;
 import com.accenture.dansmarue.ui.activities.AnomalyDetailsActivity;
 import com.accenture.dansmarue.ui.activities.AnomalyEquipementDetailsActivity;
 import com.accenture.dansmarue.ui.activities.CategoryActivity;
@@ -106,6 +107,7 @@ public interface PresenterComponent {
      * @param fragment view to inject dependecies to
      */
     void inject(ProfileFragment fragment);
+    void inject(AnomaliesActivity fragment);
 
     /**
      * Inject dependencies to the view

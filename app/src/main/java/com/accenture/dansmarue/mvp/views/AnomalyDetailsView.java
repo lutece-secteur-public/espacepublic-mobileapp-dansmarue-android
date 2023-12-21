@@ -37,9 +37,9 @@ public interface AnomalyDetailsView extends BaseView {
 
     void closeActvity();
 
-    void showPicture(String absolutePath);
+    void updatePicture(String absolutePath);
 
-    void showPictureRequalification(String absolutePath);
+    void updatePictureRequalification(String absolutePath);
 
     void requalificationSuccess();
 
@@ -48,4 +48,6 @@ public interface AnomalyDetailsView extends BaseView {
     void callResolveIncident();
 
     void uploadRequalificationDone();
+
+    void displaySavePrecisionsTerrainSuccess();
 }

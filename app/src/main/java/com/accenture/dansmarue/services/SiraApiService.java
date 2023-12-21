@@ -23,6 +23,8 @@ import com.accenture.dansmarue.services.models.MySpaceNewsResponse;
 import com.accenture.dansmarue.services.models.ProcessWorkflowRequest;
 import com.accenture.dansmarue.services.models.SaveIncidentRequest;
 import com.accenture.dansmarue.services.models.SaveIncidentResponse;
+import com.accenture.dansmarue.services.models.SaveInfosApresTourneeRequest;
+import com.accenture.dansmarue.services.models.SavePrecisionsTerrainRequest;
 import com.accenture.dansmarue.services.models.SiraSimpleResponse;
 import com.accenture.dansmarue.services.models.UnfollowRequest;
 
@@ -211,6 +213,15 @@ public interface SiraApiService {
     Single<GetIncidentsByPositionResponse> getAnomalieByNumber(@Path("number") String incidentNumber);
 
     /**
+     * Search FDT by id.
+     * @param idFDT
+     *     id FDT to serach
+     * @return response containing incident belongs to FDT
+     */
+    @GET("signalement/searchIncidentsByIdFdt/{idFDT}")
+    Single<GetIncidentsByPositionResponse> searchIncidentsByIdFdt(@Path("idFDT") int idFDT);
+
+    /**
      * Load news configure in BO.
      *
      * @param versionActualite
@@ -230,5 +241,20 @@ public interface SiraApiService {
      */
     @GET("signalement/getAide/{versionAide}")
     Single<MySpaceHelpResponse> getMySpaceHelp(@Path("versionAide") int versionAide);
+
+    /**
+     * Save Precisions Terrain
+     *
+     * @param request request containing the precisions terrain message
+     * @return Response containing the status code
+     */
+    @FormUrlEncoded
+    @POST("signalement/api/")
+    Single<SiraSimpleResponse> savePrecisionsTerrain(@Field("jsonStream") SavePrecisionsTerrainRequest request);
+
+
+    @FormUrlEncoded
+    @POST("signalement/api/")
+    Single<SiraSimpleResponse> saveInfoApresTournee(@Field("jsonStream") SaveInfosApresTourneeRequest request);
 
 }

@@ -4,18 +4,25 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.accenture.dansmarue.R;
+import com.accenture.dansmarue.ui.views.AccessibleTextInputEditText;
 import com.accenture.dansmarue.utils.Constants;
+import com.google.android.material.textfield.TextInputEditText;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 
 
 public class SetDescriptionActivity extends BaseActivity {
 
     @BindView(R.id.edit_text_description)
-    protected EditText description;
+    protected AccessibleTextInputEditText description;
+
+    @BindView(R.id.edit_text_title)
+    protected TextView title;
 
     @BindView(R.id.toolbar)
     protected Toolbar toolbar;
@@ -34,17 +41,28 @@ public class SetDescriptionActivity extends BaseActivity {
 
         //Init champ si déjà saisi auparavant
         if (intent.getStringExtra(Constants.EXTRA_DESCRIPTION) != null) {
+            title.setText(R.string.description);
             description.append(intent.getStringExtra(Constants.EXTRA_DESCRIPTION));
             currentExtra = Constants.EXTRA_DESCRIPTION;
         }
         else if (intent.getStringExtra(Constants.EXTRA_COMMENTAIRE_AGENT) != null) {
+            title.setText(R.string.commentagent);
             description.append(intent.getStringExtra(Constants.EXTRA_COMMENTAIRE_AGENT));
             currentExtra = Constants.EXTRA_COMMENTAIRE_AGENT;
         }
 
         else if (intent.getStringExtra(Constants.EXTRA_COMMENTAIRE_AGENT_REQUALIFICATION) != null) {
+            title.setText(R.string.commentagent);
             description.append(intent.getStringExtra(Constants.EXTRA_COMMENTAIRE_AGENT_REQUALIFICATION));
             currentExtra = Constants.EXTRA_COMMENTAIRE_AGENT_REQUALIFICATION;
+        }
+
+        else if (intent.hasExtra(Constants.EXTRA_COMMENTAIRE_PRECISIONS_TERRAIN)) {
+            title.setText(R.string.text_title_precterrain);
+            if(intent.getStringExtra(Constants.EXTRA_COMMENTAIRE_PRECISIONS_TERRAIN) != null) {
+                description.append(intent.getStringExtra(Constants.EXTRA_COMMENTAIRE_PRECISIONS_TERRAIN));
+            }
+            currentExtra = Constants.EXTRA_COMMENTAIRE_PRECISIONS_TERRAIN;
         }
 
     }
@@ -69,5 +87,4 @@ public class SetDescriptionActivity extends BaseActivity {
 
         finish();
     }
-
 }

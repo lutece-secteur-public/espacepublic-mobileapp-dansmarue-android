@@ -103,13 +103,29 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.putExtra(Constants.EXTRA_INCIDENT_ID, Long.valueOf(incidentId));
             intent.putExtra(Constants.EXTRA_INCIDENT_TYPE,typeIncident);
-            pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                    PendingIntent.FLAG_ONE_SHOT);
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                pendingIntent = PendingIntent.getActivity
+                        (this, 0, intent, PendingIntent.FLAG_MUTABLE);
+            }
+            else
+            {
+                pendingIntent = PendingIntent.getActivity
+                        (this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+            }
+
         } else {
             intent = new Intent(this, WelcomeMapActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                    PendingIntent.FLAG_ONE_SHOT);
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                pendingIntent = PendingIntent.getActivity
+                        (this, 0, intent, PendingIntent.FLAG_MUTABLE);
+            }
+            else
+            {
+                pendingIntent = PendingIntent.getActivity
+                        (this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+            }
+
         }
 
 

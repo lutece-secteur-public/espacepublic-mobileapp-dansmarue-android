@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:targetApi="m">
+    <item
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:drawable="@drawable/splashscreen_vf" />
+    <item
+        android:width="100dp"
+        android:height="100dp"
+        android:gravity="top|center_horizontal"
+        android:top="70dp">
+        <bitmap android:src="@drawable/splash_logo_dmr" />
+    </item>
+    <item
+        android:bottom="100dp"
+        android:gravity="bottom|center_horizontal">
+        <bitmap
+            android:layout_height="wrap_content"
+            android:src="@drawable/splash_nef" />
+    </item>
+    <item
+        android:width="50dp"
+        android:height="50dp"
+        android:bottom="10dp"
+        android:drawable="@drawable/ic_icone_bp"
+        android:gravity="bottom|end" />
+</layer-list>

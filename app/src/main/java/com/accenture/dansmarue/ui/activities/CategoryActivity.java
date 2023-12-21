@@ -1,17 +1,18 @@
 package com.accenture.dansmarue.ui.activities;
 
 import android.content.Intent;
-
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.AdapterView;
-import android.widget.ImageView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 
 import com.accenture.dansmarue.R;
 import com.accenture.dansmarue.di.components.DaggerPresenterComponent;
@@ -21,11 +22,8 @@ import com.accenture.dansmarue.mvp.presenters.CategoryPresenter;
 import com.accenture.dansmarue.mvp.views.CategoryView;
 import com.accenture.dansmarue.ui.adapters.CategoryAdapter;
 import com.accenture.dansmarue.ui.adapters.CategorySearchAdapter;
-import com.accenture.dansmarue.utils.CategoryHelper;
 import com.accenture.dansmarue.utils.Constants;
-import com.accenture.dansmarue.utils.PrefManager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -33,7 +31,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class CategoryActivity extends BaseActivity implements SearchView.OnQueryTextListener,AdapterView.OnItemClickListener, CategoryView {
+public class CategoryActivity extends BaseActivity implements SearchView.OnQueryTextListener, AdapterView.OnItemClickListener, CategoryView {
 
     private static final String TAG = CategoryActivity.class.getName();
 
@@ -43,7 +41,7 @@ public class CategoryActivity extends BaseActivity implements SearchView.OnQuery
     protected CategoryPresenter presenter;
 
     @BindView(R.id.search_bar_category)
-    protected SearchView searchBarCategory;
+    protected EditText searchBarCategory;
     @BindView(R.id.categories)
     protected ListView listView;
     @BindView(R.id.listview_category)
@@ -73,29 +71,43 @@ public class CategoryActivity extends BaseActivity implements SearchView.OnQuery
 
     private void initSearchBarCategory() {
 
-        categorySearchAdapter = new CategorySearchAdapter(this,presenter.loadCategoriesForSearchBar());
+        categorySearchAdapter = new CategorySearchAdapter(this, presenter.loadCategoriesForSearchBar());
         listViewSearchCategory.setAdapter(categorySearchAdapter);
 
         listViewSearchCategory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                presenter.onCategorySelected( ((Category)categorySearchAdapter.getItem(i)).getId());
+                presenter.onCategorySelected(((Category) categorySearchAdapter.getItem(i)).getId());
             }
         });
 
-        searchBarCategory.setOnQueryTextListener(this);
-
-        // Catch event on [x] button inside search view
-        int searchCloseButtonId = searchBarCategory.getContext().getResources()
-                .getIdentifier("android:id/search_close_btn", null, null);
-        ImageView closeButton = (ImageView) searchBarCategory.findViewById(searchCloseButtonId);
-        // Set on click listener
-        closeButton.setOnClickListener(new View.OnClickListener() {
+        searchBarCategory.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View v) {
-                searchBarCategory.setQuery("",false);
-                listViewSearchCategory.setVisibility(View.GONE);
-                listView.setVisibility(View.VISIBLE);
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String newText = searchBarCategory.getText().toString();
+                if (newText.equals("")) {
+                    listViewSearchCategory.setVisibility(View.GONE);
+                    listView.setVisibility(View.VISIBLE);
+                }
+                if (newText != null && newText.trim().length() > 2) {
+                    String text = newText;
+                    listViewSearchCategory.setVisibility(View.VISIBLE);
+                    listView.setVisibility(View.GONE);
+                    categorySearchAdapter.filter(text);
+                } else {
+                    listViewSearchCategory.setVisibility(View.GONE);
+                    listView.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
     }
@@ -107,7 +119,7 @@ public class CategoryActivity extends BaseActivity implements SearchView.OnQuery
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        if (newText!= null && newText.trim().length() > 2) {
+        if (newText != null && newText.trim().length() > 2) {
             String text = newText;
             listViewSearchCategory.setVisibility(View.VISIBLE);
             listView.setVisibility(View.GONE);
@@ -129,7 +141,7 @@ public class CategoryActivity extends BaseActivity implements SearchView.OnQuery
     public void backType() {
 
         if (adapter.getDisplayFavoriteItems()) {
-            if(lastParentItemSelected ==null) {
+            if (lastParentItemSelected == null) {
                 titleCategory.setText(R.string.text_type);
                 presenter.extractChildren(Category.ID_FIRST_PARENT);
             } else {
@@ -187,6 +199,11 @@ public class CategoryActivity extends BaseActivity implements SearchView.OnQuery
         }
         adapter.setDisplayFavoriteItems(displayFavoriteItems);
         adapter.notifyDataSetChanged();
+        View firstItemView = listView.getChildAt(0);
+        if (firstItemView != null) {
+            firstItemView.performAccessibilityAction(AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS, null);
+            firstItemView.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_ACCESSIBILITY_FOCUSED);
+        }
     }
 
     @Override
@@ -199,7 +216,7 @@ public class CategoryActivity extends BaseActivity implements SearchView.OnQuery
             intent.putExtra(Constants.EXTRA_CATEGORY_NAME, category.getName());
         }
 
-        if(category.getMessageHorsDMR() != null) {
+        if (category.getMessageHorsDMR() != null) {
             intent.putExtra(Constants.EXTRA_MESSAGE_HORS_DMR, category.getMessageHorsDMR());
         }
 
@@ -211,7 +228,7 @@ public class CategoryActivity extends BaseActivity implements SearchView.OnQuery
     public void onParentSelected(final Category catParent) {
         idPreviousParent = catParent.getParentId();
         lastParentItemSelected = catParent;
-        if (catParent.getName() != null ) {
+        if (catParent.getName() != null) {
             titleCategory.setText(catParent.getName());
         } else {
             titleCategory.setText(R.string.text_type);
@@ -225,7 +242,8 @@ public class CategoryActivity extends BaseActivity implements SearchView.OnQuery
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode ==RESULT_OK) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
             Category favoriteCategory = new Category();
             favoriteCategory.setId(data.getStringExtra(Constants.EXTRA_CATEGORY_ID));
             favoriteCategory.setName(data.getStringExtra(Constants.EXTRA_CATEGORY_NAME));

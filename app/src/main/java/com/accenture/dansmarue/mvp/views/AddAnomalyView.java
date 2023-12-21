@@ -24,4 +24,6 @@ public interface AddAnomalyView extends BaseView {
     void showHideAgentCommentaryField(final boolean agentConnected);
 
     void displayDialogDmrOffline();
+
+    void showConnectMonParis();
 }

@@ -1,4 +1,5 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -19,11 +20,13 @@
             android:src="@drawable/ic_sweep_delete" />
 
         <TextView
+            android:id="@+id/deleteTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginEnd="10dp"
             android:layout_toStartOf="@id/delete_icon"
+            android:importantForAccessibility="no"
             android:text="@string/favorite_address_delete_item"
             android:textColor="#fff"
             android:textSize="14sp" />
@@ -44,17 +47,22 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="2dp"
-            android:src="@drawable/ic_dehaze"
-            android:visibility="gone"/>
+            android:backgroundTint="@color/grey_icon"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_close_svg"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <TextView
             android:id="@+id/address_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
             android:ellipsize="end"
             android:fontFamily="sans-serif-medium"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            tools:text="34 avenue de l'Opéra, 75010 Paris, France" />
 
 
     </RelativeLayout>

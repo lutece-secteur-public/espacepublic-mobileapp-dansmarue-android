@@ -159,10 +159,10 @@ public class SplashScreenPresenter extends BasePresenter<SplashScreenView> imple
                     //save the new version in a json file on the device
                     FileOutputStream fos = application.getApplicationContext().openFileOutput(Constants.FILE_LIST_EQUIPEMENTS, Context.MODE_PRIVATE);
 
-                    Writer out = new OutputStreamWriter(fos);
-                    String strObj = new GsonBuilder().create().toJson(value.getAnswer());
-                    out.write(strObj);
-                    out.close();
+                    try(Writer out = new OutputStreamWriter(fos)) {
+                        String strObj = new GsonBuilder().create().toJson(value.getAnswer());
+                        out.write(strObj);
+                    }
                 } catch (IOException e) {
                     FirebaseCrashlytics.getInstance().log(e.getMessage());
                     Log.e(TAG, e.getMessage(), e);
@@ -317,11 +317,11 @@ public class SplashScreenPresenter extends BasePresenter<SplashScreenView> imple
                 try {
                     //save the new version in a json file on the device
                     FileOutputStream fos = application.getApplicationContext().openFileOutput(Constants.FILE_LIST_ANOS_PAR_EQUIPEMENT, Context.MODE_PRIVATE);
-                    Writer out = new OutputStreamWriter(fos);
-                    String strObj = new GsonBuilder().create().toJson(value.getAnswer());
-                    Log.i(TAG, "Liste des catégories équipements : " + strObj);
-                    out.write(strObj);
-                    out.close();
+                    try(Writer out = new OutputStreamWriter(fos)) {
+                        String strObj = new GsonBuilder().create().toJson(value.getAnswer());
+                        Log.i(TAG, "Liste des catégories équipements : " + strObj);
+                        out.write(strObj);
+                    }
 
                     prefManager.setCatsInDoor(null);
 
@@ -406,10 +406,10 @@ public class SplashScreenPresenter extends BasePresenter<SplashScreenView> imple
             try {
                 //save the new version in a json file on the device
                 FileOutputStream fos = application.getApplicationContext().openFileOutput(Constants.FILE_CATEGORIES_JSON, Context.MODE_PRIVATE);
-                Writer out = new OutputStreamWriter(fos);
-                String strObj = new GsonBuilder().create().toJson(categoryResponses.getAnswer());
-                out.write(strObj);
-                out.close();
+                try(Writer out = new OutputStreamWriter(fos)) {
+                    String strObj = new GsonBuilder().create().toJson(categoryResponses.getAnswer());
+                    out.write(strObj);
+                }
 
                 prefManager.setCatsOutDoor(null);
 

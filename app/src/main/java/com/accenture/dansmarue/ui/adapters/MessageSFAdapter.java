@@ -47,7 +47,8 @@ public class MessageSFAdapter  extends ArrayAdapter<MessageServiceFait> {
 
     public void setMessages(HashMap<Integer, MessageServiceFait> messages) {
         this.messages = messages;
-        for(int i = 0 ; i < messages.size() ; i++) {
+        int length = messages.size();
+        for(int i = 0 ; i < length ; i++) {
             this.insert(messages.get(i), i);
         }
     }

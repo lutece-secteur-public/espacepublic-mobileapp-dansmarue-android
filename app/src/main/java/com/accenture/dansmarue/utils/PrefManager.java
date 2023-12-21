@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 
 import com.accenture.dansmarue.mvp.models.Category;
 import com.accenture.dansmarue.mvp.models.FavoriteAddress;
+import com.accenture.dansmarue.mvp.models.Incident;
 import com.accenture.dansmarue.mvp.models.equipementsMunicipaux.TypeEquipement;
 import com.accenture.dansmarue.services.models.MySpaceHelpResponse;
 import com.accenture.dansmarue.services.models.MySpaceNewsResponse;
@@ -47,7 +48,7 @@ public class PrefManager {
     private static final String LAST_NAME = "lastname";
     private static final String IS_AGENT = "isAgent";
     private static final String MON_PARIS_LOGIN = "monParisLogin";
-    private static final String MON_PARIS_PWD = "monParisPwd";
+    private static final String MON_PARIS_ID_ACCESS_TOKEN = "accessToken";
 
     private static final String LAST_MENU = "lastmenu";
 
@@ -65,6 +66,8 @@ public class PrefManager {
 
     private static final String MYSPACE_NEWS_VERSION = "mySpaceNewsVersion";
     private static final String MYSPACE_HELP_VERSION = "mySpaceHelpVersion";
+
+    private static final String INCIDENT_FDT_TO_REFRESH = "incidentFDTToRefresh";
 
     public PrefManager(Context context) {
         this._context = context;
@@ -258,7 +261,7 @@ public class PrefManager {
         editor.remove(FIRST_NAME);
         editor.remove(LAST_NAME);
         editor.remove(MON_PARIS_LOGIN);
-        editor.remove(MON_PARIS_PWD);
+        editor.remove(MON_PARIS_ID_ACCESS_TOKEN);
         editor.apply();
     }
 
@@ -466,14 +469,30 @@ public class PrefManager {
         return pref.getString(MON_PARIS_LOGIN, "");
     }
 
-    public void setMonParisPwd(@NonNull final String monParisPwd) {
+    public void setMonidAccessToken(@NonNull final String idAccessToken) {
         SharedPreferences.Editor editor = pref.edit();
-        editor.putString(MON_PARIS_PWD, monParisPwd);
+        editor.putString(MON_PARIS_ID_ACCESS_TOKEN, idAccessToken);
         editor.apply();
     }
 
-    public String getMonParisPwd() {
-        return pref.getString(MON_PARIS_PWD, "");
+    public String getMonParisidAccessToken() {
+        return pref.getString(MON_PARIS_ID_ACCESS_TOKEN, "");
+    }
+
+    public void setIncidentFdtToRefresh(final Incident incidentFdtToRefresh) {
+
+        Gson gson = new Gson();
+        String str = gson.toJson(incidentFdtToRefresh);
+
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString(INCIDENT_FDT_TO_REFRESH, str);
+        editor.apply();
+    }
+
+    public Incident getIncidentFdtToRefresh() {
+        String str = pref.getString(INCIDENT_FDT_TO_REFRESH,null);
+        Gson gson = new Gson();
+        return gson.fromJson(str, Incident.class);
     }
 
 }

@@ -3,8 +3,9 @@ package com.accenture.dansmarue.mvp.presenters;
 import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
-import androidx.annotation.NonNull;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import com.accenture.dansmarue.mvp.models.Incident;
 import com.accenture.dansmarue.mvp.models.MessageServiceFait;
@@ -18,6 +19,7 @@ import com.accenture.dansmarue.services.models.FollowRequest;
 import com.accenture.dansmarue.services.models.GetIncidentByIdRequest;
 import com.accenture.dansmarue.services.models.GetIncidentByIdResponse;
 import com.accenture.dansmarue.services.models.IncidentResolvedRequest;
+import com.accenture.dansmarue.services.models.SavePrecisionsTerrainRequest;
 import com.accenture.dansmarue.services.models.SiraResponse;
 import com.accenture.dansmarue.services.models.SiraSimpleResponse;
 import com.accenture.dansmarue.services.models.UnfollowRequest;
@@ -25,7 +27,6 @@ import com.accenture.dansmarue.utils.CategoryHelper;
 import com.accenture.dansmarue.utils.Constants;
 import com.accenture.dansmarue.utils.PrefManager;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
-
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -59,8 +60,8 @@ public class AnomalyDetailsPresenter extends BasePresenter implements SingleObse
     private String pictureRequalification;
     private String requalificationTypeId = null;
     private String requalificationComment = "";
-
-    private  boolean isRequalificationPicture;
+    private String precisionTerrain = "";
+    private boolean isRequalificationPicture;
 
     @Inject
     public AnomalyDetailsPresenter(final AnomalyDetailsView view, final PrefManager prefManager, SiraApiService service, Application application) {
@@ -72,8 +73,8 @@ public class AnomalyDetailsPresenter extends BasePresenter implements SingleObse
 
     /**
      * Call WS fallow incident.
-     * @param incidentId
-     *    incident to fallow
+     *
+     * @param incidentId incident to fallow
      */
     public void followAnomaly(final String incidentId) {
         if (prefManager.isConnected()) {
@@ -94,8 +95,8 @@ public class AnomalyDetailsPresenter extends BasePresenter implements SingleObse
 
     /**
      * Call WS to unfallow incident.
-     * @param incidentId
-     *    incident to unfallow
+     *
+     * @param incidentId incident to unfallow
      */
     public void unfollowAnomaly(final String incidentId) {
         UnfollowRequest request = new UnfollowRequest(incidentId);
@@ -109,8 +110,8 @@ public class AnomalyDetailsPresenter extends BasePresenter implements SingleObse
 
     /**
      * Call WS congrate for incident resolve.
-     * @param incidentId
-     *           id incident resolve
+     *
+     * @param incidentId id incident resolve
      */
     public void congratulateAnomalie(final String incidentId) {
         CongratulateAnomalieRequest request = new CongratulateAnomalieRequest(incidentId);
@@ -129,7 +130,6 @@ public class AnomalyDetailsPresenter extends BasePresenter implements SingleObse
     public void onSuccess(SiraResponse value) {
         if (null != value && value instanceof SiraSimpleResponse) {
             SiraSimpleResponse simpleResponse = (SiraSimpleResponse) value;
-
             if (simpleResponse.getAnswer() != null && FollowRequest.SERVICE_NAME.equals(simpleResponse.getRequest())) {
                 if ("0".equals(simpleResponse.getAnswer().getStatus())) {
                     view.displayFollow();
@@ -161,12 +161,20 @@ public class AnomalyDetailsPresenter extends BasePresenter implements SingleObse
                     view.displayResolveKo();
                 }
             }
+
+            if (simpleResponse.getAnswer() != null && SavePrecisionsTerrainRequest.SERVICE_NAME.equals(simpleResponse.getRequest())) {
+                if ("0".equals(simpleResponse.getAnswer().getStatus())) {
+                    view.displaySavePrecisionsTerrainSuccess();
+                } else {
+                    networkError();
+                }
+            }
         } else if (value instanceof GetIncidentByIdResponse) {
             final GetIncidentByIdResponse incidentByIdResponse = (GetIncidentByIdResponse) value;
             if ("0".equals(incidentByIdResponse.getAnswer().getStatus())) {
 
                 Incident incident = incidentByIdResponse.getAnswer().getIncident();
-                incident.setResolvable(incidentByIdResponse.getAnswer().isResolved_authorization() && ! Incident.STATE_NOT_RESOLVABLE.equals(incident.getState()) );
+                incident.setResolvable(incidentByIdResponse.getAnswer().isResolved_authorization() && !Incident.STATE_NOT_RESOLVABLE.equals(incident.getState()));
 
                 final String idParentCategory;
                 if (incident.isFromRamen()) {
@@ -175,12 +183,14 @@ public class AnomalyDetailsPresenter extends BasePresenter implements SingleObse
                     idParentCategory = CategoryHelper.getFirstParent(incident.getCategoryId(), CategoryHelper.getAllCategories(application));
 
                 }
-
-                incident.getPictures().setGenericPictureId(CategoryHelper.MAP_GENERIC_PICTURES.get(idParentCategory));
+                Integer genericPictureID = CategoryHelper.MAP_GENERIC_PICTURES.get(idParentCategory);
+                if (genericPictureID != null) {
+                    incident.getPictures().setGenericPictureId(genericPictureID);
+                }
 
                 view.populateFields(incident);
 
-                if(prefManager.getIsAgent()) {
+                if (prefManager.getIsAgent()) {
                     view.populateMessageServiceFaitGeneric(incidentByIdResponse.getAnswer().getMessagesGeneric());
                     view.populateMessageServiceFaitType(incidentByIdResponse.getAnswer().getMessagesTypologie());
                 }
@@ -212,10 +222,8 @@ public class AnomalyDetailsPresenter extends BasePresenter implements SingleObse
     /**
      * Call WS to load Incident data.
      *
-     * @param incidentId
-     *         id incident to load
-     * @param source
-     *         client WS source
+     * @param incidentId id incident to load
+     * @param source     client WS source
      */
     public void loadIncident(@NonNull final Long incidentId, final String source) {
         GetIncidentByIdRequest request = new GetIncidentByIdRequest(incidentId);
@@ -233,8 +241,8 @@ public class AnomalyDetailsPresenter extends BasePresenter implements SingleObse
 
     /**
      * Call WS change status to process requalification incident.
-     * @param incident
-     *         incident to requalifing
+     *
+     * @param incident incident to requalifing
      */
     public void doRequalification(Incident incident) {
         final ChangeStatusRequest request = new ChangeStatusRequest();
@@ -244,7 +252,7 @@ public class AnomalyDetailsPresenter extends BasePresenter implements SingleObse
         request.setStatus(Constants.CHANGE_STATUS_REQUALIFIER);
         request.setIdTypeAnomalie(Integer.parseInt(requalificationTypeId));
 
-        if(prefManager.getEmail() != null) {
+        if (prefManager.getEmail() != null) {
             request.setEmail(prefManager.getEmail());
         }
 
@@ -256,12 +264,20 @@ public class AnomalyDetailsPresenter extends BasePresenter implements SingleObse
                 .subscribe(this);
     }
 
+    public void doSavePrecisionsTerrain(long signalementId) {
+        final SavePrecisionsTerrainRequest request = new SavePrecisionsTerrainRequest();
+        request.setIdSignalement(signalementId);
+        request.setPrecisionsTerrain(precisionTerrain);
+
+        service.savePrecisionsTerrain(request).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this);
+    }
+
     /**
-     *
-     * @param reporterGuid
-     *      incident guid creator.
+     * @param reporterGuid incident guid creator.
      * @return true if connected user can resolve (Service done)
-     *         on incident
+     * on incident
      */
     public boolean isResolvable(@NonNull final String reporterGuid) {
         return (reporterGuid != null && reporterGuid.equals(prefManager.getGuid())) || (prefManager.isConnected() && (prefManager.getEmail().endsWith("@paris.fr") || prefManager.getEmail().endsWith("@derichebourg.com")));
@@ -269,10 +285,9 @@ public class AnomalyDetailsPresenter extends BasePresenter implements SingleObse
 
     /**
      * Calls WS to resolve incident
-     * @param incidentId
-     *         id incident to resolve.
-     * @param message
-     *        selected message for service done
+     *
+     * @param incidentId id incident to resolve.
+     * @param message    selected message for service done
      */
     public void resolveIncident(final String incidentId, final MessageServiceFait message) {
         final IncidentResolvedRequest request = new IncidentResolvedRequest();
@@ -280,11 +295,11 @@ public class AnomalyDetailsPresenter extends BasePresenter implements SingleObse
         request.setGuid(prefManager.getGuid());
         request.setUdid(prefManager.getUdid());
 
-        if(prefManager.getEmail() != null) {
+        if (prefManager.getEmail() != null) {
             request.setEmail(prefManager.getEmail());
         }
 
-        if(message != null) {
+        if (message != null) {
             request.setNumeroMessage(message.getNumero());
             request.setGeneric(message.isGeneric());
         } else {
@@ -330,9 +345,9 @@ public class AnomalyDetailsPresenter extends BasePresenter implements SingleObse
             thumbnail.recycle();
             fos.close();
             if (isRequalificationPicture) {
-                view.showPictureRequalification(application.getFileStreamPath(fileName).getAbsolutePath());
+                view.updatePictureRequalification(application.getFileStreamPath(fileName).getAbsolutePath());
             } else {
-                view.showPicture(application.getFileStreamPath(fileName).getAbsolutePath());
+                view.updatePicture(application.getFileStreamPath(fileName).getAbsolutePath());
             }
 
         } catch (IOException e) {
@@ -342,12 +357,11 @@ public class AnomalyDetailsPresenter extends BasePresenter implements SingleObse
     }
 
 
-    public void uploadPicture(String id,final boolean isRequalificationPicture, final String typePhoto) {
+    public void uploadPicture(String id, final boolean isRequalificationPicture, final String typePhoto) {
         this.isRequalificationPicture = isRequalificationPicture;
         if (isRequalificationPicture) {
-            uploadPictureRequest(Integer.parseInt(id), pictureRequalification,typePhoto);
-        }
-        else {
+            uploadPictureRequest(Integer.parseInt(id), pictureRequalification, typePhoto);
+        } else {
             if (picture1 != null) {
                 uploadPictureRequest(Integer.parseInt(id), picture1, typePhoto);
             } else {
@@ -358,21 +372,19 @@ public class AnomalyDetailsPresenter extends BasePresenter implements SingleObse
 
     /**
      * Upload incident photo
-     * @param incidentId
-     *          id incident
-     * @param pictureUrl
-     *         picture location on device
-     * @param type
-     *       picture type close view or far
+     *
+     * @param incidentId id incident
+     * @param pictureUrl picture location on device
+     * @param type       picture type close view or far
      */
     private void uploadPictureRequest(@NonNull final Integer incidentId, @NonNull final String pictureUrl, final String type) {
         final File picture = new File(pictureUrl);
         final RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpeg"), picture);
         final Map<String, String> headers = new HashMap<>();
         headers.put("udid", prefManager.getUdid());
-        headers.put("incident_id", incidentId.toString());
+        headers.put("incident-id", incidentId.toString());
         headers.put("type", type);
-        headers.put("INCIDENT_CREATION", Boolean.TRUE.toString());
+        headers.put("INCIDENT-CREATION", Boolean.TRUE.toString());
         service.uploadPicture(headers, requestFile)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).
@@ -383,10 +395,20 @@ public class AnomalyDetailsPresenter extends BasePresenter implements SingleObse
         requalificationTypeId = categoryId;
     }
 
-    public String getRequalificationComment() { return requalificationComment; }
+    public String getRequalificationComment() {
+        return requalificationComment;
+    }
 
-    public void setRequalificationComment( final String requalificationComment) {
+    public void setRequalificationComment(final String requalificationComment) {
         this.requalificationComment = requalificationComment;
+    }
+
+    public String getPrecisionTerrain() {
+        return precisionTerrain;
+    }
+
+    public void setPrecisionTerrain(String precisionTerrain) {
+        this.precisionTerrain = precisionTerrain;
     }
 
     private class UploadPictureDoneObserver implements SingleObserver<ResponseBody> {
@@ -398,14 +420,13 @@ public class AnomalyDetailsPresenter extends BasePresenter implements SingleObse
         @Override
         public void onSuccess(ResponseBody value) {
             if (null != value) {
-                if(isRequalificationPicture) {
+                if (isRequalificationPicture) {
                     if (pictureRequalification != null) {
                         Log.i(TAG, "onSuccess: photo requalification");
                         new File(pictureRequalification).delete();
                         view.uploadRequalificationDone();
                     }
-                }
-                else {
+                } else {
                     if (picture1 != null) {
                         Log.i(TAG, "onSuccess: photo done");
                         new File(picture1).delete();

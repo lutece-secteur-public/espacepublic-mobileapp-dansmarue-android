@@ -587,11 +587,8 @@ public class AnomalyEquipementDetailsActivity extends BaseActivity implements An
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 80, bytes);
         File resizedFile = new File(mCurrentPhotoPath);
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(resizedFile);
+        try (FileOutputStream fos = new FileOutputStream(resizedFile)){
             fos.write(bytes.toByteArray());
-            fos.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
