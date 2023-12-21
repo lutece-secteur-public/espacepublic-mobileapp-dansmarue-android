@@ -43,6 +43,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="10dp"
+                android:accessibilityHeading="true"
+                android:contentDescription="@string/desc_text_mandatory"
                 android:text="@string/text_mandatory"
                 android:textColor="@color/grey_tranparent"
                 android:textSize="18sp" />
@@ -71,7 +73,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@color/white"
-                    android:contentDescription="@string/desc_add_incident"
+                    android:contentDescription="@string/modify_address"
                     app:srcCompat="@drawable/ic_pen" />
 
             </LinearLayout>
@@ -86,6 +88,8 @@
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:background="@color/white"
                 android:clickable="true"
+                android:contentDescription="@string/selection_type_anomaly"
+                android:importantForAccessibility="yes"
                 android:orientation="horizontal"
                 android:padding="@dimen/activity_horizontal_margin">
 
@@ -95,20 +99,22 @@
                     android:layout_height="24dp"
                     android:background="@color/white"
                     android:contentDescription="@string/text_type"
+                    android:importantForAccessibility="no"
                     app:srcCompat="@drawable/ic_check_circle_grey_24px" />
 
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:importantForAccessibility="noHideDescendants">
 
                     <TextView
                         android:id="@+id/text_choose_type"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/activity_horizontal_margin"
-                        android:text="@string/text_type"
+                        android:text="@string/text_type_agent"
                         android:textColor="@android:color/primary_text_light" />
 
                     <TextView
@@ -154,6 +160,7 @@
                         android:layout_marginBottom="28dp"
                         android:background="@color/white"
                         android:contentDescription="@string/text_photo"
+                        android:importantForAccessibility="no"
                         app:srcCompat="@drawable/ic_check_circle_grey_24px" />
 
                     <LinearLayout
@@ -165,6 +172,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/activity_horizontal_margin"
+                            android:importantForAccessibility="no"
                             android:text="@string/text_photo"
                             android:textColor="@android:color/primary_text_light" />
 
@@ -173,6 +181,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/activity_horizontal_margin"
                             android:layout_marginTop="3dp"
+                            android:importantForAccessibility="no"
                             android:text="@string/text_add"
                             android:textColor="@color/grey_tranparent"
                             android:textSize="12sp" />
@@ -185,6 +194,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:contentDescription="Rubrique Photos"
+                    android:importantForAccessibility="yes"
                     android:orientation="horizontal"
                     android:weightSum="1">
 
@@ -269,6 +280,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@color/grey_background"
+                        android:importantForAccessibility="no"
                         android:padding="4dp">
 
                         <ImageButton
@@ -300,6 +312,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="10dp"
+                android:accessibilityHeading="true"
+                android:contentDescription="@string/desc_text_optionnels"
                 android:text="@string/text_optionnels"
                 android:textColor="@color/grey_tranparent"
                 android:textSize="18sp" />
@@ -322,6 +336,7 @@
                     android:layout_height="24dp"
                     android:background="@color/white"
                     android:contentDescription="@string/description"
+                    android:importantForAccessibility="no"
                     app:srcCompat="@drawable/ic_check_circle_grey_24px" />
 
                 <LinearLayout
@@ -369,6 +384,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:background="@color/white"
+                    android:importantForAccessibility="no"
                     android:contentDescription="@string/description"
                     app:srcCompat="@drawable/ic_check_circle_grey_24px" />
 
@@ -417,6 +433,7 @@
                     android:layout_height="24dp"
                     android:background="@color/white"
                     android:contentDescription="@string/priority"
+                    android:importantForAccessibility="no"
                     app:srcCompat="@drawable/ic_check_circle_pink_24px" />
 
                 <LinearLayout
@@ -424,12 +441,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:clickable="true"
+                    android:contentDescription="@string/select_type_priority"
+                    android:importantForAccessibility="yes"
                     android:orientation="vertical">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/activity_horizontal_margin"
+                        android:importantForAccessibility="no"
                         android:text="@string/priority"
                         android:textColor="@android:color/primary_text_light" />
 
@@ -444,6 +464,7 @@
                             android:layout_alignParentStart="true"
                             android:layout_marginStart="@dimen/activity_horizontal_margin"
                             android:layout_marginTop="3dp"
+                            android:importantForAccessibility="no"
                             android:text="@string/text_priority_low"
                             android:textColor="@color/pink"
                             android:textSize="12sp" />
@@ -455,6 +476,7 @@
                             android:layout_marginStart="2dp"
                             android:layout_marginTop="3dp"
                             android:layout_toEndOf="@id/text_priority_subtitle"
+                            android:importantForAccessibility="no"
                             android:text="@string/valeur_defaut"
                             android:textColor="@color/grey_tranparent"
                             android:textSize="12sp" />
@@ -480,6 +502,7 @@
                 android:id="@+id/imageButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:importantForAccessibility="no"
                 app:srcCompat="@drawable/ic_group_collapse_06" />
 
 

@@ -20,11 +20,17 @@ public interface MapParisView extends BaseView {
 
     void locationChanged(LatLng location);
 
-    void invalidLocation();
+    void invalidLocation(LatLng location);
 
     void updatePosMarker();
 
     void callBackFindByNumber(String errorMessage, boolean dmrOffline, LatLng posIncident);
 
+    void callBackSearchFDTById(String errorMessage, List<Incident> incidentsFDT, String infosAvantTournee, String infosApresTournee);
+
     String getFindByNumberValue();
+
+    int getSearchIdFdt();
+    List<Incident> getIncidentsFDT();
+
 }

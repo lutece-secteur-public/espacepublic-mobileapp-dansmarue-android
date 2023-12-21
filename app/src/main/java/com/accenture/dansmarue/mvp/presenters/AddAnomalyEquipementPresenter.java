@@ -173,8 +173,10 @@ public class AddAnomalyEquipementPresenter extends BasePresenter<AddAnomalyEquip
     }
 
     public boolean isIncidentValid() {
-        boolean isValid = getRequest().getPosition().getLatitude() != 0d;
-        isValid = isValid && getRequest().getPosition().getLongitude() != 0d;
+        final float EPSILON = 0.0000001f;
+
+        boolean isValid = Math.abs(getRequest().getPosition().getLatitude() - 0d) > Constants.EPSILON;;
+        isValid = isValid && Math.abs(getRequest().getPosition().getLongitude() - 0d) > Constants.EPSILON;;
         isValid = isValid && getRequest().getIncident().getAddress() != null;
         isValid = isValid && getRequest().getIncident().getCategoryId() != null;
         isValid = isValid && getRequest().getIncident().getFirstAvailablePicture() != null;
@@ -311,7 +313,8 @@ public class AddAnomalyEquipementPresenter extends BasePresenter<AddAnomalyEquip
     public void setEquipementTypeByDefaultWithEquipementId(String idEquipement) {
         ArrayList<TypeEquipement> typeEquipementsList = new ArrayList<TypeEquipement>();
         typeEquipementsList = (ArrayList) prefManager.getTypesEquipement();
-        for (int i = 0; i < typeEquipementsList.size(); i++) {
+        int equipementListLength = typeEquipementsList.size();
+        for (int i = 0; i < equipementListLength; i++) {
             for (Equipement e : typeEquipementsList.get(i).getListEquipementByType()) {
                 if (e.getId().equals(idEquipement)) {
                     prefManager.setEquipementTypeByDefault(typeEquipementsList.get(i));
@@ -377,9 +380,9 @@ public class AddAnomalyEquipementPresenter extends BasePresenter<AddAnomalyEquip
             FileOutputStream fos = application.getApplicationContext().openFileOutput(prefix + Constants.FILE_DRAFT_SUFFIXE, Context.MODE_PRIVATE);
             final String jsonIncident = getRequest().getIncident().toJson();
 
-            Writer out = new OutputStreamWriter(fos);
-            out.write(jsonIncident);
-            out.close();
+            try(Writer out = new OutputStreamWriter(fos)){
+                out.write(jsonIncident);
+            }
         } catch (IOException e) {
             FirebaseCrashlytics.getInstance().log(e.getMessage());
             Log.e(TAG, e.getMessage(), e);

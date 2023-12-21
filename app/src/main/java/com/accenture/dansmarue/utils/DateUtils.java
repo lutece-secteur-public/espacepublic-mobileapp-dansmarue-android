@@ -16,6 +16,9 @@ public class DateUtils {
     public static SimpleDateFormat DATE_FORMAT_RAMEN_DATE = new SimpleDateFormat("dd/MM/yyyy");
     public static SimpleDateFormat DATE_FORMAT_SIRA_TIME = new SimpleDateFormat("HH:mm");
 
+    private DateUtils() {
+        // Avoid instantiation of the class
+    }
 
     public static Date parse(final String date, SimpleDateFormat format) {
         if (date == null) {

@@ -2,6 +2,8 @@ package com.accenture.dansmarue.di.modules;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Base64;
+import android.util.Log;
 
 import com.accenture.dansmarue.BuildConfig;
 import com.accenture.dansmarue.services.ApiServiceEquipement;
@@ -11,10 +13,22 @@ import com.accenture.dansmarue.services.SiraApiServiceMock;
 import com.accenture.dansmarue.services.SiraHttpResponseInterceptor;
 import com.accenture.dansmarue.utils.PrefManager;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.KeyFactory;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.concurrent.TimeUnit;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.net.ssl.SSLContext;
@@ -24,7 +38,10 @@ import javax.net.ssl.X509TrustManager;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -37,12 +54,16 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Module
 public class ApplicationModule {
 
+    private static final String TAG = ApplicationModule.class.getName();
+
     private String siraUrl;
     private String siraUrlMock;
     private String urlEquipement;
     private String authentUrl;
     private Application application;
     private Context context;
+
+    private String graviteeKey ="";
 
     public ApplicationModule(final Application application) {
         this.application = application;
@@ -52,6 +73,15 @@ public class ApplicationModule {
         this.siraUrlMock = BuildConfig.SIRA_API_URL_MOCK;
         this.urlEquipement = BuildConfig.API_URL_EQUIPEMENT;
 
+        decryptTokenGravitee();
+    }
+
+    /**
+     * Decrypt Gravitee token
+     * 
+     */
+    private void decryptTokenGravitee() {
+        
     }
 
     @Provides
@@ -145,13 +175,18 @@ public class ApplicationModule {
     OkHttpClient provideSiraOkHttpClient(final X509TrustManager trustManager, final SSLSocketFactory sSLSocketFactory) {
         return new OkHttpClient.Builder()
                 .connectTimeout(240, TimeUnit.SECONDS)
-                .readTimeout(240, TimeUnit.SECONDS)
+                .readTimeout(240, TimeUnit.SECONDS).addInterceptor(new Interceptor() {
+                    @Override
+                    public Response intercept(Chain chain) throws IOException {
+                        Request request = chain.request().newBuilder().addHeader(BuildConfig.GRAVITEE_API_KEY, graviteeKey).build();
+                        return chain.proceed(request);
+                    }
+                })
                 .addInterceptor(new HttpLoggingInterceptor()
                         .setLevel(HttpLoggingInterceptor.Level.BODY))
                 .addInterceptor(new SiraHttpResponseInterceptor())
                 .hostnameVerifier(org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER)
-                .sslSocketFactory(sSLSocketFactory, trustManager)
-                .build();
+                .sslSocketFactory(sSLSocketFactory, trustManager).build();
     }
 
     // timeout 120

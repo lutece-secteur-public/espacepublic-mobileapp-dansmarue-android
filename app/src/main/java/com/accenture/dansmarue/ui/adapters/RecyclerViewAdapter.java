@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.accenture.dansmarue.R;
 import com.accenture.dansmarue.mvp.models.Incident;
 import com.accenture.dansmarue.utils.MiscTools;
+import com.accenture.dansmarue.utils.PrefManager;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
@@ -20,13 +21,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private int recyclerItemRes;
     private List<Incident> data;
     private Context context;
+    private PrefManager prefManager;
 
 
     public RecyclerViewAdapter(Context context, int recyclerItemRes, List<Incident> data) {
         this.recyclerItemRes = recyclerItemRes;
         this.context = context;
         this.data = data;
-
+        prefManager = new PrefManager(context);
     }
 
     @Override
@@ -71,6 +73,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
         holder.subtitle.setText(incident.getAddress());
         holder.number.setText(incident.getReference());
+
+        if(prefManager.getIsAgent()) {
+            holder.stateName.setVisibility(View.VISIBLE);
+            holder.stateName.setText(incident.getStateName());
+        }
+
     }
 
     public Incident getData(int position) {
@@ -98,6 +106,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         private TextView subtitle;
         private ImageView icon;
         private TextView number;
+        private TextView stateName;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -105,6 +114,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             subtitle = (TextView) itemView.findViewById(R.id.subtitle);
             icon = (ImageView) itemView.findViewById(R.id.icon);
             number = (TextView) itemView.findViewById(R.id.number);
+            stateName = (TextView) itemView.findViewById(R.id.state_name);
         }
     }
 

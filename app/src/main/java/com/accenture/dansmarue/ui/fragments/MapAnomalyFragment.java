@@ -1,15 +1,16 @@
 package com.accenture.dansmarue.ui.fragments;
 
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.accenture.dansmarue.R;
+import com.accenture.dansmarue.utils.DrawableExtensionsKt;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -26,10 +27,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MapAnomalyFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private GoogleApiClient mGoogleApiClient;
-
-
     private LatLng currentPos;
-
 
     public MapAnomalyFragment() {
         // Required empty public constructor
@@ -46,39 +44,35 @@ public class MapAnomalyFragment extends Fragment implements OnMapReadyCallback, 
         return fragment;
     }
 
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
         if (isAdded()) {
-
             googleMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-
 //        Central Paris > Notre Dame: 48.853152, 2.349891
             LatLng centralParis = new LatLng(48.853152, 2.349891);
-
 //        By Default, we center the map on Notre Dame
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(centralParis, 12));
-
             if (currentPos != null) {
                 CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(currentPos.latitude, currentPos.longitude));
                 googleMap.moveCamera(center);
                 googleMap.animateCamera(CameraUpdateFactory.zoomTo(18));
-                googleMap.addMarker(new MarkerOptions()
-                        .position(currentPos)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_dmr_pin))
+                googleMap.addMarker(new MarkerOptions().position(currentPos).icon(
+                                BitmapDescriptorFactory.fromBitmap(
+                                        DrawableExtensionsKt.toBitmap(
+                                                R.drawable.dmr_pin_map_v2,
+                                                requireActivity(),
+                                                null)
+                                )
+                        )
                 );
             }
-
         }
-
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         // Do other setup activities here too, as described elsewhere in this tutorial.
 
         // Build the Play services client for use by the Fused Location Provider and the Places API.

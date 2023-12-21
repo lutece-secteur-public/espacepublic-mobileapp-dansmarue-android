@@ -25,6 +25,10 @@ import static android.content.ContentValues.TAG;
 
 public class MiscTools {
 
+    private MiscTools() {
+        // Avoid instantiation of the class
+    }
+
     /**
      * FIXME
      *
@@ -171,19 +175,21 @@ public class MiscTools {
         String[] vals1 = str1.split("\\.");
         String[] vals2 = str2.split("\\.");
         int i = 0;
+        int vals1Length = vals1.length;
+        int vals2Length =  vals2.length;
         // set index to first non-equal ordinal or length of shortest version string
-        while (i < vals1.length && i < vals2.length && vals1[i].equals(vals2[i])) {
+        while (i < vals1Length && i < vals2Length && vals1[i].equals(vals2[i])) {
             i++;
         }
         // compare first non-equal ordinal number
-        if (i < vals1.length && i < vals2.length) {
+        if (i < vals1Length && i < vals2Length) {
             int diff = Integer.valueOf(vals1[i]).compareTo(Integer.valueOf(vals2[i]));
             return Integer.signum(diff);
         }
         // the strings are equal or one string is a substring of the other
         // e.g. "1.2.3" = "1.2.3" or "1.2.3" < "1.2.3.4"
         else {
-            return Integer.signum(vals1.length - vals2.length);
+            return Integer.signum(vals1Length - vals2Length);
         }
     }
 

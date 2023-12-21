@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical|center_horizontal"
+    android:layout_margin="10dp"
+    android:background="@drawable/round_corner">
+
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/btnCloseFailure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            app:srcCompat="@drawable/ic_close_grey_24px" />
+
+        <TextView
+            android:id="@+id/dialog_message_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:textSize="22sp"
+            android:text="@string/label_infos_apres_fdt"
+            android:textAlignment="center"
+            android:layout_gravity="center"
+            android:textColor="@color/black" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:gravity="bottom"
+            app:counterEnabled="true"
+            app:counterMaxLength="255"
+            app:hintEnabled="false">
+
+            <com.accenture.dansmarue.ui.views.AccessibleTextInputEditText
+                android:id="@+id/input_txt_infos_apres_fdt"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:textSize="14sp"
+                android:layout_gravity="bottom"
+                android:backgroundTintMode="screen"
+                android:background="@drawable/border"
+                android:hint="@string/text_infos_apres_fdt_hint"
+                android:inputType="textCapSentences|textMultiLine"
+                android:maxLength="255"
+                android:textColorHint="@color/grey_tranparent" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/dialog_aide_txt_infos_apres_fdt"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:textSize="11sp"
+            android:text="@string/text_infos_apres_fdt_help"
+            android:layout_gravity="center"
+            android:textColor="@color/black" />
+
+
+        <Button
+            android:id="@+id/button_valider_infos_apres_fdt"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="@dimen/activity_horizontal_margin"
+            android:background="@color/pink"
+            android:clickable="false"
+            android:text="@string/validate_description"
+            android:textAllCaps="false"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+
+</ScrollView>

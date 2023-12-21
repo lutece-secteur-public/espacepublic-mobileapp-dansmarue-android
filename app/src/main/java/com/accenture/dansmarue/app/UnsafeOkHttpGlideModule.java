@@ -1,7 +1,9 @@
 package com.accenture.dansmarue.app;
 
 import android.content.Context;
+import android.util.Log;
 
+import com.accenture.dansmarue.mvp.presenters.AddAnomalyEquipementPresenter;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.GlideBuilder;
 import com.bumptech.glide.Priority;
@@ -28,6 +30,7 @@ import okhttp3.ResponseBody;
 
 public class UnsafeOkHttpGlideModule implements GlideModule {
 
+    private static final String TAG = UnsafeOkHttpGlideModule.class.getName();
 
     @Override
     public void applyOptions(Context context, GlideBuilder builder) {
@@ -96,6 +99,7 @@ public class UnsafeOkHttpGlideModule implements GlideModule {
         }
 
         public class OkHttpStreamFetcher implements DataFetcher<InputStream> {
+
             private final OkHttpClient client;
             private final GlideUrl url;
             private InputStream stream;
@@ -135,7 +139,7 @@ public class UnsafeOkHttpGlideModule implements GlideModule {
                     try {
                         stream.close();
                     } catch (IOException e) {
-                        // Ignored
+                        Log.i(TAG, "Fail stream close");
                     }
                 }
                 if (responseBody != null) {

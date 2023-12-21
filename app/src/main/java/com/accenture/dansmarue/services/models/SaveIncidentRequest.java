@@ -1,5 +1,7 @@
 package com.accenture.dansmarue.services.models;
 
+import android.os.Parcelable;
+
 import com.accenture.dansmarue.mvp.models.Incident;
 import com.accenture.dansmarue.mvp.models.Position;
 import com.google.gson.GsonBuilder;

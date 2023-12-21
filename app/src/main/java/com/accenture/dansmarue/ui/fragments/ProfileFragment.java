@@ -4,9 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -14,7 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.view.accessibility.AccessibilityEvent;
 import android.widget.TextView;
 
 import com.accenture.dansmarue.R;
@@ -31,7 +29,6 @@ import com.accenture.dansmarue.ui.activities.AnomalyEquipementDetailsActivity;
 import com.accenture.dansmarue.ui.activities.PrefActivity;
 import com.accenture.dansmarue.ui.adapters.ProfileSection;
 import com.accenture.dansmarue.utils.Constants;
-import com.accenture.dansmarue.utils.RecyclerItemClickListener;
 import com.google.gson.GsonBuilder;
 
 import java.util.List;
@@ -304,6 +301,11 @@ public class ProfileFragment extends BaseFragment implements ProfileView {
         menuDraft.setTextColor(getResources().getColor(R.color.pink));
         menuUnresolved.setTextColor(getResources().getColor(R.color.grey_tranparent));
         menuResolved.setTextColor(getResources().getColor(R.color.grey_tranparent));
+
+        menuDraft.setContentDescription(getResources().getString(R.string.section_drafts_active_txt));
+        menuDraft.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_FOCUSED);
+        menuResolved.setContentDescription("");
+        menuUnresolved.setContentDescription("");
     }
 
     @Override
@@ -328,6 +330,20 @@ public class ProfileFragment extends BaseFragment implements ProfileView {
         menuDraft.setTextColor(getResources().getColor(R.color.grey_tranparent));
         menuUnresolved.setTextColor(getResources().getColor(R.color.grey_tranparent));
         menuResolved.setTextColor(getResources().getColor(R.color.pink));
+    }
+    @Override
+    public void descriptionCurrentItem(final String filterState) {
+        if(Incident.STATE_OPEN.equals(filterState)) {
+            menuUnresolved.setContentDescription(getResources().getString(R.string.section_unresolved_active_txt));
+            menuUnresolved.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_FOCUSED);
+            menuResolved.setContentDescription("");
+            menuDraft.setContentDescription("");
+        } else if (Incident.STATE_RESOLVED.equals(filterState)) {
+            menuResolved.setContentDescription(getResources().getString(R.string.section_resolved_active_txt));
+            menuResolved.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_FOCUSED);
+            menuUnresolved.setContentDescription("");
+            menuDraft.setContentDescription("");
+        }
     }
 
     @OnClick({R.id.menu_anos_drafts, R.id.menu_anos_unresolved, R.id.menu_anos_resolved})

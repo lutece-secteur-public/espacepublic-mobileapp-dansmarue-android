@@ -8,6 +8,7 @@ import com.accenture.dansmarue.mvp.views.WelcomeMapView;
 import com.accenture.dansmarue.services.SiraApiService;
 import com.accenture.dansmarue.services.models.CongratulateAnomalieRequest;
 import com.accenture.dansmarue.services.models.FollowRequest;
+import com.accenture.dansmarue.services.models.SaveInfosApresTourneeRequest;
 import com.accenture.dansmarue.services.models.SiraSimpleResponse;
 import com.accenture.dansmarue.services.models.UnfollowRequest;
 import com.accenture.dansmarue.utils.Constants;
@@ -111,6 +112,16 @@ public class WelcomeMapPresenter extends BasePresenter<WelcomeMapView> implement
 
     }
 
+    public void saveInfoApresTournee(final int idFdt, final String messageInfoApresFdt) {
+        SaveInfosApresTourneeRequest request = new SaveInfosApresTourneeRequest();
+        request.setIdFDT(idFdt);
+        request.setInfosApresTournee(messageInfoApresFdt);
+        service.saveInfoApresTournee(request)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this);
+    }
+
     @Override
     public void onSuccess(SiraSimpleResponse value) {
         if (value.getAnswer() != null && value.getAnswer().getStatus().equals(Constants.STATUT_WS_OK) && FollowRequest.SERVICE_NAME.equals(value.getRequest())) {
@@ -134,6 +145,12 @@ public class WelcomeMapPresenter extends BasePresenter<WelcomeMapView> implement
                 view.displayGreetingsOk();
             } else {
                 view.displayGreetingsKo();
+            }
+        }
+
+        if (value.getAnswer() != null && SaveInfosApresTourneeRequest.SERVICE_NAME.equals(value.getRequest())) {
+            if ("0".equals(value.getAnswer().getStatus())) {
+                view.displaySaveInfosApresTournee();
             }
         }
 

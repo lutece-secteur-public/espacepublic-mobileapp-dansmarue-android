@@ -51,6 +51,8 @@ public class InternalWebViewActivity extends BaseActivity{
         imageArrowBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                webView.clearHistory();
+                webView.clearCache(true);
                 onBackPressed();
             }
         });
@@ -82,9 +84,9 @@ public class InternalWebViewActivity extends BaseActivity{
                     PrefManager prefManager = new PrefManager(getApplicationContext());
 
                     //injection du Login et Mot de passe
-                    String js = "javascript:document.getElementById('username').value='"+prefManager.getMonParisLogin()+"';"
-                            +"document.getElementById('password').value='"+prefManager.getMonParisPwd()+"';"
-                            + "document.getElementsByName('Submit')[0].click()";
+                    String js = "javascript:document.getElementById('username').value='"+prefManager.getEmail()+"';";
+                           // +"document.getElementById('password').value='"+prefManager.getMonParisPwd()+"';"
+                           // + "document.getElementsByName('Submit')[0].click()";
 
                     view.evaluateJavascript(js, new ValueCallback<String>() {
                         @Override

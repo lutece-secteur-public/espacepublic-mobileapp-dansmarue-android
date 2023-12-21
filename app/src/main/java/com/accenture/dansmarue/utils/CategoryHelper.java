@@ -280,8 +280,10 @@ public final class CategoryHelper {
     public static String getCompleteCategoryHierarchy(Category category) {
         StringBuilder sbRes = new StringBuilder(category.getName());
         Category currentCategory = category;
-        while ( Integer.parseInt(currentCategory.getParentId()) > 0) {
+        int currentCategoryParentId = Integer.parseInt(currentCategory.getParentId());
+        while ( currentCategoryParentId > 0) {
             currentCategory = ALL_CATEGORIES.get(currentCategory.getParentId());
+            currentCategoryParentId = Integer.parseInt(currentCategory.getParentId());
             sbRes.insert(0,currentCategory.getName() + ">");
         }
         return sbRes.toString();

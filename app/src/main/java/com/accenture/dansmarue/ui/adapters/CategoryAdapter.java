@@ -1,18 +1,20 @@
 package com.accenture.dansmarue.ui.adapters;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Context;
 import android.graphics.Typeface;
-
-import androidx.annotation.LayoutRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.util.Log;
+
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.accenture.dansmarue.R;
 import com.accenture.dansmarue.mvp.models.Category;
@@ -21,20 +23,18 @@ import com.accenture.dansmarue.utils.PrefManager;
 
 import java.util.List;
 
-import static android.content.ContentValues.TAG;
-
 /**
  * Created by PK on 30/03/2017.
  */
 public class CategoryAdapter extends ArrayAdapter<Category> {
 
     private PrefManager prefManager;
-    private  boolean displayFavoriteItems = false;
+    private boolean displayFavoriteItems = false;
 
 
     public CategoryAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<Category> objects) {
         super(context, resource, objects);
-        prefManager =  new PrefManager(this.getContext());
+        prefManager = new PrefManager(this.getContext());
     }
 
     @NonNull
@@ -76,10 +76,12 @@ public class CategoryAdapter extends ArrayAdapter<Category> {
 
             if (!CategoryHelper.hasChildren(category.getId()) && !displayFavoriteItems) {
                 //Last level Item
-                if(prefManager.getFavorisItems().containsKey(category.getId())) {
+                if (prefManager.getFavorisItems().containsKey(category.getId())) {
                     iconFavoris.setImageResource(R.drawable.ic_full_star);
+                    iconFavoris.setContentDescription(getContext().getString(R.string.remove_favorite_type));
                 } else {
                     iconFavoris.setImageResource(R.drawable.ic_empty_star);
+                    iconFavoris.setContentDescription(getContext().getString(R.string.add_favorite_type));
                 }
 
                 iconFavoris.setVisibility(View.VISIBLE);
@@ -88,14 +90,18 @@ public class CategoryAdapter extends ArrayAdapter<Category> {
                             @Override
                             public void onClick(View v) {
                                 Log.i(TAG, "onClick: favoris");
-                                if(prefManager.getFavorisItems().containsKey(category.getId())) {
+                                if (prefManager.getFavorisItems().containsKey(category.getId())) {
                                     // remove fovoris
                                     iconFavoris.setImageResource(R.drawable.ic_empty_star);
-                                    prefManager.setFavorisItem(category,true);
+                                    v.announceForAccessibility("type supprimé");
+                                    iconFavoris.setContentDescription(getContext().getString(R.string.add_favorite_type));
+                                    prefManager.setFavorisItem(category, true);
                                 } else {
                                     // add favoris
                                     iconFavoris.setImageResource(R.drawable.ic_full_star);
-                                    prefManager.setFavorisItem(category,false);
+                                    v.announceForAccessibility("type ajouté");
+                                    iconFavoris.setContentDescription(getContext().getString(R.string.remove_favorite_type));
+                                    prefManager.setFavorisItem(category, false);
                                 }
 
                             }

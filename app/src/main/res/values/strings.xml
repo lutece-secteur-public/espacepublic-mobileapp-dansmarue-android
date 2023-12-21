@@ -1,14 +1,17 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <string name="slide1_title">BIENVENUE !</string>
+    <string name="slide1_title_accessibility">Titre: BIENVENUE !</string>
     <string name="slide1_subtitle">DansMaRue vous permet de participer à l\'amélioration de votre cadre de vie en échangeant des informations avec les services de la Ville de Paris.</string>
 
     <string name="slide2_title">ENVOYEZ LES BONNES INFORMATIONS !</string>
+    <string name="slide2_title_accessibility">Titre: ENVOYEZ LES BONNES INFORMATIONS !</string>
     <string name="slide2_subtitle_1"> Bien choisir le bon sujet (graffiti, objet abandonné, défaut sur la route, stationnement gênant…) dans la nomenclature</string>
     <string name="slide2_subtitle_2"> Bien préciser et vérifier l\'adresse exacte de l\'anomalie avec un numéro de rue</string>
     <string name="slide2_subtitle_3"> Joindre une ou plusieurs photos bien cadrées sur l\'anomalie</string>
     <string name="slide2_subtitle_4"> Rajouter une description complémentaire utile et courtoise</string>
 
     <string name="slide3_title">RESTEZ EN CONTACT !</string>
+    <string name="slide3_title_accessibility">Titre: RESTEZ EN CONTACT !</string>
     <string name="slide3_subtitle">	Connectez-vous avec Mon Paris (votre compte personnel parisien sur Paris.fr) pour suivre la prise en charge de votre contribution et accéder aux fonctionnalités complémentaires. Supprimez régulièrement vos anomalies clôturées pour ne pas saturer la mémoire de votre smartphone et ralentir l\'application</string>
 
     <string name="slider_button_txt">Commencer</string>
@@ -20,21 +23,33 @@
 
     <!-- Bottom Bar Wordin -->
     <string name="bottom_map_txt">Carte</string>
+    <string name="bottom_map_desc_txt">Page carte</string>
+    <string name="bottom_map_active_txt">Vous êtes sur la page carte</string>
     <string name="bottom_profile_txt">Mon espace</string>
+    <string name="bottom_profile_desc_txt">Page mon espace</string>
+    <string name="bottom_profile_active_txt">Vous êtes sur la page mon espace</string>
 
     <!-- Wording Google Search Bar -->
     <string name="google_searchbar_wording">Où est située l\'anomalie ?</string>
+    <string name="google_searchbar_wording_desc">Où est située l\'anomalie ? <font color='#ffffff'>Saisissez l\'adresse de l\'anomalie, champ à autocomplétion activable à partir de la saisie du premier caractère.</font></string>
 
     <!-- Add an anomaly -->
     <string name="anomaly_screen_title">Ajouter</string>
+    <string name="close">Fermer</string>
     <string name="description">Description</string>
-    <string name="commentagent">Commentaire agent terrain</string>
-    <string name="commentagent_agent">Commentaire agent terrain (facultatif)</string>
-    <string name="description_subtitle">Saisir plus de détails</string>
+    <string name="validate_description">Valider</string>
+    <string name="commentagent">Commentaire terrain</string>
+    <string name="commentagent_agent">Commentaire terrain (facultatif)</string>
+    <string name="description_subtitle">Saisir plus de détails en 250 caractères maximum</string>
+    <string name="precisions_terrain_subtitle">Saisir plus de détail</string>
+    <string name="description_details_subtitle">Description: saisir plus de détails</string>
     <string name="priority">Priorité</string>
+    <string name="select_type_priority">Sélectionner une priorité (gênant par défaut)</string>
     <string name="valeur_defaut">(valeur par défaut)</string>
     <string name="btn_publier">Publier</string>
     <string name="desc_add_incident">Ajouter un incident</string>
+    <string name="modify_address">Modifier l\'adresse</string>
+    <string name="selection_type_anomaly">Selectionner un type d\'anomalie (champs obligatoire)</string>
     <string name="text_type">Type</string>
     <string name="text_type_agent">Type (obligatoire)</string>
     <string name="subtitle_type">Sélectionner</string>
@@ -43,8 +58,13 @@
     <string name="desc_image1">Première image</string>
     <string name="desc_image2">Seconde image</string>
     <string name="text_optionnels">Précisions facultatives</string>
+    <string name="desc_text_optionnels">Section: Précisions facultatives</string>
     <string name="text_mandatory">Informations obligatoires</string>
-    <string name="desc_add_picture">Ajouter une photo</string>
+    <string name="desc_text_mandatory">Section: Informations obligatoires</string>
+    <string name="desc_add_picture">Ajouter une photo (obligatoire)</string>
+    <string name="desc_add_picture_requalification">Ajouter une photo (facultatif)</string>
+    <string name="search_anomaly">Rechercher une anomalie par numéro d\'identification</string>
+    <string name="my_position">Ma position</string>
     <string name="take_picture">Prendre une photo</string>
     <string name="choose_photo_in_gallery">Choisir dans la galerie</string>
     <string name="select_photo">Sélectionnez une photo</string>
@@ -52,9 +72,11 @@
     <string name="anomaly_position_be_more_specific">Préciser la position de l\'anomalie</string>
     <string name="anomaly_add_one">Ajouter une autre anomalie</string>
     <string name="text_around_incident">Autres anomalies autour de moi</string>
+    <string name="text_around_incident_accessibility">Titre: Autres anomalies autour de moi</string>
     <string name="text_around_equipement">Autres anomalies dans l\'équipement</string>
     <string name="text_my_position">Ma position</string>
     <string name="text_add">Ajouter</string>
+    <string name="text_add_picture">Ajouter</string>
     <string name="text_cancel">Annuler</string>
     <string name="text_priority_low">Gênant</string>
     <string name="text_priority_medium">Très Gênant</string>
@@ -65,6 +87,7 @@
     <string name="add_anomaly_no_location">Merci de préciser votre position</string>
     <string name="add_anomaly_offline_mode">Réseau indisponible, veuillez réessayer plus tard</string>
     <string name="btn_text_understand">J\'ai compris</string>
+    <string name="search_type_hint_description">Chercher un type</string>
 
     <!--Greetings -->
     <string name="greetings_thanks">Merci !</string>
@@ -97,8 +120,8 @@
     <string name="login_screen_button">Connexion</string>
 
 
-    <string name="url_signup_paris" translatable="false"></string>
-    <string name="url_forgot_pwd" translatable="false"></string>
+    <string name="url_signup_paris" translatable="false">https://moncompte.paris.fr/moncompte/jsp/site/Portal.jsp?page=myluteceusergu&amp;view=createAccount#auth</string>
+    <string name="url_forgot_pwd" translatable="false">https://moncompte.paris.fr/moncompte/jsp/site/Portal.jsp?page=myluteceusergu&amp;view=lostPasswordModal&amp;back_url=https%3A%2F%2Fmoncompte.paris.fr%2Fmoncompte%2Fjsp%2Fsite%2FPortal.jsp%3Fpage%3Dmydashboard%26panel%3Daccueil</string>
 
     <string name="invalid_email">Veuillez saisir un mail valide</string>
     <string name="required_email">Veuillez saisir votre mail</string>
@@ -114,8 +137,14 @@
     <string name="text_photo_service_fait">Photo service fait (facultatif)</string>
     <string name="text_title_requalification">Requalification</string>
     <string name="btn_requalification">Requalifier</string>
+    <string name="text_title_precterrain">Précisions terrain</string>
+    <string name="text_txt_precterrain_fac">Précisions terrain (facultatif)</string>
+    <string name="btn_enregistrer">Enregistrer</string>
+    <string name="error_save_precisions_terrain">Echec de l\'enregistrement de la précisions terrain</string>
+    <string name="success_save_precisions_terrain">Merci, votre \'précision terrain\' a été bien été enregistrée</string>
     <string name="text_title_service_fait">Service fait</string>
     <string name="text_choose_message_service_fait">Type de message envoyé (obligatoire)</string>
+    <string name="requalification_anomaly_failure">La requalification doit se faire vers un type d\'anomalie différent de celui associé actuellement à l\'anomalie.</string>
 
     <!--Anomalys menu-->
     <string name="anomaly_all">Tous</string>
@@ -136,12 +165,13 @@
 
     <!--Menu preferences > profil-->
     <string name="title_mon_espace">Mon espace</string>
+    <string name="title_carte">Carte</string>
     <string name="pref_profil_activity_title">Mon profil</string>
     <string name="pref_profil_lastname">Nom</string>
     <string name="pref_profil_firstname">Prénom</string>
     <string name="pref_profil_email">Mail de contact</string>
     <string name="pref_profil_btn_access_full_profile">Voir mon profil complet</string>
-    <string name="url_full_profile" translatable="false"></string>
+    <string name="url_full_profile" translatable="false">https://moncompte.paris.fr/moncompte/jsp/site/Portal.jsp?page=mydashboardIdentity&amp;view=viewIdentity</string>
     <string name="pref_mes_anomalies_activity_title">Mes anomalies</string>
     <string name="pref_img_responsable_quartier">Responsable de quartier</string>
 
@@ -167,6 +197,8 @@
     <string name="cgu_part_seven">Si une anomalie comporte une photo d\'une personne identifiable, celle-ci fera l\'objet d’une suppression. Dans ce cas, si la description de l\'anomalie n\'est pas assez précise, il se peut qu\'elle ne puisse pas être traitée. Les utilisateurs sont donc invités à centrer leur photo sur l\'anomalie constatée en évitant d\'y inclure des personnes.</string>
     <string name="cgu_part_height">Les informations ne sont pas traitées de manière instantanée. Les situations présentant un caractère dangereux et nécessitant la mise en œuvre de mesures de protection rapides doivent continuer à faire l\'objet d’une déclaration auprès des services d’urgence.</string>
 
+    <!--Menu pref / Politique confidentialité-->
+    <string name="pref_pcvp_activity_title">Politique de confidentialité et de vie privée - Ville de Paris</string>
 
     <!--Menu pref / About-->
     <string name="pref_about_activity_title">A propos</string>
@@ -182,12 +214,21 @@
     <string name="failed_load">Erreur lors du chargement. Appuyer pour réessayer</string>
     <string name="section_drafts">Brouillons</string>
     <string name="section_unresolved">En cours</string>
+    <string name="section_drafts_active_txt">Onglet mes anomalies en brouillons activé</string>
+    <string name="section_resolved_active_txt">Onglet mes anomalies clôturées activé</string>
+    <string name="section_unresolved_active_txt">Onglet mes anomalies en cours activé</string>
+
 
     <!--Anomalies-->
+    <string name="follow_anomaly_action">Suivre une anomalie</string>
+    <string name="unfollow_anomaly_action">Ne plus suivre l\'anomalie</string>
     <string name="follow_anomaly">Vous suivez maintenant cette anomalie.</string>
     <string name="unfollow_anomaly">Vous ne suivez plus cette anomalie.</string>
     <string name="follow_anomaly_failure">Vous ne pouvez pas suivre cette anomalie.</string>
     <string name="unfollow_anomaly_failure">Vous suivez toujours cette anomalie.</string>
+    <string name="show_anomaly_declared">Voir les anomalies déjà signalées.</string>
+    <string name="show_anomaly_declared_button">Voir les anomalies déjà signalées</string>
+    <string name="show_anomaly_declared_fdt_button">Voir la liste des anomalies de la FDT</string>
 
     <!--Greetings-->
     <string name="greetings_ok">Merci d\'avoir transmis vos félicitations aux agents !</string>
@@ -219,12 +260,17 @@
     <string name="photo_signalement">photo du signalement</string>
     <string name="retour_arriere">retour arrière</string>
     <string name="favoris">Favoris</string>
+    <string name="favorite_addresses">Mes adresses favorites</string>
     <string name="types_favoris">Types favoris</string>
+    <string name="add_favorite_type">Ajouter le type aux favoris"</string>
+    <string name="remove_favorite_type">Supprimer le type des favoris"</string>
     <string name="about_version_title">Version : </string>
     <string name="city_name">Paris</string>
     <string name="favorite_address_title">Adresses favorites</string>
     <string name="favorite_address_modifier">Modifier</string>
     <string name="favorite_address_terminer">Terminer</string>
+    <string name="favorite_address_add_action">Ajouter %s aux favoris"</string>
+    <string name="favorite_address_remove_action">Supprimer %s des favoris"</string>
     <string name="favorite_address_delete_item">Supprimer</string>
     <string name="favorite_address_delete">Tout supprimer</string>
 
@@ -253,21 +299,37 @@
     <string name="popup_no_categories">Suite à un problème réseau, les données nécessaires à la création d\'une demande n\'ont pas pu être récupérées.\n\nMerci de recommencer ultérieurement.</string>
 
     <!-- Armen Connecthings -->
-    <string name="login_armen" translatable="false"></string>
-    <string name="password_armen" translatable="false"></string>
-    <string name="company_key_armen" translatable="false"></string>
+    <string name="login_armen" translatable="false">dansmarue</string>
+    <string name="password_armen" translatable="false">QVLPbx7F5oM8cFpib3mE</string>
+    <string name="company_key_armen" translatable="false">arvilledeparis</string>
     <string name="ask_optins_permission_message">Autorisez vous l\'application à transmettre vos données de localisation et votre identifiant de téléphone ?</string>
 
     <!-- Popup recherche anomalie par numero -->
     <string name="find_by_number_text">Rechercher une anomalie\n\nRenseigner ci-dessous le numéro exact de l\'anomalie.</string>
+    <string name="find_by_number_hint">n° de l\'anomalie</string>
+    <string name="find_by_number_desc">Indiquez le numéro d\'identification de l\'anomalie</string>
     <string name="incorect_number">Numéro incorrect</string>
+
+    <!-- Popup recherche feuillle de tournee par id -->
+    <string name="find_fdt_by_id_text">Rechercher une feuille de tournée\n\nRenseigner ci-dessous l\'identifiant exact de la feuille de tournée.</string>
+    <string name="find_fdt_by_id_hint">n° de la feuille de tournée</string>
+    <string name="find_fdt_by_id_desc">Indiquez le numéro d\'identification de la feuille de tournée</string>
+    <string name="error_id_fdt_not_exist">L\'identifiant que vous avez indiqué n\'existe pas. Merci de réessayer en indiquant un identifiant valide de feuille de tournée</string>
+    <string name="label_id_fdt">Identifiant FDT : </string>
+    <string name="search_fdt_by_id">Rechercher une feuille de tournée par son numéro identification</string>
+    <string name="exit_search_fdt">Quitter le mode Feuille de tournée</string>
+    <string name="label_infos_avant_fdt_bold"><b>Infos avant tournée</b></string>
+    <string name="label_infos_apres_fdt">Infos après tournée</string>
+    <string name="text_save_infos_apres_fdt_ok">Votre commentaire a bien été pris en compte</string>
+    <string name="text_infos_apres_fdt_help">Si un commentaire est déjà présent, vous pouvez le compléter ou l\'effacer</string>
+    <string name="text_infos_apres_fdt_hint">Écrivez votre commentaire (255 caractères maximum) ...</string>
+
 
     <!-- generic label -->
     <string name="label_yes">Oui</string>
     <string name="label_no">Non</string>
+    <string name="button_previous_label">bouton photo précédente</string>
+    <string name="button_next_label">bouton photo suivante</string>
 
-    <!--  mapbox public token -->
-    <!--<string name="mapbox_access_token" translatable="false"></string>-->
-    <string name="mapbox_access_token" translatable="false"></string>
 
 </resources>

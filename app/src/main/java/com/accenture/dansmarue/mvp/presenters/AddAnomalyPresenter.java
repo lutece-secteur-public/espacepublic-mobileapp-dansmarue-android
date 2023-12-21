@@ -3,10 +3,11 @@ package com.accenture.dansmarue.mvp.presenters;
 import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
+
+import androidx.annotation.NonNull;
 
 import com.accenture.dansmarue.R;
 import com.accenture.dansmarue.mvp.models.Category;
@@ -22,7 +23,6 @@ import com.accenture.dansmarue.utils.Constants;
 import com.accenture.dansmarue.utils.DateUtils;
 import com.accenture.dansmarue.utils.NetworkUtils;
 import com.accenture.dansmarue.utils.PrefManager;
-
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
@@ -82,14 +82,16 @@ public class AddAnomalyPresenter extends BasePresenter<AddAnomalyView> implement
     public void setCategory(final String categoryId) {
 
         Category category = CategoryHelper.getAllCategories(application).get(categoryId);
-        if(category != null) {
+        if (category != null) {
             getRequest().getIncident().setCategoryId(categoryId);
             getRequest().getIncident().setAlias(category.getName());
 
             final String idParentCategory = CategoryHelper.getFirstParent(getRequest().getIncident().getCategoryId(), CategoryHelper.getAllCategories(application));
 
-
-            getRequest().getIncident().setIconIncidentSignalement(CategoryHelper.MAP_GENERIC_PICTURES.get(idParentCategory));
+            Integer iconIncidentSignalement = CategoryHelper.MAP_GENERIC_PICTURES.get(idParentCategory);
+            if (iconIncidentSignalement != null) {
+                getRequest().getIncident().setIconIncidentSignalement(iconIncidentSignalement);
+            }
         }
 
     }
@@ -110,13 +112,24 @@ public class AddAnomalyPresenter extends BasePresenter<AddAnomalyView> implement
     public void setDescription(String description) {
         getRequest().getIncident().setDescriptive(description);
     }
+    public String getDescription() {
+        return getRequest().getIncident().getDescriptive();
+    }
 
     public void setCommentaireAgent(String description) {
         getRequest().getIncident().setCommentaireAgent(description);
     }
 
+    public String getCommentaireAgent() {
+        return getRequest().getIncident().getCommentaireAgent();
+    }
+
     public void setPriority(Integer priorityId) {
         getRequest().getIncident().setPriorityId(priorityId);
+    }
+
+    public int getPriority() {
+        return getRequest().getIncident().getPriorityId();
     }
 
     public void createIncident() {
@@ -125,9 +138,9 @@ public class AddAnomalyPresenter extends BasePresenter<AddAnomalyView> implement
             getRequest().setUserToken(prefManager.getUserToken());
             getRequest().setEmail(prefManager.getEmail());
 
-            Log.i(TAG, "createIncident: guid "+prefManager.getGuid());
-            Log.i(TAG, "createIncident: udid "+prefManager.getUdid());
-            Log.i(TAG, "createIncident: token "+prefManager.getUserToken());
+            Log.i(TAG, "createIncident: guid " + prefManager.getGuid());
+            Log.i(TAG, "createIncident: udid " + prefManager.getUdid());
+            Log.i(TAG, "createIncident: token " + prefManager.getUserToken());
 
 
         }
@@ -164,13 +177,16 @@ public class AddAnomalyPresenter extends BasePresenter<AddAnomalyView> implement
             getRequest().setGuid(prefManager.getGuid());
             view.showGreetingsDialog(false);
         } else {
-            view.showGreetingsDialog(true);
+            view.showConnectMonParis();
         }
     }
 
     public boolean isIncidentValid() {
-        boolean isValid = getRequest().getPosition().getLatitude() != 0d;
-        isValid = isValid && getRequest().getPosition().getLongitude() != 0d;
+
+
+        boolean isValid = Math.abs(getRequest().getPosition().getLatitude() - 0d) > Constants.EPSILON;
+        isValid = isValid && Math.abs(getRequest().getPosition().getLongitude() - 0d) > Constants.EPSILON;
+        ;
         isValid = isValid && getRequest().getIncident().getAddress() != null;
         isValid = isValid && getRequest().getIncident().getCategoryId() != null;
         isValid = isValid && getRequest().getIncident().getFirstAvailablePicture() != null;
@@ -187,7 +203,7 @@ public class AddAnomalyPresenter extends BasePresenter<AddAnomalyView> implement
 
     @Override
     public void onError(final Throwable e) {
-        if (NetworkUtils.isConnected(application.getApplicationContext())){
+        if (NetworkUtils.isConnected(application.getApplicationContext())) {
             Log.i(TAG, "DMR is off");
             view.displayDialogDmrOffline();
         } else {
@@ -265,9 +281,9 @@ public class AddAnomalyPresenter extends BasePresenter<AddAnomalyView> implement
         final RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpeg"), picture);
         final Map<String, String> headers = new HashMap<>();
         headers.put("udid", prefManager.getUdid());
-        headers.put("incident_id", incidentId.toString());
+        headers.put("incident-id", incidentId.toString());
         headers.put("type", type);
-        headers.put("INCIDENT_CREATION", Boolean.TRUE.toString());
+        headers.put("INCIDENT-CREATION", Boolean.TRUE.toString());
         service.uploadPicture(headers, requestFile)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).
@@ -277,8 +293,8 @@ public class AddAnomalyPresenter extends BasePresenter<AddAnomalyView> implement
 
     /**
      * Call Lutece Workflow DMR to initialiaze state incident
-     * @param incidentId
-     *          id incident
+     *
+     * @param incidentId id incident
      */
     private void callWorkFlow(@NonNull final Integer incidentId) {
         ProcessWorkflowRequest request = new ProcessWorkflowRequest();
@@ -342,16 +358,16 @@ public class AddAnomalyPresenter extends BasePresenter<AddAnomalyView> implement
             String idParentCategory = CategoryHelper.getFirstParent(getRequest().getIncident().getCategoryId(), CategoryHelper.getAllCategories(application));
             getRequest().getIncident().setIconParentId(idParentCategory);
 
-            if (getRequest().getIncident().getIconIncidentSignalement()==0) {
+            if (getRequest().getIncident().getIconIncidentSignalement() == 0) {
                 getRequest().getIncident().getPictures().setGenericPictureId(R.drawable.ic_streetview_grey_24dp);
             }
 
             FileOutputStream fos = application.getApplicationContext().openFileOutput(prefix + Constants.FILE_DRAFT_SUFFIXE, Context.MODE_PRIVATE);
             final String jsonIncident = getRequest().getIncident().toJson();
 
-            Writer out = new OutputStreamWriter(fos);
-            out.write(jsonIncident);
-            out.close();
+            try (Writer out = new OutputStreamWriter(fos)) {
+                out.write(jsonIncident);
+            }
         } catch (IOException e) {
             FirebaseCrashlytics.getInstance().log(e.getMessage());
             Log.e(TAG, e.getMessage(), e);
@@ -438,7 +454,7 @@ public class AddAnomalyPresenter extends BasePresenter<AddAnomalyView> implement
         picture2 = null;
     }
 
-    public void isAgentConnected () {
+    public void isAgentConnected() {
         view.showHideAgentCommentaryField(prefManager.getIsAgent());
     }
 

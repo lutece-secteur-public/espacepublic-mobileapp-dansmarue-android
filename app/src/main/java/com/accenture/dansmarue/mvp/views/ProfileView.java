@@ -34,4 +34,6 @@ public interface ProfileView extends BaseView {
 
     void loadIncidents(final String filterState);
 
+    void descriptionCurrentItem(final String filterState);
+
 }

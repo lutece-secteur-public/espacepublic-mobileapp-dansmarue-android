@@ -5,10 +5,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-
+import androidx.core.splashscreen.SplashScreen;
 
 import com.accenture.dansmarue.BuildConfig;
 import com.accenture.dansmarue.R;
@@ -19,9 +18,6 @@ import com.accenture.dansmarue.mvp.views.SplashScreenView;
 import com.accenture.dansmarue.utils.Constants;
 import com.accenture.dansmarue.utils.NetworkUtils;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.maps.MapboxMap;
-import com.mapbox.mapboxsdk.maps.Style;
 
 import javax.inject.Inject;
 
@@ -36,11 +32,13 @@ public class SplashScreenActivity extends BaseActivity implements SplashScreenVi
 
     private Long incidentId = null;
 
-    private String anomalyType ="";
-
-    private com.mapbox.mapboxsdk.maps.MapView mapViewMapbox;
+    private String anomalyType = "";
 
     private FirebaseAnalytics mFirebaseAnalytics;
+
+    private SplashScreen splashScreen;
+
+    private Boolean shouldAvoidSplashScreen = false;
 
     @SuppressWarnings("WeakerAccess")
     @Inject
@@ -49,7 +47,6 @@ public class SplashScreenActivity extends BaseActivity implements SplashScreenVi
 
     @Override
     protected int getContentView() {
-        Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
         return R.layout.splashscreen_activity_layout;
     }
 
@@ -60,31 +57,23 @@ public class SplashScreenActivity extends BaseActivity implements SplashScreenVi
                 .presenterModule(new PresenterModule(this))
                 .build()
                 .inject(this);
+
+        if (shouldAvoidSplashScreen)
+            setTheme(R.style.AppTheme);
+        else
+            splashScreen = SplashScreen.installSplashScreen(this);
+
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        if (!shouldAvoidSplashScreen) {
+            if (splashScreen != null)
+                splashScreen.setKeepOnScreenCondition(() -> true);
+        }
         super.onCreate(savedInstanceState);
-
-        //MapBox Start
-        mapViewMapbox = (com.mapbox.mapboxsdk.maps.MapView) this.findViewById(R.id.mapboxView);
-        mapViewMapbox.onCreate(savedInstanceState);
-        mapViewMapbox.getMapAsync(new com.mapbox.mapboxsdk.maps.OnMapReadyCallback() {
-            @Override
-            public void onMapReady(@NonNull MapboxMap mapboxMap) {
-                mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
-                    @Override
-                    public void onStyleLoaded(@NonNull Style style) {
-                        // Map is set up and the style has loaded. Now you can add data or make other map adjustments
-                    }
-                });
-            }
-        });
-        //MapBox end
-
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
     }
-
 
     @Override
     protected void onViewReady(Bundle savedInstanceState, Intent intent) {
@@ -103,13 +92,11 @@ public class SplashScreenActivity extends BaseActivity implements SplashScreenVi
             //check if user need update application
             presenter.checkVersion();
         }
-
-
     }
 
 
     /**
-     * Display popup to ask for dowload last version of the application.
+     * Display popup to ask for download last version of the application.
      */
     public void displayPopupUpdateNotMandory() {
 
@@ -187,7 +174,7 @@ public class SplashScreenActivity extends BaseActivity implements SplashScreenVi
 
             Intent intent;
 
-            if(anomalyType.equals("OUTDOOR")){
+            if (anomalyType.equals("OUTDOOR")) {
                 intent = new Intent(SplashScreenActivity.this, AnomalyDetailsActivity.class);
             } else {
                 intent = new Intent(SplashScreenActivity.this, AnomalyEquipementDetailsActivity.class);
@@ -250,10 +237,10 @@ public class SplashScreenActivity extends BaseActivity implements SplashScreenVi
     }
 
     @Override
-    public void displayDialogMessageInformation( String message) {
+    public void displayDialogMessageInformation(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(SplashScreenActivity.this, R.style.MyDialogTheme);
         builder
-                .setMessage(message.replaceFirst("\\.","\n\n"))
+                .setMessage(message.replaceFirst("\\.", "\n\n"))
                 .setCancelable(false)
                 .setNegativeButton("Fermer", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {

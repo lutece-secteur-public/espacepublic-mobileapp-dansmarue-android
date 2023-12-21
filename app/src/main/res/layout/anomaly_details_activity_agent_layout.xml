@@ -29,7 +29,6 @@
             android:layout_height="wrap_content"
             android:background="@color/white">
 
-
             <ImageView
                 android:id="@+id/anomaly_details_picture"
                 android:layout_width="match_parent"
@@ -41,12 +40,12 @@
                 android:id="@+id/txt_over_picture"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/anomaly_details_picture"
-                android:layout_alignRight="@+id/anomaly_details_picture"
+                android:layout_alignStart="@+id/anomaly_details_picture"
                 android:layout_alignTop="@+id/anomaly_details_picture"
+                android:layout_alignEnd="@+id/anomaly_details_picture"
                 android:layout_marginLeft="40dp"
-                android:layout_marginRight="40dp"
                 android:layout_marginTop="20dp"
+                android:layout_marginRight="40dp"
                 android:background="@drawable/round_corner_green"
                 android:gravity="center"
                 android:textColor="#FFFFFF"
@@ -60,8 +59,9 @@
                 android:layout_marginStart="20dp"
                 android:paddingTop="160dp"
                 android:text="@string/lower_than"
+                android:contentDescription="@string/button_previous_label"
                 android:textColor="@color/grey_icon"
-                android:textSize="50dp"
+                android:textSize="50sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -72,18 +72,10 @@
                 android:layout_marginEnd="20dp"
                 android:paddingTop="160dp"
                 android:text="@string/greater_than"
+                android:contentDescription="@string/button_next_label"
                 android:textColor="@color/grey_icon"
-                android:textSize="50dp"
+                android:textSize="50sp"
                 android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/anomaly_address"
-                android:layout_width="280dp"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/anomaly_details_picture"
-                android:layout_marginBottom="16dp"
-                android:layout_marginStart="10dp"
-                android:textColor="@color/white" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab_details_ano"
@@ -91,25 +83,33 @@
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/anomaly_details_picture"
                 android:layout_alignParentEnd="true"
-                android:layout_marginBottom="-32dp"
                 android:layout_marginEnd="11dp"
+                android:layout_marginBottom="-32dp"
+                android:backgroundTint="@color/pink"
                 android:clickable="true"
                 app:fabSize="normal"
-                app:srcCompat="@drawable/ic_follow" />
+                app:srcCompat="@drawable/ic_follow"
+                android:focusable="true" />
 
             <LinearLayout
                 android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignStart="@+id/anomaly_address"
                 android:layout_below="@+id/fab_details_ano"
-                android:orientation="horizontal">
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/anomaly_address"
+                    android:layout_width="280dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:textColor="@color/grey_icon" />
 
                 <TextView
                     android:id="@+id/anomaly_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="5dp"
                     android:textColor="@color/grey_icon" />
 
             </LinearLayout>
@@ -118,9 +118,19 @@
                 android:id="@+id/anomaly_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignEnd="@+id/fab_details_ano"
-                android:layout_alignStart="@+id/linearLayout"
                 android:layout_below="@+id/linearLayout"
+                android:layout_alignStart="@+id/linearLayout"
+                android:layout_alignEnd="@+id/fab_details_ano"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/grey_icon" />
+
+            <TextView
+                android:id="@+id/anomaly_state_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/anomaly_number"
+                android:layout_alignStart="@+id/linearLayout"
+                android:layout_alignEnd="@+id/fab_details_ano"
                 android:layout_marginTop="5dp"
                 android:textColor="@color/grey_icon" />
 
@@ -128,9 +138,9 @@
                 android:id="@+id/anomaly_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignEnd="@+id/fab_details_ano"
+                android:layout_below="@+id/anomaly_state_name"
                 android:layout_alignStart="@+id/linearLayout"
-                android:layout_below="@+id/anomaly_number"
+                android:layout_alignEnd="@+id/fab_details_ano"
                 android:layout_marginTop="20dp"
                 android:textSize="28sp"
                 android:textStyle="bold" />
@@ -139,9 +149,9 @@
                 android:id="@+id/anomaly_details"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignEnd="@+id/anomaly_category"
-                android:layout_alignStart="@+id/anomaly_category"
                 android:layout_below="@+id/anomaly_category"
+                android:layout_alignStart="@+id/anomaly_category"
+                android:layout_alignEnd="@+id/anomaly_category"
                 android:layout_marginTop="15dp"
                 android:textSize="16sp" />
 
@@ -149,9 +159,9 @@
                 android:id="@+id/anomaly_commentaire_agent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignEnd="@+id/anomaly_details"
-                android:layout_alignStart="@+id/anomaly_details"
                 android:layout_below="@+id/anomaly_details"
+                android:layout_alignStart="@+id/anomaly_details"
+                android:layout_alignEnd="@+id/anomaly_details"
                 android:layout_marginTop="15dp"
                 android:textSize="16sp" />
 
@@ -167,9 +177,9 @@
                 android:id="@+id/anomaly_layout_followers"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignEnd="@+id/fab_details_ano"
-                android:layout_alignStart="@+id/linearLayout"
                 android:layout_below="@+id/view"
+                android:layout_alignStart="@+id/linearLayout"
+                android:layout_alignEnd="@+id/fab_details_ano"
                 android:layout_marginTop="15dp"
                 android:baselineAligned="false"
                 android:orientation="horizontal">
@@ -219,34 +229,34 @@
                 android:layout_marginTop="15dp"
                 android:background="@color/grey_background" />
 
-
             <!-- ########    REQUALIFICATION  1ere partie     ####### -->
             <LinearLayout
                 android:id="@+id/linear_layout_requalification"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/anomaly_line2"
                 android:layout_alignStart="@+id/anomaly_layout_followers"
                 android:layout_alignEnd="@+id/anomaly_layout_followers"
-                android:layout_below="@+id/anomaly_line2"
-                android:orientation="horizontal"
                 android:layout_marginTop="15dp"
                 android:background="@color/greetings_grey"
-                android:clickable="true" >
+                android:clickable="true"
+                android:orientation="horizontal"
+                android:focusable="true">
 
                 <TextView
                     android:id="@+id/text_title_requalification"
-                    android:layout_width="160dp"
+                    android:layout_width="190dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
                     android:text="@string/text_title_requalification"
-                    android:textSize="20dp"
+                    android:textSize="20sp"
                     android:textStyle="bold" />
 
                 <ImageButton
                     android:id="@+id/image_languette_requalification"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:layout_marginLeft="40dp"
+                    android:layout_marginStart="40dp"
                     android:layout_marginTop="3dp"
                     app:srcCompat="@drawable/ic_arrow_right" />
 
@@ -261,8 +271,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/linear_layout_requalification"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="2dp"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:background="@color/white"
                 android:orientation="vertical"
                 android:padding="@dimen/activity_horizontal_margin"
@@ -279,7 +289,8 @@
                     android:background="@color/white"
                     android:clickable="true"
                     android:orientation="horizontal"
-                    android:padding="@dimen/activity_horizontal_margin">
+                    android:padding="@dimen/activity_horizontal_margin"
+                    android:focusable="true">
 
                     <ImageButton
                         android:id="@+id/image_choose_type"
@@ -288,7 +299,6 @@
                         android:background="@color/white"
                         android:contentDescription="@string/text_type"
                         app:srcCompat="@drawable/ic_check_circle_grey_24px" />
-
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -318,7 +328,7 @@
                 </LinearLayout>
 
                 <!-- Photo -->
-                <include layout="@layout/requalification_take_picture"  />
+                <include layout="@layout/requalification_take_picture" />
 
                 <!-- Commentaire agent -->
                 <LinearLayout
@@ -345,7 +355,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:clickable="true"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:focusable="true">
 
                         <TextView
                             android:layout_width="match_parent"
@@ -383,34 +394,145 @@
 
             <!-- ######################### -->
 
+            <!-- ########    Precisions terrain  1ere partie     ####### -->
+            <LinearLayout
+                android:id="@+id/linear_layout_precterrain"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/linear_layout_requalification2"
+                android:layout_alignStart="@+id/anomaly_layout_followers"
+                android:layout_alignEnd="@+id/anomaly_layout_followers"
+                android:layout_marginTop="15dp"
+                android:background="@color/greetings_grey"
+                android:clickable="true"
+                android:orientation="horizontal"
+                android:focusable="true">
+
+                <TextView
+                    android:id="@+id/text_title_precterrain"
+                    android:layout_width="190dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:text="@string/text_title_precterrain"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <ImageButton
+                    android:id="@+id/image_languette_precterrain"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="3dp"
+                    app:srcCompat="@drawable/ic_arrow_right" />
+
+            </LinearLayout>
+
+            <!-- ######################### -->
+
+            <!-- Precisions terrain  2ème partie     ####### -->
+            <LinearLayout
+                android:id="@+id/linear_layout_precterrain2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/linear_layout_precterrain"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="2dp"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:padding="@dimen/activity_horizontal_margin"
+                android:visibility="gone">
+
+            <LinearLayout
+                android:id="@+id/commentprecterrain_layout_parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="3dp"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:padding="@dimen/activity_horizontal_margin">
+
+                <ImageButton
+                    android:id="@+id/commentprecterrain_choose_type"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:background="@color/white"
+                    android:contentDescription="@string/text_txt_precterrain_fac"
+                    app:srcCompat="@drawable/ic_check_circle_grey_24px" />
+
+                <LinearLayout
+                    android:id="@+id/layout_commentprecterrain"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:orientation="vertical"
+                    android:focusable="true">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/activity_horizontal_margin"
+                        android:text="@string/text_txt_precterrain_fac"
+                        android:textColor="@android:color/primary_text_light" />
+
+                    <TextView
+                        android:id="@+id/text_commentcommentprecterrain_subtitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/activity_horizontal_margin"
+                        android:layout_marginTop="3dp"
+                        android:text="@string/precisions_terrain_subtitle"
+                        android:textColor="@color/grey_tranparent"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+              </LinearLayout>
+
+                <Button
+                    android:id="@+id/button_save_precisions_terrain"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_margin="@dimen/activity_horizontal_margin"
+                    android:background="@color/grey_icon"
+                    android:enabled="false"
+                    android:text="@string/btn_enregistrer"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white" />
+
+            </LinearLayout>
+            <!-- ######################### -->
+
             <!-- ###########  Service fait  1ere partie  ############# -->
             <LinearLayout
                 android:id="@+id/linear_layout_service_fait"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/linear_layout_precterrain2"
                 android:layout_alignStart="@+id/anomaly_layout_followers"
                 android:layout_alignEnd="@+id/anomaly_layout_followers"
-                android:layout_below="@+id/linear_layout_requalification2"
-                android:orientation="horizontal"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="5dp"
                 android:background="@color/greetings_grey"
-                android:clickable="true" >
+                android:clickable="true"
+                android:orientation="horizontal"
+                android:focusable="true">
 
                 <TextView
                     android:id="@+id/text_service_fait"
-                    android:layout_width="160dp"
+                    android:layout_width="190dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
                     android:text="@string/text_title_service_fait"
-                    android:textSize="20dp"
+                    android:textSize="20sp"
                     android:textStyle="bold" />
 
                 <ImageButton
                     android:id="@+id/image_languette_service_fait"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:layout_marginLeft="40dp"
+                    android:layout_marginStart="40dp"
                     android:layout_marginTop="3dp"
                     app:srcCompat="@drawable/ic_arrow_right" />
 
@@ -425,8 +547,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/linear_layout_service_fait"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="2dp"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:background="@color/white"
                 android:orientation="vertical"
                 android:padding="@dimen/activity_horizontal_margin"
@@ -443,8 +565,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/linear_layout_service_fait"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="2dp"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:background="@color/white"
                 android:orientation="vertical"
                 android:padding="@dimen/activity_horizontal_margin"
@@ -459,11 +581,9 @@
                         android:id="@+id/image_choose_picture"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:layout_alignParentBottom="true"
-                        android:layout_alignParentStart="true"
                         android:layout_marginBottom="28dp"
                         android:background="@color/white"
-                        android:contentDescription="@string/text_photo"
+                        android:contentDescription="@string/text_photo_requalification"
                         app:srcCompat="@drawable/ic_check_circle_grey_24px" />
 
                     <LinearLayout
@@ -501,9 +621,7 @@
 
                     <RelativeLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-
-                        >
+                        android:layout_height="wrap_content">
 
                         <RelativeLayout
                             android:id="@+id/myImageChoiceLayout"
@@ -518,7 +636,6 @@
                                 android:id="@+id/myImageChoice"
                                 android:layout_width="96dp"
                                 android:layout_height="96dp"
-                                android:layout_weight="0.10"
                                 android:contentDescription="@string/desc_image1"
                                 android:scaleType="centerCrop"
                                 android:visibility="gone"
@@ -547,16 +664,11 @@
                             android:id="@+id/add_anomaly_photo"
                             android:layout_width="96dp"
                             android:layout_height="96dp"
-                            android:layout_weight="0.10"
                             android:background="@color/grey_background"
-                            android:contentDescription="@string/desc_add_picture"
+                            android:contentDescription="@string/desc_add_picture_requalification"
                             app:srcCompat="@drawable/ic_camera" />
-
-
                     </RelativeLayout>
-
                 </LinearLayout>
-
             </LinearLayout>
 
             <!-- Type message service fait -->
@@ -564,15 +676,16 @@
                 android:id="@+id/layout_choose_message_sf"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/photo_service_fait_layout"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="@dimen/activity_horizontal_margin"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:layout_below="@+id/photo_service_fait_layout"
                 android:background="@color/white"
                 android:clickable="true"
                 android:orientation="horizontal"
                 android:padding="@dimen/activity_horizontal_margin"
-                android:visibility="gone">
+                android:visibility="gone"
+                android:focusable="true">
 
                 <ImageButton
                     android:id="@+id/image_choose_type_sf"
@@ -581,7 +694,6 @@
                     android:background="@color/white"
                     android:contentDescription="@string/text_type"
                     app:srcCompat="@drawable/ic_check_circle_grey_24px" />
-
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -617,16 +729,12 @@
                 android:layout_below="@+id/layout_choose_message_sf"
                 android:layout_margin="5dp"
                 android:background="@color/grey_icon"
+                android:enabled="false"
                 android:text="@string/but_resoudre"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
-                android:visibility="gone"
-                android:enabled="false"/>
+                android:visibility="gone" />
 
         </RelativeLayout>
-
-
     </ScrollView>
-
-
 </RelativeLayout>

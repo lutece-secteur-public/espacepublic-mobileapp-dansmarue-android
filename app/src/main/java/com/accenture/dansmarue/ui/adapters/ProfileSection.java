@@ -1,22 +1,28 @@
 package com.accenture.dansmarue.ui.adapters;
 
 import android.content.Context;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.accenture.dansmarue.BuildConfig;
 import com.accenture.dansmarue.R;
 import com.accenture.dansmarue.mvp.models.Incident;
 import com.accenture.dansmarue.mvp.presenters.ProfilePresenter;
 import com.accenture.dansmarue.ui.activities.InternalWebViewActivity;
-import com.accenture.dansmarue.ui.activities.LoginActivity;
 import com.accenture.dansmarue.utils.MiscTools;
+import com.accenture.dansmarue.utils.PrefManager;
+import com.bumptech.glide.GenericRequestBuilder;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +39,7 @@ public class ProfileSection extends Section {
     private String title;
     private boolean displayResponsableQuartier;
     private ProfilePresenter presenter;
+    private PrefManager prefManager;
 
     public ProfileSection(final Context context, final String title, final boolean displayResponsableQuartier, final ProfilePresenter presenter) {
         super(R.layout.section_profile_header, R.layout.recycler_view_item, R.layout.section_profile_loading, R.layout.section_profile_failed);
@@ -41,6 +48,8 @@ public class ProfileSection extends Section {
         this.title = title;
         this.displayResponsableQuartier = displayResponsableQuartier;
         this.presenter = presenter;
+
+        prefManager = new PrefManager(context);
     }
 
 
@@ -86,20 +95,25 @@ public class ProfileSection extends Section {
             itemHolder.date.setText(incident.getFormatedDate());
             itemHolder.number.setText(incident.getReference());
 
+            if (prefManager.getIsAgent()) {
+                itemHolder.stateName.setVisibility(View.VISIBLE);
+                itemHolder.stateName.setText(incident.getStateName());
+            }
+
             itemHolder.llAno.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    presenter.onItemClicked( context.getString(R.string.section_drafts).equals(title) , incident );
+                    presenter.onItemClicked(context.getString(R.string.section_drafts).equals(title), incident);
                 }
             });
 
-            if(displayResponsableQuartier) {
+            if (displayResponsableQuartier) {
                 itemHolder.imgResponsableQuartier.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String complementURL = "&id_dmr="+incident.getReference()+"&Y="+incident.getLat()+"&X="+incident.getLng();
+                        String complementURL = "&id_dmr=" + incident.getReference() + "&Y=" + incident.getLat() + "&X=" + incident.getLng();
                         Intent intent = new Intent(context, InternalWebViewActivity.class);
-                        intent.putExtra(InternalWebViewActivity.WEBSITE_ADDRESS, BuildConfig.URL_SOLEN+complementURL);
+                        intent.putExtra(InternalWebViewActivity.WEBSITE_ADDRESS, BuildConfig.URL_SOLEN + complementURL);
                         intent.putExtra(InternalWebViewActivity.EXECUTE_EXTRA_JS, true);
                         context.startActivity(intent);
 
@@ -123,7 +137,7 @@ public class ProfileSection extends Section {
 
                 itemHolder.iconTypeAno.setImageBitmap(MiscTools.base64ToBitmap(incident.getIconIncident(), 28));
 //            itemHolder.titleCategorieAno.setTextColor(context.getResources().getColor(R.color.blue_slider));
-                itemHolder.titleCategorieAno.setTextColor(context.getResources().getColor(R.color.colorOrange));
+                itemHolder.titleCategorieAno.setTextColor(context.getResources().getColor(R.color.orangeInProgress));
                 itemHolder.titleCategorieAno.setText(incident.getTypeEquipementName());
 
             } else {
@@ -132,8 +146,9 @@ public class ProfileSection extends Section {
                 if (incident.getFirstAvailablePicture() != null) {
                     Glide.with(context)
                             .load(incident.getFirstAvailablePicture())
-                            .fallback(incident.getPictures().getGenericPictureId())
                             .error(incident.getPictures().getGenericPictureId())
+                            .fallback(incident.getPictures().getGenericPictureId())
+                            .override(1600, 1600)
                             .into(itemHolder.icon);
                 } else {
                     if (0 != incident.getPictures().getGenericPictureId()) {
@@ -146,11 +161,11 @@ public class ProfileSection extends Section {
                 }
 
                 if (incident.isResolu()) {
-                    itemHolder.titleCategorieAno.setTextColor(context.getResources().getColor(R.color.colorOrange));
+                    itemHolder.titleCategorieAno.setTextColor(context.getResources().getColor(R.color.orangeInProgress));
                     itemHolder.titleCategorieAno.setText(R.string.anomalie_espace_public_libelle);
 
                 } else {
-                    itemHolder.titleCategorieAno.setTextColor(context.getResources().getColor(R.color.colorOrange));
+                    itemHolder.titleCategorieAno.setTextColor(context.getResources().getColor(R.color.orangeInProgress));
                     itemHolder.titleCategorieAno.setText(R.string.anomalie_espace_public_libelle);
                 }
 
@@ -184,8 +199,9 @@ public class ProfileSection extends Section {
         private ImageView iconTypeAno;
         private TextView date;
         private TextView number;
+        private TextView stateName;
         private ImageView imgResponsableQuartier;
-        private LinearLayout llAno;
+        private ConstraintLayout llAno;
 
 
         public ViewHolder(View itemView) {
@@ -197,12 +213,13 @@ public class ProfileSection extends Section {
             icon = (ImageView) itemView.findViewById(R.id.icon);
             iconTypeAno = (ImageView) itemView.findViewById(R.id.icon_type_ano);
             number = (TextView) itemView.findViewById(R.id.number);
+            stateName = (TextView) itemView.findViewById(R.id.state_name);
             imgResponsableQuartier = (ImageView) itemView.findViewById(R.id.img_responsable_quartier);
             if (displayResponsableQuartier) {
                 imgResponsableQuartier.setVisibility(View.VISIBLE);
             }
 
-            llAno = (LinearLayout) itemView.findViewById(R.id.id_ll_ano);
+            llAno = (ConstraintLayout) itemView.findViewById(R.id.id_ll_ano);
         }
     }
 

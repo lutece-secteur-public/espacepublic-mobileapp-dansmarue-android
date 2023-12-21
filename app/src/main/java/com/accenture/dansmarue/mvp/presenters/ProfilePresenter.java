@@ -1,5 +1,10 @@
 package com.accenture.dansmarue.mvp.presenters;
 
+import static android.content.ContentValues.TAG;
+import static com.accenture.dansmarue.utils.CategoryHelper.MAP_GENERIC_PICTURES;
+import static com.accenture.dansmarue.utils.CategoryHelper.getAllCategories;
+import static com.accenture.dansmarue.utils.CategoryHelper.getFirstParent;
+
 import android.app.Application;
 import android.util.Log;
 
@@ -16,11 +21,9 @@ import com.accenture.dansmarue.services.models.GetIncidentsByUserRequest;
 import com.accenture.dansmarue.services.models.GetIncidentsByUserResponse;
 import com.accenture.dansmarue.services.models.SiraSimpleResponse;
 import com.accenture.dansmarue.services.models.UnfollowRequest;
-import com.accenture.dansmarue.utils.CategoryHelper;
 import com.accenture.dansmarue.utils.Constants;
 import com.accenture.dansmarue.utils.IncidentComparator;
 import com.accenture.dansmarue.utils.PrefManager;
-
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.gson.GsonBuilder;
 
@@ -37,8 +40,6 @@ import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * Created by PK on 11/05/2017.
@@ -79,7 +80,7 @@ public class ProfilePresenter extends BasePresenter<ProfileView> implements Sing
                         in.read(buffer);
                         final String bufferStr = new String(buffer);
                         drafts.add(new GsonBuilder().create().fromJson(bufferStr, Incident.class));
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         FirebaseCrashlytics.getInstance().log(e.getMessage());
                         view.showDrafts(null);
                     }
@@ -98,7 +99,7 @@ public class ProfilePresenter extends BasePresenter<ProfileView> implements Sing
 
     public void loadIncidentsByUser(String filterState) {
         if (prefManager.isConnected()) {
-            this.filterState= filterState;
+            this.filterState = filterState;
             if (prefManager.getTypesEquipement() != null) {
                 final GetIncidentsByUserRequest request = new GetIncidentsByUserRequest();
                 request.setGuid(prefManager.getGuid());
@@ -108,7 +109,7 @@ public class ProfilePresenter extends BasePresenter<ProfileView> implements Sing
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(this);
             } else {
-                callWsAnosOutdoor(new ArrayList<Incident>(),new ArrayList<Incident>());
+                callWsAnosOutdoor(new ArrayList<Incident>(), new ArrayList<Incident>());
             }
 
         } else {
@@ -130,10 +131,12 @@ public class ProfilePresenter extends BasePresenter<ProfileView> implements Sing
                 view.showMenuDrafts();
                 break;
             case R.id.menu_anos_unresolved:
+                view.descriptionCurrentItem(Incident.STATE_OPEN);
                 view.loadIncidents(Incident.STATE_OPEN);
                 view.showMenuUnresolved();
                 break;
             case R.id.menu_anos_resolved:
+                view.descriptionCurrentItem(Incident.STATE_RESOLVED);
                 view.loadIncidents(Incident.STATE_RESOLVED);
                 view.showMenuResolved();
                 break;
@@ -178,10 +181,11 @@ public class ProfilePresenter extends BasePresenter<ProfileView> implements Sing
 
                         Log.i(TAG, "incident infos " + incident.toString());
 
-                        final String idParentCategory = CategoryHelper.getFirstParent(incident.getCategoryId(), CategoryHelper.getAllCategories(application, true, prefManager.getEquipementIdMapTypeEquipementId().get(incident.getEquipementId())));
+                        final String idParentCategory = getFirstParent(incident.getCategoryId(), getAllCategories(application, true, prefManager.getEquipementIdMapTypeEquipementId().get(incident.getEquipementId())));
 
                         // Pay attention index of list is different from id ;
-                        for (int i = 0; i < maListeDeTypesDequipements.size(); i++) {
+                        int listeDeTypesDequipementsLength = maListeDeTypesDequipements.size();
+                        for (int i = 0; i < listeDeTypesDequipementsLength; i++) {
                             if (maListeDeTypesDequipements.get(i).getIdTypEquipement().equals(prefManager.getEquipementIdMapTypeEquipementId().get(incident.getEquipementId()))) {
                                 index = i;
                             }
@@ -190,9 +194,9 @@ public class ProfilePresenter extends BasePresenter<ProfileView> implements Sing
                         incident.setIconParentId(idParentCategory);
                         incident.setTypeEquipementName(maListeDeTypesDequipements.get(index).getNomTypeEquipement());
 
-                        Map<String, Category> mesCat = CategoryHelper.getAllCategories(application, true, maListeDeTypesDequipements.get(index).getIdTypEquipement());
+                        Map<String, Category> mesCat = getAllCategories(application, true, maListeDeTypesDequipements.get(index).getIdTypEquipement());
 
-                        final String idParentCategory2 = CategoryHelper.getFirstParent(incident.getCategoryId(), mesCat);
+                        final String idParentCategory2 = getFirstParent(incident.getCategoryId(), mesCat);
                         incident.setIconIncident(mesCat.get(idParentCategory2).getImageMobile());
 
 
@@ -303,18 +307,21 @@ public class ProfilePresenter extends BasePresenter<ProfileView> implements Sing
                     for (Incident incident :
                             value.getAnswer().getIncidents()) {
 
-                        final String idParentCategory = CategoryHelper.getFirstParent(incident.getCategoryId(), CategoryHelper.getAllCategories(application));
-
-                        if (incident.isResolu()) {
-                            incident.getPictures().setGenericPictureId(CategoryHelper.MAP_GENERIC_PICTURES.get(idParentCategory));
-                        } else {
-                            incident.getPictures().setGenericPictureId(CategoryHelper.MAP_GENERIC_PICTURES.get(idParentCategory));
+                        final String idParentCategory = getFirstParent(incident.getCategoryId(), getAllCategories(application));
+                        Integer genericPictureId = MAP_GENERIC_PICTURES.get(idParentCategory);
+                        if (genericPictureId != null) {
+                            incident.getPictures().setGenericPictureId(genericPictureId);
                         }
+                       /* if (incident.isResolu()) {
+                            incident.getPictures().setGenericPictureId(genericPictureId);
+                        } else {
+                            incident.getPictures().setGenericPictureId(genericPictureId);
+                        }*/
 
                         Log.i(TAG, "outdoor");
                         Log.i(TAG, "incident id : " + incident.getId());
                         Log.i(TAG, "load incident > id-Parent-Category : " + idParentCategory);
-                        Log.i(TAG, "load incident > get First Parent   : " + CategoryHelper.getFirstParent(idParentCategory, CategoryHelper.getAllCategories(application)));
+                        Log.i(TAG, "load incident > get First Parent   : " + getFirstParent(idParentCategory, getAllCategories(application)));
                         Log.i(TAG, "load incident > nom : " + incident.getDescriptive());
                         Log.i(TAG, "load incident > id equipement : " + incident.getEquipementId());
 
@@ -326,12 +333,12 @@ public class ProfilePresenter extends BasePresenter<ProfileView> implements Sing
                         }
                     }
 
-                    if( Incident.STATE_RESOLVED.equals(filterState)) {
+                    if (Incident.STATE_RESOLVED.equals(filterState)) {
                         Collections.sort(resolvedIncidents, IncidentComparator.getInstance());
                         view.showSolvedIncidents(resolvedIncidents);
                     }
 
-                    if( Incident.STATE_OPEN.equals(filterState)) {
+                    if (Incident.STATE_OPEN.equals(filterState)) {
                         Collections.sort(unresolvedIncidents, IncidentComparator.getInstance());
                         view.showUnsolvedIncidents(unresolvedIncidents);
                     }

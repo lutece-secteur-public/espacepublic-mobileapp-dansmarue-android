@@ -102,14 +102,32 @@ public class SliderActivity extends BaseActivity implements SliderView {
 
         dotsLayout.removeAllViews();
         for (int i = 0; i < dots.length; i++) {
+            int itemSelected = i;
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.setMargins(8, 0, 8, 0);
+
             dots[i] = new TextView(this);
             dots[i].setText(Html.fromHtml("&#8226;"));
+            dots[i].setContentDescription("page " + (itemSelected + 1) + " sur " + dots.length);
             dots[i].setTextSize(20);
+            dots[i].setClickable(true);
             dots[i].setTextColor(Color.WHITE);
+            dots[i].setLayoutParams(params);
+
+
+            dots[i].setOnClickListener(view ->  {
+                viewPager.setCurrentItem(itemSelected);
+            });
+
             dotsLayout.addView(dots[i]);
         }
 
         dots[currentPage].setTextSize(45);
+        dots[currentPage].setContentDescription("page " + currentPage + " sur " + dots.length + "sélectionné");
 
     }
 

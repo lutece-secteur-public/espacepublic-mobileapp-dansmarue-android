@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -16,146 +15,173 @@
         android:minHeight="?attr/actionBarSize">
 
         <TextView
+            android:id="@+id/toolbar_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center"
             android:text="@string/title_mon_espace"
             android:textColor="@color/white"
-            android:layout_gravity="center_vertical|center"
-            android:textStyle="bold"
             android:textSize="20sp"
-            android:id="@+id/toolbar_title" />
+            android:textStyle="bold" />
 
     </androidx.appcompat.widget.Toolbar>
 
 
-    <LinearLayout
-        android:id="@+id/item_mon_espace"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_below="@+id/toolbar"
-        android:background="@color/greetings_grey"
-        android:divider="?android:dividerHorizontal"
-        android:showDividers="middle"
-        >
-
+        android:layout_below="@+id/toolbar">
         <LinearLayout
-            android:id="@+id/item_layout_se_connecter"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:orientation="horizontal"
-            android:visibility="gone">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <LinearLayout
+                android:id="@+id/item_mon_espace"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/greetings_grey"
+                android:divider="?android:dividerHorizontal"
+                android:orientation="vertical"
+                android:showDividers="middle">
 
-            <TextView
-                android:id="@+id/item_se_connecter"
-                android:layout_weight="2"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:text="@string/button_connecter"
-                android:textSize="16sp"
-                android:gravity="center_vertical"
-                android:layout_marginStart="10dp"
-                android:layout_gravity="center_vertical" />
+                <LinearLayout
+                    android:id="@+id/item_layout_se_connecter"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="50dp"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/item_se_connecter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="2"
+                        android:gravity="center_vertical"
+                        android:minHeight="50dp"
+                        android:text="@string/button_connecter"
+                        android:textSize="16sp" />
+
+                    <Button
+                        android:id="@+id/btn_mon_paris"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="20dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_weight="1"
+                        android:background="@color/pink"
+                        android:drawableStart="@drawable/ic_pen"
+                        android:minHeight="40dp"
+                        android:text="@string/login_screen_title"
+                        android:textAllCaps="true"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/item_mon_profil"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="10dp"
+                    android:gravity="center_vertical"
+                    android:minHeight="50dp"
+                    android:text="@string/pref_profil_activity_title"
+                    android:textSize="16sp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/item_mes_anomalies"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="10dp"
+                    android:gravity="center_vertical"
+                    android:minHeight="50dp"
+                    android:text="@string/pref_mes_anomalies_activity_title"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/item_actualites"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="10dp"
+                    android:gravity="center_vertical"
+                    android:minHeight="50dp"
+                    android:text="@string/pref_actualites_activity_title"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/item_aide"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="10dp"
+                    android:gravity="center_vertical"
+                    android:minHeight="50dp"
+                    android:text="@string/pref_aide_activity_title"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/item_pref"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="10dp"
+                    android:gravity="center_vertical"
+                    android:minHeight="50dp"
+                    android:text="@string/pref_pref_activity_title"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/item_cgu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="10dp"
+                    android:gravity="center_vertical"
+                    android:minHeight="50dp"
+                    android:text="@string/pref_cgu_activity_title"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/item_pcvp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="10dp"
+                    android:gravity="center_vertical"
+                    android:minHeight="50dp"
+                    android:text="@string/pref_pcvp_activity_title"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/item_about"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="10dp"
+                    android:gravity="center_vertical"
+                    android:minHeight="50dp"
+                    android:text="@string/pref_about_activity_title"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
             <Button
-                android:id="@+id/btn_mon_paris"
-                android:layout_weight="1"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="10dp"
+                android:id="@+id/btn_deco"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_margin="@dimen/activity_horizontal_margin"
                 android:background="@color/pink"
-                android:drawableStart="@drawable/ic_pen"
-                android:text="@string/login_screen_title"
-                android:textAllCaps="true"
+                android:text="@string/button_deco"
+                android:textAllCaps="false"
                 android:textColor="@color/white" />
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/item_mon_profil"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="@string/pref_profil_activity_title"
-            android:textSize="16sp"
-            android:gravity="center_vertical"
-            android:layout_marginStart="10dp"
-            android:layout_gravity="center_vertical"
-            android:visibility="gone"/>
-
-        <TextView
-            android:id="@+id/item_mes_anomalies"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="@string/pref_mes_anomalies_activity_title"
-            android:textSize="16sp"
-            android:gravity="center_vertical"
-            android:layout_marginStart="10dp"
-            android:layout_gravity="center_vertical" />
-
-        <TextView
-            android:id="@+id/item_actualites"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="@string/pref_actualites_activity_title"
-            android:textSize="16sp"
-            android:gravity="center_vertical"
-            android:layout_marginStart="10dp"
-            android:layout_gravity="center_vertical" />
-
-        <TextView
-            android:id="@+id/item_aide"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="@string/pref_aide_activity_title"
-            android:textSize="16sp"
-            android:gravity="center_vertical"
-            android:layout_marginStart="10dp"
-            android:layout_gravity="center_vertical" />
-
-        <TextView
-            android:id="@+id/item_pref"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="@string/pref_pref_activity_title"
-            android:textSize="16sp"
-            android:gravity="center_vertical"
-            android:layout_marginStart="10dp"
-            android:layout_gravity="center_vertical"/>
-
-        <TextView
-            android:id="@+id/item_cgu"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="@string/pref_cgu_activity_title"
-            android:textSize="16sp"
-            android:gravity="center_vertical"
-            android:layout_marginStart="10dp"
-            android:layout_gravity="center_vertical"/>
-
-        <TextView
-            android:id="@+id/item_about"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="@string/pref_about_activity_title"
-            android:textSize="16sp"
-            android:gravity="center_vertical"
-            android:layout_marginStart="10dp"
-            android:layout_gravity="center_vertical"/>
-
-    </LinearLayout>
-
-
-    <Button
-        android:id="@+id/btn_deco"
-        android:layout_width="match_parent"
-        android:layout_below="@id/item_mon_espace"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="false"
-        android:layout_margin="@dimen/activity_horizontal_margin"
-        android:background="@color/pink"
-        android:text="@string/button_deco"
-        android:textAllCaps="false"
-        android:textColor="@color/white" />
+    </ScrollView>
 
 
 </RelativeLayout>

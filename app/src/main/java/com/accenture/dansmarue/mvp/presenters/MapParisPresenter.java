@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 import javax.inject.Inject;
 
@@ -98,11 +99,32 @@ public class MapParisPresenter extends BasePresenter<MapParisView> implements Si
         Log.i(TAG,value.toString());
         if (null != value && null != value.getAnswer() && value.getAnswer().getStatus().equals(Constants.STATUT_WS_OK)) {
             if (CollectionUtils.isNotEmpty(value.getAnswer().getClosestIncidents())) {
-                displayIncidents(value.getAnswer().getClosestIncidents());
+                //search by position
+                List<Incident> incidentsToDisplay =  new ArrayList<>(value.getAnswer().getClosestIncidents());
+                if (view.getSearchIdFdt() > 0) {
+                    //mode FDT active
+                    incidentsToDisplay.clear();
+                   for (Incident incident :  value.getAnswer().getClosestIncidents()) {
+                       for (Incident incidentFdt : view.getIncidentsFDT()) {
+                           if (incidentFdt.getId() == incident.getId()) {
+                               incidentsToDisplay.add(incidentFdt);
+                           }
+                       }
+                   }
+                }
+                displayIncidents(incidentsToDisplay);
             } else if (CollectionUtils.isNotEmpty(value.getAnswer().getIncident())) {
+                //search by number
+                view.clearAnomaly();
                 displayIncidents(value.getAnswer().getIncident());
                 LatLng latlngIncident = new LatLng(Double.valueOf(value.getAnswer().getIncident().get(0).getLat()),Double.valueOf(value.getAnswer().getIncident().get(0).getLng()));
                 view.callBackFindByNumber(null, false, latlngIncident);
+            } else if ( GetIncidentsByPositionResponse.REQUEST_SEARCH_INCIDENTS_BY_ID_FDT.equals(value.getRequest())) {
+                //SearchByFDT
+                if(CollectionUtils.isNotEmpty(value.getAnswer().getIncidentsFDT())) {
+                    displayIncidents(value.getAnswer().getIncidentsFDT());
+                }
+                view.callBackSearchFDTById(value.getErrorMessage(),value.getAnswer().getIncidentsFDT(), value.getAnswer().getInfosAvantTournee(),value.getAnswer().getInfosApresTournee() );
             }
         } else if ( null != value.getErrorMessage()) {
             view.callBackFindByNumber(value.getErrorMessage(), false,null);
@@ -128,12 +150,26 @@ public class MapParisPresenter extends BasePresenter<MapParisView> implements Si
                    .subscribe(this);
     }
 
+
+    /**
+     * Call WebService searchIncidentsByIdFdt
+     * @param idFdt search
+     */
+    public void searchFDTById(final int idFdt) {
+        view.clearAnomaly();
+        view.updateAnomalyList(null,true);
+        service.searchIncidentsByIdFdt(idFdt)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this);
+    }
+
     /**
      * Display on map DMR and Ramen incident.
      * @param incidentsTodisplay
      *          list incident to display on map
      */
-    private void displayIncidents(List <Incident> incidentsTodisplay) {
+    public void displayIncidents(List <Incident> incidentsTodisplay) {
 
             if (CollectionUtils.isNotEmpty(incidentsTodisplay)) {
                 final List<MarkerOptions> markers = new ArrayList<>(incidentsTodisplay.size());
@@ -150,10 +186,8 @@ public class MapParisPresenter extends BasePresenter<MapParisView> implements Si
                             incident.setIconIncidentSignalement(CategoryHelper.MAP_ICONS_RESOLVED.get(idParentCategory));
                         } else {
                             incident.setIconIncidentSignalement(CategoryHelper.MAP_ICONS.get(idParentCategory));
-
-                            anomalyList.add(incident);
                         }
-
+                        anomalyList.add(incident);
                         incident.getPictures().setGenericPictureId(CategoryHelper.MAP_GENERIC_PICTURES.get(idParentCategory));
 
                         // anchor : centre de l'image = position gps
@@ -195,7 +229,7 @@ public class MapParisPresenter extends BasePresenter<MapParisView> implements Si
         if (bounds.contains(location)) {
             view.locationChanged(location);
         } else {
-            view.invalidLocation();
+            view.invalidLocation(location);
         }
     }
 

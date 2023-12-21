@@ -20,6 +20,8 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.accenture.dansmarue.utils.DrawableExtensionsKt;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.core.content.ContextCompat;
@@ -223,9 +225,6 @@ public class MapParisEquipementFragment extends BaseFragment implements Equipeme
 
     private void initCustomSearchBar() {
 
-        //        Search and place pin
-        autocompleteView = (AutoCompleteTextView) getView().findViewById(R.id.autocomplete_dogs);
-
         // Fake Datas : create a list of equipements
         ArrayList<Equipement> equipements = new ArrayList<Equipement>();
 
@@ -236,6 +235,8 @@ public class MapParisEquipementFragment extends BaseFragment implements Equipeme
 
         autocompleteView = (AutoCompleteTextView) getView().findViewById(R.id.autocomplete_dogs);
         autocompleteView.setAdapter(adapter);
+
+        autocompleteView.setContentDescription(getContext().getString(R.string.google_searchbar_wording_desc));
 
         // Setup Erase Button
         autocompleteErase = (ImageView) getView().findViewById(R.id.autocomplete_erase);
@@ -345,8 +346,8 @@ public class MapParisEquipementFragment extends BaseFragment implements Equipeme
             params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
 
 //            Fix the position of the LocationButton (convert DP to pixels)
-            int rightMargin = (int) ((13) * Resources.getSystem().getDisplayMetrics().density);
-            int bottomMargin = (int) ((204) * Resources.getSystem().getDisplayMetrics().density);
+            int rightMargin = Math.round((13) * Resources.getSystem().getDisplayMetrics().density);
+            int bottomMargin = Math.round((204) * Resources.getSystem().getDisplayMetrics().density);
             params.setMargins(rightMargin, 0, 0, bottomMargin);
             locationButton.setLayoutParams(params);
 
@@ -382,7 +383,7 @@ public class MapParisEquipementFragment extends BaseFragment implements Equipeme
                     lastLong = locationNetwork.getLongitude();
 
                 } catch (Exception f) {
-
+                    Log.e(TAG, "searchPositionAndUpdate: " + f.getMessage());
                 }
             }
 
@@ -654,6 +655,7 @@ public class MapParisEquipementFragment extends BaseFragment implements Equipeme
         try {
             if (null != googleMap) googleMap.setMyLocationEnabled(false);
         } catch (SecurityException e) {
+            Log.e(TAG, "onStop: " + e.getMessage());
         } finally {
             googleMap = null;
         }
@@ -764,14 +766,14 @@ public class MapParisEquipementFragment extends BaseFragment implements Equipeme
 
     public void updatePosMarker() {
         if (googleMap != null)
-            myPosMarker = googleMap.addMarker(new MarkerOptions().position(myCurrentLocationPosition).icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_pink)));
+            myPosMarker = googleMap.addMarker(new MarkerOptions().position(myCurrentLocationPosition).icon(BitmapDescriptorFactory.fromBitmap(DrawableExtensionsKt.toBitmap(R.drawable.dmr_pin_map_v2, requireActivity(), null))));
     }
 
     @Override
     public void clearAnomaly() {
         if (googleMap != null) {
             googleMap.clear();
-            myPosMarker = googleMap.addMarker(new MarkerOptions().position(myCurrentLocationPosition).icon(BitmapDescriptorFactory.fromResource(R.drawable.pin_pink)));
+            myPosMarker = googleMap.addMarker(new MarkerOptions().position(myCurrentLocationPosition).icon(BitmapDescriptorFactory.fromBitmap(DrawableExtensionsKt.toBitmap(R.drawable.dmr_pin_map_v2, requireActivity(), null))));
         }
     }
 
@@ -824,6 +826,7 @@ public class MapParisEquipementFragment extends BaseFragment implements Equipeme
                                     status.startResolutionForResult(getActivity(), REQUEST_LOCATION);
                             } catch (IntentSender.SendIntentException e) {
                                 // Ignore the error.
+                                Log.e(TAG, e.getMessage());
                             }
                             break;
                     }
